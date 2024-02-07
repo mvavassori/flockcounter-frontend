@@ -229,6 +229,11 @@ export default async function Dashboard({ params }: { params: { id: number } }) 
     const statesData = await getStates(params.id, "2024-02-04 23:59:59.999", "2024-02-06 23:59:59.999");
     console.log(statesData)
 
+    //! doesn't work... it throws the error at !response.ok
+    if(!topStatsData || !pagesData || !referrersData || !deviceTypesData || !osesData || !browsersData || !languagesData || !countriesData || !statesData) {
+      return notFound();
+    }
+
   return (
     <main>Dashbaord</main>
   )
