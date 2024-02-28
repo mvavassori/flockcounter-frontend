@@ -1,13 +1,19 @@
 import { notFound } from "next/navigation";
 
-async function getTopStats(id: number, startDate: string, endDate: string) {
+async function getTopStats(id: number, startDate: string, endDate: string, token: string) {
   const params = new URLSearchParams({
     startDate: startDate,
     endDate: endDate
   });
 
-  const response = await fetch(`${process.env.BACKEND_URL}/dashboard/top-stats/${id}?${params}`);
+  const headers = new Headers();
+  headers.append('Authorization', `Bearer ${token}`);
+
+  const response = await fetch(`${process.env.BACKEND_URL}/dashboard/top-stats/${id}?${params}`, { headers });
   const text = await response.text();
+
+  // const response = await fetch(`${process.env.BACKEND_URL}/dashboard/top-stats/${id}?${params}`);
+  // const text = await response.text();
   
   if (!response.ok) {
     console.error(`HTTP error! status: ${response.status}, body: ${text}`);
@@ -210,29 +216,29 @@ async function getStates(id: number, startDate: string, endDate: string) {
 
 export default async function Dashboard({ params }: { params: { id: number } }) {
     //todo create state variables for the start and end date
-    const topStatsData = await getTopStats(params.id, "2024-02-04 23:59:59.999", "2024-02-06 23:59:59.999");
+    const topStatsData = await getTopStats(params.id, "2024-02-27 23:59:59.999", "2024-02-28 23:59:59.999", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcmVzQXQiOjE3MDkxMzI1NDMsInJvbGUiOiJ1c2VyIiwidXNlcklkIjoxMn0.kJzPwr3-fMbRIVFZ-xXIqKlAVa_7tGA05zeduE7a1k4");
     console.log(topStatsData)
-    const pagesData = await getPages(params.id, "2024-02-04 23:59:59.999", "2024-02-06 23:59:59.999");
-    console.log(pagesData)
-    const referrersData = await getReferrers(params.id, "2024-02-04 23:59:59.999", "2024-02-06 23:59:59.999");
-    console.log(referrersData)
-    const deviceTypesData = await getDeviceTypes(params.id, "2024-02-04 23:59:59.999", "2024-02-06 23:59:59.999");
-    console.log(deviceTypesData)
-    const osesData = await getOSes(params.id, "2024-02-04 23:59:59.999", "2024-02-06 23:59:59.999");
-    console.log(osesData)
-    const browsersData = await getBrowsers(params.id, "2024-02-04 23:59:59.999", "2024-02-06 23:59:59.999");
-    console.log(browsersData)
-    const languagesData = await getLanguages(params.id, "2024-02-04 23:59:59.999", "2024-02-06 23:59:59.999");
-    console.log(languagesData)
-    const countriesData = await getCountries(params.id, "2024-02-04 23:59:59.999", "2024-02-06 23:59:59.999");
-    console.log(countriesData)
-    const statesData = await getStates(params.id, "2024-02-04 23:59:59.999", "2024-02-06 23:59:59.999");
-    console.log(statesData)
+    // const pagesData = await getPages(params.id, "2024-02-04 23:59:59.999", "2024-02-06 23:59:59.999");
+    // console.log(pagesData)
+    // const referrersData = await getReferrers(params.id, "2024-02-04 23:59:59.999", "2024-02-06 23:59:59.999");
+    // console.log(referrersData)
+    // const deviceTypesData = await getDeviceTypes(params.id, "2024-02-04 23:59:59.999", "2024-02-06 23:59:59.999");
+    // console.log(deviceTypesData)
+    // const osesData = await getOSes(params.id, "2024-02-04 23:59:59.999", "2024-02-06 23:59:59.999");
+    // console.log(osesData)
+    // const browsersData = await getBrowsers(params.id, "2024-02-04 23:59:59.999", "2024-02-06 23:59:59.999");
+    // console.log(browsersData)
+    // const languagesData = await getLanguages(params.id, "2024-02-04 23:59:59.999", "2024-02-06 23:59:59.999");
+    // console.log(languagesData)
+    // const countriesData = await getCountries(params.id, "2024-02-04 23:59:59.999", "2024-02-06 23:59:59.999");
+    // console.log(countriesData)
+    // const statesData = await getStates(params.id, "2024-02-04 23:59:59.999", "2024-02-06 23:59:59.999");
+    // console.log(statesData)
 
-    //! doesn't work... it throws the error at !response.ok
-    if(!topStatsData || !pagesData || !referrersData || !deviceTypesData || !osesData || !browsersData || !languagesData || !countriesData || !statesData) {
-      return notFound();
-    }
+    // //! doesn't work... it throws the error at !response.ok
+    // if(!topStatsData || !pagesData || !referrersData || !deviceTypesData || !osesData || !browsersData || !languagesData || !countriesData || !statesData) {
+    //   return notFound();
+    // }
 
   return (
     <main>Dashbaord</main>
