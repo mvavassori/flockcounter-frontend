@@ -1,4 +1,6 @@
 import { notFound } from "next/navigation";
+import { authOptions } from "@/lib/auth";
+import { getServerSession } from "next-auth";
 
 async function getTopStats(id: number, startDate: string, endDate: string, token: string) {
   const params = new URLSearchParams({
@@ -215,8 +217,9 @@ async function getStates(id: number, startDate: string, endDate: string) {
 
 
 export default async function Dashboard({ params }: { params: { id: number } }) {
+  const session = await getServerSession(authOptions);
     //todo create state variables for the start and end date
-    const topStatsData = await getTopStats(params.id, "2024-02-27 23:59:59.999", "2024-02-28 23:59:59.999", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcmVzQXQiOjE3MDkxMzI1NDMsInJvbGUiOiJ1c2VyIiwidXNlcklkIjoxMn0.kJzPwr3-fMbRIVFZ-xXIqKlAVa_7tGA05zeduE7a1k4");
+    const topStatsData = await getTopStats(params.id, "2024-02-27 23:59:59.999", "2024-02-28 23:59:59.999", session?.user.accessToken || "");
     console.log(topStatsData)
     // const pagesData = await getPages(params.id, "2024-02-04 23:59:59.999", "2024-02-06 23:59:59.999");
     // console.log(pagesData)
