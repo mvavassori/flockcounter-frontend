@@ -1,14 +1,27 @@
 "use client"
 import React, { useState } from 'react';
+import Link from 'next/link';
+import { signIn } from 'next-auth/react';
 
-const LoginForm: React.FC = () => {
+const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    // Handle your login logic here
-  };
+  
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+      // Handle your login logic here
+      try {
+        await signIn("credentials", {
+          email,
+          password,
+          redirect: true,
+          callbackUrl: "/profile",
+        })
+      } catch (error) {
+        console.error("Sign in error:", error);
+      }
+    };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -57,10 +70,17 @@ const LoginForm: React.FC = () => {
               Sign in
             </button>
           </div>
+          <div className="text-center">
+            Don&apos;t have an account?
+            <Link href="/signup"
+              className="text-indigo-600 hover:text-indigo-700">
+              {" "}Sign Up
+            </Link>
+          </div>
         </form>
       </div>
     </div>
   );
 };
 
-export default LoginForm;
+export default Login;
