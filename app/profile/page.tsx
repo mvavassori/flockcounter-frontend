@@ -4,7 +4,7 @@ import SignOutButton from "@/components/SignOutButton";
 
 export default async function Profile() {
   const session = await getServerSession(authOptions);
-  console.log("session", session);
+  // console.log("session", session);
   // console.log("adminsession", session);
   const response = await fetch(`${process.env.BACKEND_URL}/user/${session?.user.id}`, {
     method: "GET",

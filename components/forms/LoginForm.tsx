@@ -15,8 +15,8 @@ const Login: React.FC = () => {
         await signIn("credentials", {
           email,
           password,
-          redirect: true,
-          callbackUrl: "/profile",
+          // redirect: true,
+          // callbackUrl: "/",
         })
       } catch (error) {
         console.error("Sign in error:", error);

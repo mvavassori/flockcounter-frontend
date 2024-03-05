@@ -1,17 +1,24 @@
-import NextAuth from "next-auth/next";
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { JWT } from "next-auth/jwt";
 
 async function refreshToken(token: JWT): Promise<JWT> {
-  const res = await fetch("http://localhost:8080/api/user/refresh", {
+  const res = await fetch("http://localhost:8080/api/user/refresh-token", {
     method: "POST",
     headers: {
-      "Content-Type": "application/json",
+      authorization: `Refresh ${token.refreshToken}`,
     },
-    body: JSON.stringify({
-      refreshToken: token.refreshToken,
-    }),
   });
+
+  console.log("refreshed");
+
+  const response = await res.json();
+
+  if (!res.ok) {
+    throw new Error(response.message);
+  }
+
+  return { ...token, ...response };
 }
 
 export const authOptions: NextAuthOptions = {
@@ -61,9 +68,23 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async jwt({ token, user }) {
-      if (user) return { ...token, ...user };
+      // console.log("token and user spread", { ...token, ...user });
+      if (user) {
+        console.log("there's a user");
+        console.log("token", token);
+        console.log("user", user);
+        return token;
+      }
 
-      if (new Date().getTime() < token.expiresAt) return token;
+      // console.log(token.expiresAt);
+      if (new Date().getTime() < token.expiresAt) {
+        console.log("token not expired");
+        return token;
+      }
+
+      console.log("token expired");
+
+      return refreshToken(token);
     },
 
     async session({ session, token, user }) {
