@@ -9,7 +9,7 @@ export default async function Profile() {
   const response = await fetch(`${process.env.BACKEND_URL}/user/${session?.user.id}`, {
     method: "GET",
     headers: {
-      authorization: `Bearer ${session?.user.accessToken}`,
+      authorization: `Bearer ${session?.backendTokens.accessToken}`,
       "Content-Type": "application/json",
     }
   });
@@ -28,7 +28,7 @@ export default async function Profile() {
     <>
     <div className="mt-16">{user?.name}</div>
     <div>{user?.email}</div>
-    <div>{session?.user?.accessToken}</div>
+    <div>{session?.backendTokens.accessToken}</div>
     <div>{session?.user?.id}</div>
     {/* <div>{session?.user?.role}</div> */}
     {/* <div>{session?.user?.accessToken}</div> */}

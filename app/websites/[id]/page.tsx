@@ -219,7 +219,7 @@ async function getStates(id: number, startDate: string, endDate: string) {
 export default async function Dashboard({ params }: { params: { id: number } }) {
   const session = await getServerSession(authOptions);
     //todo create state variables for the start and end date
-    const topStatsData = await getTopStats(params.id, "2024-02-27 23:59:59.999", "2024-02-28 23:59:59.999", session?.user.accessToken || "");
+    const topStatsData = await getTopStats(params.id, "2024-02-27 23:59:59.999", "2024-02-28 23:59:59.999", session?.backendTokens.accessToken || "");
     console.log(topStatsData)
     // const pagesData = await getPages(params.id, "2024-02-04 23:59:59.999", "2024-02-06 23:59:59.999");
     // console.log(pagesData)

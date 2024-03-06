@@ -6,7 +6,7 @@ async function refreshToken(token: JWT): Promise<JWT> {
   const res = await fetch("http://localhost:8080/api/user/refresh-token", {
     method: "POST",
     headers: {
-      authorization: `Refresh ${token.refreshToken}`,
+      authorization: `Refresh ${token.backendTokens.refreshToken}`,
     },
   });
 
@@ -18,7 +18,15 @@ async function refreshToken(token: JWT): Promise<JWT> {
     throw new Error(response.message);
   }
 
-  return { ...token, ...response };
+  // console.log("refreshToken function resposne", {
+  //   ...token,
+  //   backendTokens: response,
+  // });
+
+  return {
+    ...token,
+    backendTokens: response,
+  };
 }
 
 export const authOptions: NextAuthOptions = {
@@ -68,27 +76,26 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async jwt({ token, user }) {
-      // console.log("token and user spread", { ...token, ...user });
       if (user) {
         console.log("there's a user");
-        console.log("token", token);
-        console.log("user", user);
-        return token;
+        // console.log("if user return", { ...token, ...user });
+        return { ...token, ...user };
       }
 
-      // console.log(token.expiresAt);
-      if (new Date().getTime() < token.expiresAt) {
+      console.log(new Date().getTime());
+      console.log(token.backendTokens.expiresAt * 1000); // from unix timestamp to milliseconds
+      if (new Date().getTime() < token.backendTokens.expiresAt * 1000) {
         console.log("token not expired");
         return token;
       }
 
       console.log("token expired");
-
-      return refreshToken(token);
+      return await refreshToken(token);
     },
 
     async session({ session, token, user }) {
-      session.user = token as any;
+      session.user = token.user;
+      session.backendTokens = token.backendTokens;
       return session;
     },
   },
