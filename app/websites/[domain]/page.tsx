@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
 
-async function getTopStats(id: number, startDate: string, endDate: string, token: string) {
+async function getTopStats(domain: string, startDate: string, endDate: string, token: string) {
   const params = new URLSearchParams({
     startDate: startDate,
     endDate: endDate
@@ -11,7 +11,7 @@ async function getTopStats(id: number, startDate: string, endDate: string, token
   const headers = new Headers();
   headers.append('Authorization', `Bearer ${token}`);
 
-  const response = await fetch(`${process.env.BACKEND_URL}/dashboard/top-stats/${id}?${params}`, { headers });
+  const response = await fetch(`${process.env.BACKEND_URL}/dashboard/top-stats/${domain}?${params}`, { headers });
   const text = await response.text();
 
   // const response = await fetch(`${process.env.BACKEND_URL}/dashboard/top-stats/${id}?${params}`);
@@ -216,10 +216,10 @@ async function getStates(id: number, startDate: string, endDate: string) {
 }
 
 
-export default async function Dashboard({ params }: { params: { id: number } }) {
+export default async function Dashboard({ params }: { params: { domain: string } }) {
   const session = await getServerSession(authOptions);
     //todo create state variables for the start and end date
-    const topStatsData = await getTopStats(params.id, "2024-02-27 23:59:59.999", "2024-02-28 23:59:59.999", session?.backendTokens.accessToken || "");
+    const topStatsData = await getTopStats(params.domain, "2024-02-27 23:59:59.999", "2024-02-28 23:59:59.999", session?.backendTokens.accessToken || "");
     console.log(topStatsData)
     // const pagesData = await getPages(params.id, "2024-02-04 23:59:59.999", "2024-02-06 23:59:59.999");
     // console.log(pagesData)
@@ -244,6 +244,6 @@ export default async function Dashboard({ params }: { params: { id: number } }) 
     // }
 
   return (
-    <main>Dashbaord</main>
+    <div>top stats data: {topStatsData}</div>
   )
 }

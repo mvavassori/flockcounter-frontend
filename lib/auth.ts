@@ -18,11 +18,6 @@ async function refreshToken(token: JWT): Promise<JWT> {
     throw new Error(response.message);
   }
 
-  // console.log("refreshToken function resposne", {
-  //   ...token,
-  //   backendTokens: response,
-  // });
-
   return {
     ...token,
     backendTokens: response,
@@ -78,7 +73,6 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         console.log("there's a user");
-        // console.log("if user return", { ...token, ...user });
         return { ...token, ...user };
       }
 
