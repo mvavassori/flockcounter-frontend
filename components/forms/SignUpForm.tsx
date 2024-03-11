@@ -26,7 +26,7 @@ const SignUp: React.FC = () => {
         })
         if (res.status === 201) {
             alert("Account created successfully");
-            // window.location.href = "/login";
+            window.location.href = "/api/auth/signin";
             return
         }
         // const response = await res.json();
