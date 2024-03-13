@@ -293,23 +293,23 @@ async function getStates(domain: string, startDate: string, endDate: string, tok
 export default async function Dashboard({ params }: { params: { domain: string } }) {
   const session = await getServerSession(authOptions);
     //todo create state variables for the start and end date
-    const topStatsData = await getTopStats(params.domain, "2024-02-27 23:59:59.999", "2024-02-28 23:59:59.999", session?.backendTokens.accessToken || "");
+    const topStatsData = await getTopStats(params.domain, "2024-02-27 23:59:59.999", "2024-04-06 23:59:59.999", session?.backendTokens.accessToken || "");
     console.log(topStatsData)
-    const pagesData = await getPages(params.domain, "2024-02-04 23:59:59.999", "2024-03-06 23:59:59.999", session?.backendTokens.accessToken || "");
+    const pagesData = await getPages(params.domain, "2024-02-04 23:59:59.999", "2024-04-06 23:59:59.999", session?.backendTokens.accessToken || "");
     console.log(pagesData)
-    const referrersData = await getReferrers(params.domain, "2024-02-04 23:59:59.999", "2024-03-06 23:59:59.999", session?.backendTokens.accessToken || "");
+    const referrersData = await getReferrers(params.domain, "2024-02-04 23:59:59.999", "2024-04-06 23:59:59.999", session?.backendTokens.accessToken || "");
     console.log(referrersData)
-    const deviceTypesData = await getDeviceTypes(params.domain, "2024-02-04 23:59:59.999", "2024-03-06 23:59:59.999", session?.backendTokens.accessToken || "");
+    const deviceTypesData = await getDeviceTypes(params.domain, "2024-02-04 23:59:59.999", "2024-04-06 23:59:59.999", session?.backendTokens.accessToken || "");
     console.log(deviceTypesData)
-    const osesData = await getOSes(params.domain, "2024-02-04 23:59:59.999", "2024-03-06 23:59:59.999", session?.backendTokens.accessToken || "");
+    const osesData = await getOSes(params.domain, "2024-02-04 23:59:59.999", "2024-04-06 23:59:59.999", session?.backendTokens.accessToken || "");
     console.log(osesData)
-    const browsersData = await getBrowsers(params.domain, "2024-02-04 23:59:59.999", "2024-03-06 23:59:59.999", session?.backendTokens.accessToken || "");
+    const browsersData = await getBrowsers(params.domain, "2024-02-04 23:59:59.999", "2024-04-06 23:59:59.999", session?.backendTokens.accessToken || "");
     console.log(browsersData)
-    const languagesData = await getLanguages(params.domain, "2024-02-04 23:59:59.999", "2024-03-06 23:59:59.999", session?.backendTokens.accessToken || "");
+    const languagesData = await getLanguages(params.domain, "2024-02-04 23:59:59.999", "2024-04-06 23:59:59.999", session?.backendTokens.accessToken || "");
     console.log(languagesData)
-    const countriesData = await getCountries(params.domain, "2024-02-04 23:59:59.999", "2024-03-06 23:59:59.999", session?.backendTokens.accessToken || "");
+    const countriesData = await getCountries(params.domain, "2024-02-04 23:59:59.999", "2024-04-06 23:59:59.999", session?.backendTokens.accessToken || "");
     console.log(countriesData)
-    const statesData = await getStates(params.domain, "2024-02-04 23:59:59.999", "2024-03-06 23:59:59.999", session?.backendTokens.accessToken || "");
+    const statesData = await getStates(params.domain, "2024-02-04 23:59:59.999", "2024-04-06 23:59:59.999", session?.backendTokens.accessToken || "");
     console.log(statesData)
 
   return (
