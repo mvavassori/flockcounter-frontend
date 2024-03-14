@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
+import TopStats from "@/components/dashboard/TopStats";
 import Pages from "@/components/dashboard/Pages";
 import Referrers from "@/components/dashboard/Referrers";
 import DeviceTypes from "@/components/dashboard/DeviceTypes";
@@ -314,6 +315,7 @@ export default async function Dashboard({ params }: { params: { domain: string }
 
   return (
     <>
+    <TopStats/>
     <div>All visits: {topStatsData}</div>
     <Pages data={pagesData}/>
     <Referrers data={referrersData}/>

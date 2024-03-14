@@ -1,7 +1,6 @@
 import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
 
-import React from 'react'
 async function getUserWebsites(userId: number, token: string) {
   
 
