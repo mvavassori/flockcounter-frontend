@@ -35,10 +35,10 @@ const Navbar = async () => {
           </li>
           <li>
             <Link
-              href="/websites/localhost"
+              href="/websites/127.0.0.1"
               className="underline-offset-4 hover:underline"
             >
-              localhost
+              127.0.0.1
             </Link>
           </li>
           <li>
