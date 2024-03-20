@@ -42,8 +42,8 @@ const Navbar = async () => {
             </Link>
           </li>
           <li>
-            <Link href="/about" className=" underline-offset-4 hover:underline">
-              About
+            <Link href="http://127.0.0.1:5500/fake-client/index.html" className=" underline-offset-4 hover:underline">
+              index
             </Link>
           </li>
         </ul>

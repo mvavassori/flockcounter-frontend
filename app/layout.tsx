@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import Script from "next/script";
 
 import {ClientAuthProvider} from "@/utils/ClientAuthProvider";
 import Navbar from "@/components/navbar";
@@ -19,6 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <Script crossOrigin="anonymous" src="/static/script.js"></Script>
       <body className={inter.className}>
       <ClientAuthProvider>
         <Navbar/>
