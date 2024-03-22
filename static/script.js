@@ -90,8 +90,8 @@ function sendVisit(event, elapsedTime) {
       return
     }
     if (document.visibilityState === 'hidden') {
-      startTime = performance.now();
       navigator.sendBeacon(url, data);
+      startTime = performance.now();
     }
 }
 

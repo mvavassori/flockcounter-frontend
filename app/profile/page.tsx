@@ -30,6 +30,7 @@ export default async function Profile() {
     <div>{user?.email}</div>
     <div>{session?.backendTokens.accessToken}</div>
     <div>{session?.user?.id}</div>
+    <div>{session?.backendTokens.refreshToken}</div>
     {/* <div>{session?.user?.role}</div> */}
     {/* <div>{session?.user?.accessToken}</div> */}
     <SignOutButton />

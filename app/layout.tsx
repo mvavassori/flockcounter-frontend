@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Script from "next/script";
 
-import {ClientAuthProvider} from "@/utils/ClientAuthProvider";
+import { ClientAuthProvider } from "@/utils/ClientAuthProvider";
 import Navbar from "@/components/navbar";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -20,7 +20,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <Script crossOrigin="anonymous" src="/static/script.js"></Script>
+      {/* <Script crossOrigin="anonymous" src="/static/script.js"></Script> */}
+      <Script crossOrigin="anonymous" src="/static/script2.js"></Script>
       <body className={inter.className}>
       <ClientAuthProvider>
         <Navbar/>
