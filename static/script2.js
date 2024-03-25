@@ -11,7 +11,7 @@ let currentUrl = window.location.href;
 console.log('Page loaded, startTime:', startTime);
 
 // Function to handle sending the visit data
-function sendVisit() {
+function sendVisit(elapsedTime) {
     const payloadData = {
         timestamp: formattedStamp,
         referrer: document.referrer || null,
@@ -19,14 +19,9 @@ function sendVisit() {
         pathname: window.location.pathname,
         userAgent: navigator.userAgent,
         language: navigator.language,
-        timeSpentOnPage: Math.round(totalElapsedTime)
+        timeSpentOnPage: Math.round(elapsedTime)
     };
     let data = JSON.stringify(payloadData);
-    // if the visitor has just spent less than 5 seconds on the page, don't count it as a visit
-    if (totalElapsedTime < 5000) {
-        console.log('Visit time less than 5 seconds, not sending data.');
-        return;
-    }
     console.log('Sending visit data:', payloadData);
     navigator.sendBeacon(url, data);
 }
@@ -43,11 +38,19 @@ window.addEventListener("visibilitychange", (event) => {
         console.log('Page became hidden, elapsed time:', elapsedTime);
         totalElapsedTime += elapsedTime;
         console.log('Total elapsed time:', totalElapsedTime);
-        sendVisit();
-        // Reset the timer after sending the visit data
-        startTime = 0;
-        totalElapsedTime = 0;
-        console.log('Timer reset, startTime:', startTime, 'totalElapsedTime:', totalElapsedTime);
+        if (totalElapsedTime < 5000) {
+            console.log('Visit time less than 5 seconds, not sending data.');
+            // Reset the timer without sending the visit data
+            startTime = 0;
+            totalElapsedTime = 0;
+            console.log('Timer reset, startTime:', startTime, 'totalElapsedTime:', totalElapsedTime);
+        } else {
+            sendVisit(totalElapsedTime);
+            // Reset the timer after sending the visit data
+            startTime = 0;
+            totalElapsedTime = 0;
+            console.log('Timer reset, startTime:', startTime, 'totalElapsedTime:', totalElapsedTime);
+        }
     }
 });
 
@@ -64,10 +67,19 @@ function handleRouteChange() {
         console.log('Page changed, elapsed time:', elapsedTime);
         totalElapsedTime += elapsedTime;
         console.log('Total elapsed time:', totalElapsedTime);
-        sendVisit();
-        currentUrl = newUrl;
-        startTime = performance.now();
-        console.log('New page, startTime updated:', startTime);
+        if (totalElapsedTime < 5000) {
+            console.log('Visit time less than 5 seconds, not sending data.');
+            // Reset the timer without sending the visit data
+            startTime = performance.now();
+            totalElapsedTime = 0;
+            console.log('New page, startTime updated:', startTime, 'totalElapsedTime:', totalElapsedTime);
+        } else {
+            sendVisit(totalElapsedTime);
+            currentUrl = newUrl;
+            startTime = performance.now();
+            totalElapsedTime = 0;
+            console.log('New page, startTime updated:', startTime, 'totalElapsedTime:', totalElapsedTime);
+        }
     }
 }
 
