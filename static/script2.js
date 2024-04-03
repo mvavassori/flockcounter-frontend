@@ -8,6 +8,8 @@ let startTime = performance.now();
 let totalElapsedTime = 0;
 let currentUrl = window.location.href;
 
+let previousPathname = window.location.pathname;
+
 console.log('Page loaded, startTime:', startTime);
 
 // Function to handle sending the visit data
@@ -16,7 +18,8 @@ function sendVisit(elapsedTime) {
         timestamp: formattedStamp,
         referrer: document.referrer || null,
         url: currentUrl,
-        pathname: window.location.pathname,
+        // pathname: window.location.pathname,
+        pathname: previousPathname,
         userAgent: navigator.userAgent,
         language: navigator.language,
         timeSpentOnPage: Math.round(elapsedTime)
@@ -85,6 +88,7 @@ function handleRouteChange() {
 
 function overridePushStateFunction(originalPushState) {
     return function overridenPushState(...args) {
+        previousPathname = window.location.pathname; // Store the previous pathname before calling handleRouteChange
         const result = originalPushState.apply(this, args);
         handleRouteChange();
         return result;
@@ -93,6 +97,7 @@ function overridePushStateFunction(originalPushState) {
 
 function overrideReplaceStateFunction(originalReplaceState) {
     return function overridenReplaceState(...args) {
+        previousPathname = window.location.pathname; // Store the previous pathname before calling handleRouteChange
         const result = originalReplaceState.apply(this, args);
         handleRouteChange();
         return result;
