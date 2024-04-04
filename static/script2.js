@@ -8,6 +8,8 @@ let startTime = performance.now();
 let totalElapsedTime = 0;
 let currentUrl = window.location.href;
 
+let currentReferrer = document.referrer || null;
+
 let previousPathname = window.location.pathname;
 
 console.log('Page loaded, startTime:', startTime);
@@ -16,7 +18,7 @@ console.log('Page loaded, startTime:', startTime);
 function sendVisit(elapsedTime) {
     const payloadData = {
         timestamp: formattedStamp,
-        referrer: document.referrer || null,
+        referrer: currentReferrer,
         url: currentUrl,
         // pathname: window.location.pathname,
         pathname: previousPathname,
@@ -65,6 +67,8 @@ window.history.replaceState = overrideReplaceStateFunction(window.history.replac
 function handleRouteChange() {
     const newUrl = window.location.href;
     if (newUrl !== currentUrl) {
+        // Store the current URL as the previous referrer
+        currentReferrer = currentUrl;
         console.log('URL changed from', currentUrl, 'to', newUrl);
         const elapsedTime = performance.now() - startTime;
         console.log('Page changed, elapsed time:', elapsedTime);
