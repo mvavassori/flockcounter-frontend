@@ -88,9 +88,6 @@ function handleRouteChange() {
     // Store the current URL as the previous referrer
     currentReferrer = currentUrl;
 
-    // Set isFirstVisit to false after the first visit
-    // isFirstVisit = false;
-
     // Set isFirstVisit to false after the first visit, but only if the referrer is from the same website
     if (currentReferrer.includes(window.location.host)) {
       isFirstVisit = false;
