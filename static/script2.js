@@ -12,8 +12,6 @@ let currentReferrer = document.referrer || null;
 
 console.log("window.location.host", window.location.host);
 
-// !currentReferrer || !currentReferrer.includes(window.location.host);
-
 let previousPathname = window.location.pathname;
 
 console.log("Page loaded, startTime:", startTime);
@@ -68,6 +66,7 @@ window.addEventListener("visibilitychange", (event) => {
     console.log("Page became hidden, elapsed time:", elapsedTime);
     totalElapsedTime += elapsedTime;
     console.log("Total elapsed time:", totalElapsedTime);
+
     if (totalElapsedTime < 5000) {
       console.log("Visit time less than 5 seconds, not sending data.");
       // Reset the timer without sending the visit data
@@ -106,11 +105,6 @@ function handleRouteChange() {
   if (newUrl !== currentUrl) {
     // Store the current URL as the previous referrer
     currentReferrer = currentUrl;
-
-    // Set isFirstVisit to false after the first visit, but only if the referrer is from the same website
-    // if (currentReferrer.includes(window.location.host)) {
-    //   isFirstVisit = false;
-    // }
 
     console.log("URL changed from", currentUrl, "to", newUrl);
     const elapsedTime = performance.now() - startTime;
