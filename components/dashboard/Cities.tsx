@@ -2,24 +2,24 @@
 
 import { useState } from "react";
 
-interface StatesProps {
+interface CitiesProps {
     data: {
       counts: number[];
-      states: string[];
+      cities: string[];
     };
   }
 
-  const States: React.FC<StatesProps> = (props) => {
+  const Cities: React.FC<CitiesProps> = (props) => {
     const { data } = props
     const [counts, setCounts] = useState<number[]>(data.counts);
-  const [states, setStates] = useState<string[]>(data.states);
+  const [cities, setCities] = useState<string[]>(data.cities);
   return (
     <div>
-      <h2>Top States</h2>
+      <h2>Top cities</h2>
       <ul>
-        {states.map((state, index) => (
+        {cities.map((city, index) => (
           <li key={index}>
-            {state}: {counts[index]}
+            {city}: {counts[index]}
           </li>
         ))}
       </ul>
@@ -27,4 +27,4 @@ interface StatesProps {
   );
 }
 
-export default States
+export default Cities

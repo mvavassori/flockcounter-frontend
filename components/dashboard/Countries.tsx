@@ -17,9 +17,9 @@ interface CountriesProps {
     <div>
       <h2>Top Countries</h2>
       <ul>
-        {countries.map((countries, index) => (
+        {countries.map((country, index) => (
           <li key={index}>
-            {countries}: {counts[index]}
+            {country}: {counts[index]}
           </li>
         ))}
       </ul>
