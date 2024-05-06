@@ -9,9 +9,9 @@ interface ReferrersProps {
     };
   }
 
-  const Referrers: React.FC<ReferrersProps> = (props) => {
-    const { data } = props
-    const [counts, setCounts] = useState<number[]>(data.counts);
+const Referrers: React.FC<ReferrersProps> = (props) => {
+  const { data } = props
+  const [counts, setCounts] = useState<number[]>(data.counts);
   const [referrers, serefferrers] = useState<string[]>(data.referrers);
   return (
     <div>

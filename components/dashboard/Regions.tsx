@@ -9,9 +9,9 @@ interface RegionsProps {
     };
   }
 
-  const Regions: React.FC<RegionsProps> = (props) => {
-    const { data } = props
-    const [counts, setCounts] = useState<number[]>(data.counts);
+const Regions: React.FC<RegionsProps> = (props) => {
+  const { data } = props
+  const [counts, setCounts] = useState<number[]>(data.counts);
   const [regions, setRegions] = useState<string[]>(data.regions);
   return (
     <div>

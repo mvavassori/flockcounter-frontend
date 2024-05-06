@@ -349,8 +349,7 @@ export default async function Dashboard({ params }: { params: { domain: string }
 
   return (
     <>
-    <TopStats/>
-    {/* <div>All visits: {topStatsData}</div> */}
+    <TopStats data={topStatsData}/>
     <Pages data={pagesData}/>
     <Referrers data={referrersData}/>
     <DeviceTypes data={deviceTypesData}/>
