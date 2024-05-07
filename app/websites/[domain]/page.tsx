@@ -422,74 +422,74 @@ export default async function Dashboard({
     session?.backendTokens.accessToken || ""
   );
   console.log(topStatsData);
-  // const pagesData = await getPages(
-  //   params.domain,
-  //   startDateString,
-  //   endDateString,
-  //   session?.backendTokens.accessToken || ""
-  // );
-  // console.log(pagesData);
-  // const referrersData = await getReferrers(
-  //   params.domain,
-  //   startDateString,
-  //   endDateString,
-  //   session?.backendTokens.accessToken || ""
-  // );
-  // console.log(referrersData);
-  // const deviceTypesData = await getDeviceTypes(
-  //   params.domain,
-  //   startDateString,
-  //   endDateString,
-  //   session?.backendTokens.accessToken || ""
-  // );
-  // console.log(deviceTypesData);
-  // const osesData = await getOSes(
-  //   params.domain,
-  //   startDateString,
-  //   endDateString,
-  //   session?.backendTokens.accessToken || ""
-  // );
-  // console.log(osesData);
-  // const browsersData = await getBrowsers(
-  //   params.domain,
-  //   startDateString,
-  //   endDateString,
-  //   session?.backendTokens.accessToken || ""
-  // );
-  // console.log(browsersData);
-  // const languagesData = await getLanguages(
-  //   params.domain,
-  //   startDateString,
-  //   endDateString,
-  //   session?.backendTokens.accessToken || ""
-  // );
-  // console.log(languagesData);
-  // const countriesData = await getCountries(
-  //   params.domain,
-  //   startDateString,
-  //   endDateString,
-  //   session?.backendTokens.accessToken || ""
-  // );
-  // console.log(countriesData);
-  // const regionsData = await getRegions(
-  //   params.domain,
-  //   startDateString,
-  //   endDateString,
-  //   session?.backendTokens.accessToken || ""
-  // );
-  // console.log(regionsData);
-  // const citiesData = await getCities(
-  //   params.domain,
-  //   startDateString,
-  //   endDateString,
-  //   session?.backendTokens.accessToken || ""
-  // );
-  // console.log(citiesData);
+  const pagesData = await getPages(
+    params.domain,
+    startDateString,
+    endDateString,
+    session?.backendTokens.accessToken || ""
+  );
+  console.log(pagesData);
+  const referrersData = await getReferrers(
+    params.domain,
+    startDateString,
+    endDateString,
+    session?.backendTokens.accessToken || ""
+  );
+  console.log(referrersData);
+  const deviceTypesData = await getDeviceTypes(
+    params.domain,
+    startDateString,
+    endDateString,
+    session?.backendTokens.accessToken || ""
+  );
+  console.log(deviceTypesData);
+  const osesData = await getOSes(
+    params.domain,
+    startDateString,
+    endDateString,
+    session?.backendTokens.accessToken || ""
+  );
+  console.log(osesData);
+  const browsersData = await getBrowsers(
+    params.domain,
+    startDateString,
+    endDateString,
+    session?.backendTokens.accessToken || ""
+  );
+  console.log(browsersData);
+  const languagesData = await getLanguages(
+    params.domain,
+    startDateString,
+    endDateString,
+    session?.backendTokens.accessToken || ""
+  );
+  console.log(languagesData);
+  const countriesData = await getCountries(
+    params.domain,
+    startDateString,
+    endDateString,
+    session?.backendTokens.accessToken || ""
+  );
+  console.log(countriesData);
+  const regionsData = await getRegions(
+    params.domain,
+    startDateString,
+    endDateString,
+    session?.backendTokens.accessToken || ""
+  );
+  console.log(regionsData);
+  const citiesData = await getCities(
+    params.domain,
+    startDateString,
+    endDateString,
+    session?.backendTokens.accessToken || ""
+  );
+  console.log(citiesData);
 
   return (
     <>
       <TopStats data={topStatsData} />
-      {/* <Pages data={pagesData} />
+      <Pages data={pagesData} />
       <Referrers data={referrersData} />
       <DeviceTypes data={deviceTypesData} />
       <OSes data={osesData} />
@@ -497,7 +497,7 @@ export default async function Dashboard({
       <Languages data={languagesData} />
       <Countries data={countriesData} />
       <Regions data={regionsData} />
-      <Cities data={citiesData} /> */}
+      <Cities data={citiesData} />
     </>
   );
 }
