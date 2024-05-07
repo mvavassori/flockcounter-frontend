@@ -12,26 +12,34 @@ import Countries from "@/components/dashboard/Countries";
 import Regions from "@/components/dashboard/Regions";
 import Cities from "@/components/dashboard/Cities";
 
-async function getTopStats(domain: string, startDate: string, endDate: string, token: string) {
+async function getTopStats(
+  domain: string,
+  startDate: string,
+  endDate: string,
+  token: string
+) {
   const params = new URLSearchParams({
     startDate: startDate,
-    endDate: endDate
+    endDate: endDate,
   });
 
   const headers = new Headers();
-  headers.append('Authorization', `Bearer ${token}`);
+  headers.append("Authorization", `Bearer ${token}`);
 
   try {
-    const response = await fetch(`${process.env.BACKEND_URL}/dashboard/top-stats/${domain}?${params}`, { headers });
+    const response = await fetch(
+      `${process.env.BACKEND_URL}/dashboard/top-stats/${domain}?${params}`,
+      { headers }
+    );
     const text = await response.text();
 
     if (!response.ok) {
       console.error(`HTTP error! status: ${response.status}, body: ${text}`);
       let errorMessage = `HTTP error! status: ${response.status}`;
-      if(response.status === 404){
-          errorMessage = "Invalid domain";
-      } else if(response.status === 401){
-          errorMessage = "Access denied";
+      if (response.status === 404) {
+        errorMessage = "Invalid domain";
+      } else if (response.status === 401) {
+        errorMessage = "Access denied";
       }
       return errorMessage;
     }
@@ -43,28 +51,34 @@ async function getTopStats(domain: string, startDate: string, endDate: string, t
   }
 }
 
-
-
-async function getPages(domain: string, startDate: string, endDate: string, token: string) {
+async function getPages(
+  domain: string,
+  startDate: string,
+  endDate: string,
+  token: string
+) {
   const params = new URLSearchParams({
     startDate: startDate,
-    endDate: endDate
+    endDate: endDate,
   });
 
   const headers = new Headers();
-  headers.append('Authorization', `Bearer ${token}`);
+  headers.append("Authorization", `Bearer ${token}`);
 
   try {
-    const response = await fetch(`${process.env.BACKEND_URL}/dashboard/pages/${domain}?${params}`, { headers });
+    const response = await fetch(
+      `${process.env.BACKEND_URL}/dashboard/pages/${domain}?${params}`,
+      { headers }
+    );
     const text = await response.text();
 
     if (!response.ok) {
       console.error(`HTTP error! status: ${response.status}, body: ${text}`);
       let errorMessage = `HTTP error! status: ${response.status}`;
-      if(response.status === 404){
-          errorMessage = "Invalid domain";
-      } else if(response.status === 401){
-          errorMessage = "Access denied";
+      if (response.status === 404) {
+        errorMessage = "Invalid domain";
+      } else if (response.status === 401) {
+        errorMessage = "Access denied";
       }
       return errorMessage;
     }
@@ -75,87 +89,34 @@ async function getPages(domain: string, startDate: string, endDate: string, toke
     return "Network error, please check your connection and try again.";
   }
 }
-async function getReferrers(domain: string, startDate: string, endDate: string, token: string) {
+async function getReferrers(
+  domain: string,
+  startDate: string,
+  endDate: string,
+  token: string
+) {
   const params = new URLSearchParams({
     startDate: startDate,
-    endDate: endDate
+    endDate: endDate,
   });
 
   const headers = new Headers();
-  headers.append('Authorization', `Bearer ${token}`);
+  headers.append("Authorization", `Bearer ${token}`);
 
   try {
-    const response = await fetch(`${process.env.BACKEND_URL}/dashboard/referrers/${domain}?${params}`, { headers });
+    const response = await fetch(
+      `${process.env.BACKEND_URL}/dashboard/referrers/${domain}?${params}`,
+      { headers }
+    );
     const text = await response.text();
 
     if (!response.ok) {
       console.error(`HTTP error! status: ${response.status}, body: ${text}`);
       let errorMessage = `HTTP error! status: ${response.status}`;
-      if(response.status === 404){
-          errorMessage = "Invalid domain";
-      } else if(response.status === 401){
-          errorMessage = "Access denied";
-      }
-      return errorMessage;
-    }
-    const data = JSON.parse(text);
-    return data;
-  } catch (error) {
-    console.error("Network error:", error);
-    return "Network error, please check your connection and try again.";
-  }
-}
-
-async function getDeviceTypes(domain: string, startDate: string, endDate: string, token: string) {
-  const params = new URLSearchParams({
-    startDate: startDate,
-    endDate: endDate
-  });
-
-  const headers = new Headers();
-  headers.append('Authorization', `Bearer ${token}`);
-
-  try {
-    const response = await fetch(`${process.env.BACKEND_URL}/dashboard/device-types/${domain}?${params}`, { headers });
-    const text = await response.text();
-
-    if (!response.ok) {
-      console.error(`HTTP error! status: ${response.status}, body: ${text}`);
-      let errorMessage = `HTTP error! status: ${response.status}`;
-      if(response.status === 404){
-          errorMessage = "Invalid domain";
-      } else if(response.status === 401){
-          errorMessage = "Access denied";
-      }
-      return errorMessage;
-    }
-    const data = JSON.parse(text);
-    return data;
-  } catch (error) {
-    console.error("Network error:", error);
-    return "Network error, please check your connection and try again.";
-  }
-}
-async function getOSes(domain: string, startDate: string, endDate: string, token: string) {
-  const params = new URLSearchParams({
-    startDate: startDate,
-    endDate: endDate
-  });
-
-  const headers = new Headers();
-  headers.append('Authorization', `Bearer ${token}`);
-
-  try {
-    const response = await fetch(`${process.env.BACKEND_URL}/dashboard/oses/${domain}?${params}`, { headers });
-    const text = await response.text();
-
-    if (!response.ok) {
-      console.error(`HTTP error! status: ${response.status}, body: ${text}`);
-      let errorMessage = `HTTP error! status: ${response.status}`;
-      if(response.status === 404){
-          errorMessage = "Invalid domain";
-      } else if(response.status === 401){
-          errorMessage = "Access denied";
+      if (response.status === 404) {
+        errorMessage = "Invalid domain";
+      } else if (response.status === 401) {
+        errorMessage = "Access denied";
       }
       return errorMessage;
     }
@@ -167,26 +128,72 @@ async function getOSes(domain: string, startDate: string, endDate: string, token
   }
 }
 
-async function getBrowsers(domain: string, startDate: string, endDate: string, token: string) {
+async function getDeviceTypes(
+  domain: string,
+  startDate: string,
+  endDate: string,
+  token: string
+) {
   const params = new URLSearchParams({
     startDate: startDate,
-    endDate: endDate
+    endDate: endDate,
   });
 
   const headers = new Headers();
-  headers.append('Authorization', `Bearer ${token}`);
+  headers.append("Authorization", `Bearer ${token}`);
 
   try {
-    const response = await fetch(`${process.env.BACKEND_URL}/dashboard/browsers/${domain}?${params}`, { headers });
+    const response = await fetch(
+      `${process.env.BACKEND_URL}/dashboard/device-types/${domain}?${params}`,
+      { headers }
+    );
     const text = await response.text();
 
     if (!response.ok) {
       console.error(`HTTP error! status: ${response.status}, body: ${text}`);
       let errorMessage = `HTTP error! status: ${response.status}`;
-      if(response.status === 404){
-          errorMessage = "Invalid domain";
-      } else if(response.status === 401){
-          errorMessage = "Access denied";
+      if (response.status === 404) {
+        errorMessage = "Invalid domain";
+      } else if (response.status === 401) {
+        errorMessage = "Access denied";
+      }
+      return errorMessage;
+    }
+    const data = JSON.parse(text);
+    return data;
+  } catch (error) {
+    console.error("Network error:", error);
+    return "Network error, please check your connection and try again.";
+  }
+}
+async function getOSes(
+  domain: string,
+  startDate: string,
+  endDate: string,
+  token: string
+) {
+  const params = new URLSearchParams({
+    startDate: startDate,
+    endDate: endDate,
+  });
+
+  const headers = new Headers();
+  headers.append("Authorization", `Bearer ${token}`);
+
+  try {
+    const response = await fetch(
+      `${process.env.BACKEND_URL}/dashboard/oses/${domain}?${params}`,
+      { headers }
+    );
+    const text = await response.text();
+
+    if (!response.ok) {
+      console.error(`HTTP error! status: ${response.status}, body: ${text}`);
+      let errorMessage = `HTTP error! status: ${response.status}`;
+      if (response.status === 404) {
+        errorMessage = "Invalid domain";
+      } else if (response.status === 401) {
+        errorMessage = "Access denied";
       }
       return errorMessage;
     }
@@ -198,26 +205,34 @@ async function getBrowsers(domain: string, startDate: string, endDate: string, t
   }
 }
 
-async function getLanguages(domain: string, startDate: string, endDate: string, token: string) {
+async function getBrowsers(
+  domain: string,
+  startDate: string,
+  endDate: string,
+  token: string
+) {
   const params = new URLSearchParams({
     startDate: startDate,
-    endDate: endDate
+    endDate: endDate,
   });
 
   const headers = new Headers();
-  headers.append('Authorization', `Bearer ${token}`);
+  headers.append("Authorization", `Bearer ${token}`);
 
   try {
-    const response = await fetch(`${process.env.BACKEND_URL}/dashboard/languages/${domain}?${params}`, { headers });
+    const response = await fetch(
+      `${process.env.BACKEND_URL}/dashboard/browsers/${domain}?${params}`,
+      { headers }
+    );
     const text = await response.text();
 
     if (!response.ok) {
       console.error(`HTTP error! status: ${response.status}, body: ${text}`);
       let errorMessage = `HTTP error! status: ${response.status}`;
-      if(response.status === 404){
-          errorMessage = "Invalid domain";
-      } else if(response.status === 401){
-          errorMessage = "Access denied";
+      if (response.status === 404) {
+        errorMessage = "Invalid domain";
+      } else if (response.status === 401) {
+        errorMessage = "Access denied";
       }
       return errorMessage;
     }
@@ -229,26 +244,34 @@ async function getLanguages(domain: string, startDate: string, endDate: string, 
   }
 }
 
-async function getCountries(domain: string, startDate: string, endDate: string, token: string) {
+async function getLanguages(
+  domain: string,
+  startDate: string,
+  endDate: string,
+  token: string
+) {
   const params = new URLSearchParams({
     startDate: startDate,
-    endDate: endDate
+    endDate: endDate,
   });
 
   const headers = new Headers();
-  headers.append('Authorization', `Bearer ${token}`);
+  headers.append("Authorization", `Bearer ${token}`);
 
   try {
-    const response = await fetch(`${process.env.BACKEND_URL}/dashboard/countries/${domain}?${params}`, { headers });
+    const response = await fetch(
+      `${process.env.BACKEND_URL}/dashboard/languages/${domain}?${params}`,
+      { headers }
+    );
     const text = await response.text();
 
     if (!response.ok) {
       console.error(`HTTP error! status: ${response.status}, body: ${text}`);
       let errorMessage = `HTTP error! status: ${response.status}`;
-      if(response.status === 404){
-          errorMessage = "Invalid domain";
-      } else if(response.status === 401){
-          errorMessage = "Access denied";
+      if (response.status === 404) {
+        errorMessage = "Invalid domain";
+      } else if (response.status === 401) {
+        errorMessage = "Access denied";
       }
       return errorMessage;
     }
@@ -260,26 +283,34 @@ async function getCountries(domain: string, startDate: string, endDate: string, 
   }
 }
 
-async function getRegions(domain: string, startDate: string, endDate: string, token: string) {
+async function getCountries(
+  domain: string,
+  startDate: string,
+  endDate: string,
+  token: string
+) {
   const params = new URLSearchParams({
     startDate: startDate,
-    endDate: endDate
+    endDate: endDate,
   });
 
   const headers = new Headers();
-  headers.append('Authorization', `Bearer ${token}`);
+  headers.append("Authorization", `Bearer ${token}`);
 
   try {
-    const response = await fetch(`${process.env.BACKEND_URL}/dashboard/regions/${domain}?${params}`, { headers });
+    const response = await fetch(
+      `${process.env.BACKEND_URL}/dashboard/countries/${domain}?${params}`,
+      { headers }
+    );
     const text = await response.text();
 
     if (!response.ok) {
       console.error(`HTTP error! status: ${response.status}, body: ${text}`);
       let errorMessage = `HTTP error! status: ${response.status}`;
-      if(response.status === 404){
-          errorMessage = "Invalid domain";
-      } else if(response.status === 401){
-          errorMessage = "Access denied";
+      if (response.status === 404) {
+        errorMessage = "Invalid domain";
+      } else if (response.status === 401) {
+        errorMessage = "Access denied";
       }
       return errorMessage;
     }
@@ -291,26 +322,34 @@ async function getRegions(domain: string, startDate: string, endDate: string, to
   }
 }
 
-async function getCities(domain: string, startDate: string, endDate: string, token: string) {
+async function getRegions(
+  domain: string,
+  startDate: string,
+  endDate: string,
+  token: string
+) {
   const params = new URLSearchParams({
     startDate: startDate,
-    endDate: endDate
+    endDate: endDate,
   });
 
   const headers = new Headers();
-  headers.append('Authorization', `Bearer ${token}`);
+  headers.append("Authorization", `Bearer ${token}`);
 
   try {
-    const response = await fetch(`${process.env.BACKEND_URL}/dashboard/cities/${domain}?${params}`, { headers });
+    const response = await fetch(
+      `${process.env.BACKEND_URL}/dashboard/regions/${domain}?${params}`,
+      { headers }
+    );
     const text = await response.text();
 
     if (!response.ok) {
       console.error(`HTTP error! status: ${response.status}, body: ${text}`);
       let errorMessage = `HTTP error! status: ${response.status}`;
-      if(response.status === 404){
-          errorMessage = "Invalid domain";
-      } else if(response.status === 401){
-          errorMessage = "Access denied";
+      if (response.status === 404) {
+        errorMessage = "Invalid domain";
+      } else if (response.status === 401) {
+        errorMessage = "Access denied";
       }
       return errorMessage;
     }
@@ -322,43 +361,143 @@ async function getCities(domain: string, startDate: string, endDate: string, tok
   }
 }
 
+async function getCities(
+  domain: string,
+  startDate: string,
+  endDate: string,
+  token: string
+) {
+  const params = new URLSearchParams({
+    startDate: startDate,
+    endDate: endDate,
+  });
 
-export default async function Dashboard({ params }: { params: { domain: string } }) {
+  const headers = new Headers();
+  headers.append("Authorization", `Bearer ${token}`);
+
+  try {
+    const response = await fetch(
+      `${process.env.BACKEND_URL}/dashboard/cities/${domain}?${params}`,
+      { headers }
+    );
+    const text = await response.text();
+
+    if (!response.ok) {
+      console.error(`HTTP error! status: ${response.status}, body: ${text}`);
+      let errorMessage = `HTTP error! status: ${response.status}`;
+      if (response.status === 404) {
+        errorMessage = "Invalid domain";
+      } else if (response.status === 401) {
+        errorMessage = "Access denied";
+      }
+      return errorMessage;
+    }
+    const data = JSON.parse(text);
+    return data;
+  } catch (error) {
+    console.error("Network error:", error);
+    return "Network error, please check your connection and try again.";
+  }
+}
+
+export default async function Dashboard({
+  params,
+}: {
+  params: { domain: string };
+}) {
   const session = await getServerSession(authOptions);
-    //todo create state variables for the start and end date
-    const topStatsData = await getTopStats(params.domain, "2024-02-27 23:59:59.999", "2024-09-06 23:59:59.999", session?.backendTokens.accessToken || "");
-    console.log(topStatsData)
-    const pagesData = await getPages(params.domain, "2024-02-04 23:59:59.999", "2024-09-06 23:59:59.999", session?.backendTokens.accessToken || "");
-    console.log(pagesData)
-    const referrersData = await getReferrers(params.domain, "2024-02-04 23:59:59.999", "2024-09-06 23:59:59.999", session?.backendTokens.accessToken || "");
-    console.log(referrersData)
-    const deviceTypesData = await getDeviceTypes(params.domain, "2024-02-04 23:59:59.999", "2024-09-06 23:59:59.999", session?.backendTokens.accessToken || "");
-    console.log(deviceTypesData)
-    const osesData = await getOSes(params.domain, "2024-02-04 23:59:59.999", "2024-09-06 23:59:59.999", session?.backendTokens.accessToken || "");
-    console.log(osesData)
-    const browsersData = await getBrowsers(params.domain, "2024-02-04 23:59:59.999", "2024-09-06 23:59:59.999", session?.backendTokens.accessToken || "");
-    console.log(browsersData)
-    const languagesData = await getLanguages(params.domain, "2024-02-04 23:59:59.999", "2024-09-06 23:59:59.999", session?.backendTokens.accessToken || "");
-    console.log(languagesData)
-    const countriesData = await getCountries(params.domain, "2024-02-04 23:59:59.999", "2024-09-06 23:59:59.999", session?.backendTokens.accessToken || "");
-    console.log(countriesData)
-    const regionsData = await getRegions(params.domain, "2024-02-04 23:59:59.999", "2024-09-06 23:59:59.999", session?.backendTokens.accessToken || "");
-    console.log(regionsData)
-    const citiesData = await getCities(params.domain, "2024-02-04 23:59:59.999", "2024-09-06 23:59:59.999", session?.backendTokens.accessToken || "");
-    console.log(regionsData)
+
+  const now = new Date();
+  const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+
+  // e.g. 2024-05-07T17:02:05.180Z
+  const startDateString = sevenDaysAgo.toISOString();
+  const endDateString = now.toISOString();
+
+  //todo create state variables for the start and end date
+  const topStatsData = await getTopStats(
+    params.domain,
+    startDateString,
+    endDateString,
+    session?.backendTokens.accessToken || ""
+  );
+  console.log(topStatsData);
+  // const pagesData = await getPages(
+  //   params.domain,
+  //   startDateString,
+  //   endDateString,
+  //   session?.backendTokens.accessToken || ""
+  // );
+  // console.log(pagesData);
+  // const referrersData = await getReferrers(
+  //   params.domain,
+  //   startDateString,
+  //   endDateString,
+  //   session?.backendTokens.accessToken || ""
+  // );
+  // console.log(referrersData);
+  // const deviceTypesData = await getDeviceTypes(
+  //   params.domain,
+  //   startDateString,
+  //   endDateString,
+  //   session?.backendTokens.accessToken || ""
+  // );
+  // console.log(deviceTypesData);
+  // const osesData = await getOSes(
+  //   params.domain,
+  //   startDateString,
+  //   endDateString,
+  //   session?.backendTokens.accessToken || ""
+  // );
+  // console.log(osesData);
+  // const browsersData = await getBrowsers(
+  //   params.domain,
+  //   startDateString,
+  //   endDateString,
+  //   session?.backendTokens.accessToken || ""
+  // );
+  // console.log(browsersData);
+  // const languagesData = await getLanguages(
+  //   params.domain,
+  //   startDateString,
+  //   endDateString,
+  //   session?.backendTokens.accessToken || ""
+  // );
+  // console.log(languagesData);
+  // const countriesData = await getCountries(
+  //   params.domain,
+  //   startDateString,
+  //   endDateString,
+  //   session?.backendTokens.accessToken || ""
+  // );
+  // console.log(countriesData);
+  // const regionsData = await getRegions(
+  //   params.domain,
+  //   startDateString,
+  //   endDateString,
+  //   session?.backendTokens.accessToken || ""
+  // );
+  // console.log(regionsData);
+  // const citiesData = await getCities(
+  //   params.domain,
+  //   startDateString,
+  //   endDateString,
+  //   session?.backendTokens.accessToken || ""
+  // );
+  // console.log(citiesData);
 
   return (
     <>
-    <TopStats data={topStatsData}/>
-    <Pages data={pagesData}/>
-    <Referrers data={referrersData}/>
-    <DeviceTypes data={deviceTypesData}/>
-    <OSes data={osesData}/>
-    <Browsers data={browsersData}/>
-    <Languages data={languagesData}/>
-    <Countries data={countriesData}/>
-    <Regions data={regionsData}/>
-    <Cities data={citiesData}/>
+      <TopStats data={topStatsData} />
+      {/* <Pages data={pagesData} />
+      <Referrers data={referrersData} />
+      <DeviceTypes data={deviceTypesData} />
+      <OSes data={osesData} />
+      <Browsers data={browsersData} />
+      <Languages data={languagesData} />
+      <Countries data={countriesData} />
+      <Regions data={regionsData} />
+      <Cities data={citiesData} /> */}
     </>
-  )
+  );
 }
