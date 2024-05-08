@@ -107,7 +107,11 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
     ],
   };
 
-  const options = {};
+  const options = {
+    interaction: {
+      intersect: false,
+    },
+  };
 
   return (
     <div>
@@ -119,7 +123,9 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
           Average visit duration: {topStatsData.aggregates.averageVisitDuration}
         </li>
       </ul>
-      <Line options={options} data={chartData} />
+      <div>
+        <Line options={options} data={chartData} />
+      </div>
     </div>
   );
 };
