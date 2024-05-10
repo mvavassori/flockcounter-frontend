@@ -487,17 +487,20 @@ export default async function Dashboard({
   console.log(citiesData);
 
   return (
-    <>
+    <div className="w-full">
+      <h1 className="pt-8 text-3xl font-semibold">{params.domain}</h1>
       <TopStats data={topStatsData} />
-      <Pages data={pagesData} />
-      <Referrers data={referrersData} />
-      <DeviceTypes data={deviceTypesData} />
-      <OSes data={osesData} />
-      <Browsers data={browsersData} />
-      <Languages data={languagesData} />
-      <Countries data={countriesData} />
-      <Regions data={regionsData} />
-      <Cities data={citiesData} />
-    </>
+      <div className="flex flex-wrap gap-4 min-w-full my-12">
+        <Pages data={pagesData} />
+        <Referrers data={referrersData} />
+        <DeviceTypes data={deviceTypesData} />
+        <OSes data={osesData} />
+        <Browsers data={browsersData} />
+        <Languages data={languagesData} />
+        <Countries data={countriesData} />
+        <Regions data={regionsData} />
+        <Cities data={citiesData} />
+      </div>
+    </div>
   );
 }

@@ -1,21 +1,21 @@
-"use client"
+"use client";
 
 import { useState } from "react";
 
 interface CitiesProps {
-    data: {
-      counts: number[];
-      cities: string[];
-    };
-  }
+  data: {
+    counts: number[];
+    cities: string[];
+  };
+}
 
-  const Cities: React.FC<CitiesProps> = (props) => {
-    const { data } = props
-    const [counts, setCounts] = useState<number[]>(data.counts);
+const Cities: React.FC<CitiesProps> = (props) => {
+  const { data } = props;
+  const [counts, setCounts] = useState<number[]>(data.counts);
   const [cities, setCities] = useState<string[]>(data.cities);
   return (
-    <div>
-      <h2>Top cities</h2>
+    <div className="flex-grow w-min-200 bg-white rounded-lg p-4">
+      <h2 className="font-semibold text-lg mb-2">Cities</h2>
       <ul>
         {cities.map((city, index) => (
           <li key={index}>
@@ -25,6 +25,6 @@ interface CitiesProps {
       </ul>
     </div>
   );
-}
+};
 
-export default Cities
+export default Cities;

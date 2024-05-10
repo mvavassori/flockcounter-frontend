@@ -1,21 +1,21 @@
-"use client"
+"use client";
 
 import { useState } from "react";
 
 interface PagesProps {
-    data: {
-      counts: number[];
-      paths: string[];
-    };
-  }
+  data: {
+    counts: number[];
+    paths: string[];
+  };
+}
 
-  const Pages: React.FC<PagesProps> = (props) => {
-    const { data } = props
-    const [counts, setCounts] = useState<number[]>(data.counts);
+const Pages: React.FC<PagesProps> = (props) => {
+  const { data } = props;
+  const [counts, setCounts] = useState<number[]>(data.counts);
   const [paths, setPaths] = useState<string[]>(data.paths);
   return (
-    <div>
-      <h2>Top Pages</h2>
+    <div className="flex-grow w-min-200 bg-white rounded-lg p-4">
+      <h2 className="font-semibold mb-2 text-lg">Top Pages</h2>
       <ul>
         {paths.map((path, index) => (
           <li key={index}>
@@ -25,6 +25,6 @@ interface PagesProps {
       </ul>
     </div>
   );
-}
+};
 
-export default Pages
+export default Pages;

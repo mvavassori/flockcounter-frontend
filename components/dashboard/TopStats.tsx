@@ -114,16 +114,22 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
   };
 
   return (
-    <div>
-      <h2>Top Stats</h2>
-      <ul>
-        <li>Total visits: {topStatsData.aggregates.totalVisits}</li>
-        <li>Unique visitors: {topStatsData.aggregates.uniqueVisitors}</li>
+    <div className="w-full mt-8 shadow-lg">
+      <ul className="flex gap-4 bg-white rounded-t-lg p-4">
         <li>
-          Average visit duration: {topStatsData.aggregates.averageVisitDuration}
+          <span className="font-semibold text-lg">Total visits:</span>{" "}
+          {topStatsData.aggregates.totalVisits}
+        </li>
+        <li>
+          <span className="font-semibold text-lg">Unique visitors:</span>{" "}
+          {topStatsData.aggregates.uniqueVisitors}
+        </li>
+        <li>
+          <span className="font-semibold text-lg">Average visit duration:</span>{" "}
+          {topStatsData.aggregates.averageVisitDuration}
         </li>
       </ul>
-      <div>
+      <div className="flex justify-center bg-white rounded-b-lg pb-4 shadow-lg">
         <Line options={options} data={chartData} />
       </div>
     </div>

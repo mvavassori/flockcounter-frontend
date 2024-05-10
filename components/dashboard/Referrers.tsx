@@ -1,21 +1,21 @@
-"use client"
+"use client";
 
 import { useState } from "react";
 
 interface ReferrersProps {
-    data: {
-      counts: number[];
-      referrers: string[];
-    };
-  }
+  data: {
+    counts: number[];
+    referrers: string[];
+  };
+}
 
 const Referrers: React.FC<ReferrersProps> = (props) => {
-  const { data } = props
+  const { data } = props;
   const [counts, setCounts] = useState<number[]>(data.counts);
   const [referrers, serefferrers] = useState<string[]>(data.referrers);
   return (
-    <div>
-      <h2>Top Referrers</h2>
+    <div className="flex-grow w-min-200 bg-white rounded-lg p-4">
+      <h2 className="font-semibold text-lg mb-2">Top Referrers</h2>
       <ul>
         {referrers.map((referrer, index) => (
           <li key={index}>
@@ -25,6 +25,6 @@ const Referrers: React.FC<ReferrersProps> = (props) => {
       </ul>
     </div>
   );
-}
+};
 
-export default Referrers
+export default Referrers;

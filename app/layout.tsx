@@ -23,10 +23,10 @@ export default function RootLayout({
       {/* <Script crossOrigin="anonymous" src="/static/script.js"></Script> */}
       <Script crossOrigin="anonymous" src="/static/script2.js"></Script>
       <body className={inter.className}>
-      <ClientAuthProvider>
-        <Navbar/>
-        <main className="mt-14">{children}</main>
-      </ClientAuthProvider>
+        <ClientAuthProvider>
+          <Navbar />
+          <main className="mt-14 max-w-5xl mx-auto">{children}</main>
+        </ClientAuthProvider>
       </body>
     </html>
   );
