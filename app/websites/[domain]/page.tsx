@@ -487,7 +487,7 @@ export default async function Dashboard({
   console.log(citiesData);
 
   return (
-    <div className="w-full">
+    <div className="w-full p-4">
       <h1 className="pt-8 text-3xl font-semibold">{params.domain}</h1>
       <TopStats data={topStatsData} />
       <div className="flex flex-wrap gap-4 min-w-full my-12">

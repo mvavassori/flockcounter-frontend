@@ -15,7 +15,7 @@ const Navbar = async () => {
       </div>
       <div className="flex w-full items-center justify-center md:justify-normal">
         <Link href="/" className="text-xl font-bold">
-          <span className="text-blue-600">bare</span>
+          <span className="text-slate-500">bare</span>
           <span>-analytics</span>
         </Link>
 
@@ -31,19 +31,6 @@ const Navbar = async () => {
               className="underline-offset-4 hover:underline"
             >
               Websites
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/websites/127.0.0.1"
-              className="underline-offset-4 hover:underline"
-            >
-              127.0.0.1
-            </Link>
-          </li>
-          <li>
-            <Link href="http://127.0.0.1:5500/fake-client/index.html" className=" underline-offset-4 hover:underline">
-              index
             </Link>
           </li>
         </ul>
