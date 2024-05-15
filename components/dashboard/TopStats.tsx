@@ -107,12 +107,66 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
     ],
   };
 
+  const [timePeriod, setTimePeriod] = useState<"7d" | "30d" | "90d">("7d");
+
   const options = {
     interaction: {
       intersect: false,
     },
+    plugins: {
+      legend: {
+        display: false,
+      },
+      zoom: {
+        limits: {
+          x: { min: "2022-01-01", max: "2022-01-31" },
+        },
+        pan: {
+          enabled: true,
+          mode: "x",
+          speed: 10,
+          threshold: 10,
+        },
+        zoom: {
+          enabled: true,
+          mode: "x",
+          speed: 0.1,
+          threshold: 10,
+        },
+      },
+      dateRange: {
+        start:
+          timePeriod === "7d"
+            ? "2022-01-25"
+            : timePeriod === "30d"
+            ? "2022-01-15"
+            : "2022-01-01",
+        end:
+          timePeriod === "7d"
+            ? "2022-01-31"
+            : timePeriod === "30d"
+            ? "2022-01-31"
+            : "2022-01-31",
+        ranges: [
+          {
+            label: "7 days",
+            value: "7d",
+          },
+          {
+            label: "30 days",
+            value: "30d",
+          },
+          {
+            label: "90 days",
+            value: "90d",
+          },
+        ],
+        onChange: (newTimePeriod: any) => {
+          setTimePeriod(newTimePeriod);
+        },
+      },
+    },
   };
-
   return (
     <div className="w-full mt-8 shadow-lg">
       <ul className="flex gap-4 bg-white rounded-t-lg p-4">

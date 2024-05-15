@@ -11,6 +11,7 @@ import Languages from "@/components/dashboard/Languages";
 import Countries from "@/components/dashboard/Countries";
 import Regions from "@/components/dashboard/Regions";
 import Cities from "@/components/dashboard/Cities";
+import PeriodPicker from "@/components/PeriodPicker";
 
 async function getTopStats(
   domain: string,
@@ -489,6 +490,7 @@ export default async function Dashboard({
   return (
     <div className="w-full p-4">
       <h1 className="pt-8 text-3xl font-semibold">{params.domain}</h1>
+      <PeriodPicker />
       <TopStats data={topStatsData} />
       <div className="flex flex-wrap gap-4 min-w-full my-12">
         <Pages data={pagesData} />
