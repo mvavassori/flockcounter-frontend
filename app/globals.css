@@ -2,10 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0; /* Black for text */
-  --background-rgb: 255, 210, 158; /* #ba5b38 in RGB format */
-}
+/* :root {
+  --foreground-rgb: 0, 0, 0;
+  --background-rgb: 255, 210, 158;
+} */
 
 /* Media query for dark mode (optional) */
 /* @media (prefers-color-scheme: dark) {
@@ -15,10 +15,10 @@
   }
 } */
 
-body {
+/* body {
   color: rgb(var(--foreground-rgb));
   background-color: rgb(var(--background-rgb));
-}
+} */
 
 @layer utilities {
   .text-balance {
