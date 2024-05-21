@@ -1,4 +1,3 @@
-// ! IT'S A FUCKING MESS. fix shit.
 "use client";
 import { notFound, redirect } from "next/navigation";
 // import { authOptions } from "@/lib/auth";
@@ -24,13 +23,6 @@ async function getTopStats(
   endDate: string,
   token: string
 ) {
-  console.log("caller", {
-    domain: domain,
-    startDate: startDate,
-    endDate: endDate,
-    token: token,
-  });
-
   const params = new URLSearchParams({
     startDate: startDate,
     endDate: endDate,
@@ -416,6 +408,82 @@ async function getCities(
   }
 }
 
+const fetchData = async (
+  domain: string,
+  startDateString: string,
+  endDateString: string,
+  token: string
+) => {
+  const topStatsData = await getTopStats(
+    domain,
+    startDateString,
+    endDateString,
+    token
+  );
+  const pagesData = await getPages(
+    domain,
+    startDateString,
+    endDateString,
+    token
+  );
+  const referrersData = await getReferrers(
+    domain,
+    startDateString,
+    endDateString,
+    token
+  );
+  const deviceTypesData = await getDeviceTypes(
+    domain,
+    startDateString,
+    endDateString,
+    token
+  );
+  const osesData = await getOSes(domain, startDateString, endDateString, token);
+  const browsersData = await getBrowsers(
+    domain,
+    startDateString,
+    endDateString,
+    token
+  );
+  const languagesData = await getLanguages(
+    domain,
+    startDateString,
+    endDateString,
+    token
+  );
+  const countriesData = await getCountries(
+    domain,
+    startDateString,
+    endDateString,
+    token
+  );
+  const regionsData = await getRegions(
+    domain,
+    startDateString,
+    endDateString,
+    token
+  );
+  const citiesData = await getCities(
+    domain,
+    startDateString,
+    endDateString,
+    token
+  );
+
+  return {
+    topStatsData,
+    pagesData,
+    referrersData,
+    deviceTypesData,
+    osesData,
+    browsersData,
+    languagesData,
+    countriesData,
+    regionsData,
+    citiesData,
+  };
+};
+
 const getDateRange = (period: string) => {
   const now = new Date();
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -457,7 +525,7 @@ const getDateRange = (period: string) => {
       startDate = new Date(1970, 0, 1);
       break;
     default:
-      startDate = today;
+      startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000); // Last 7 Days
   }
 
   return {
@@ -468,10 +536,8 @@ const getDateRange = (period: string) => {
 
 export default function Dashboard({ params }: { params: { domain: string } }) {
   const { domain } = params;
-  console.log("domain", domain);
-  const { data } = useSession();
 
-  console.log(data?.backendTokens.accessToken);
+  const { data } = useSession();
 
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -479,9 +545,9 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
 
   let period = searchParams.get("period");
 
-  const [selectedPeriod, setSelectedPeriod] = useState(period || "today");
-  const [startDateString, setStartDateString] = useState("");
-  const [endDateString, setEndDateString] = useState("");
+  const [selectedPeriod, setSelectedPeriod] = useState(period || "week");
+  // const [startDateString, setStartDateString] = useState("");
+  // const [endDateString, setEndDateString] = useState("");
   const [loading, setLoading] = useState(true);
   const [apiData, setApiData] = useState({
     topStatsData: null,
@@ -498,90 +564,7 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
   const [error, setError] = useState(null);
   const [accessToken, setAccessToken] = useState("");
 
-  const fetchData = async (
-    domain: string,
-    startDateString: string,
-    endDateString: string,
-    token: string
-  ) => {
-    const topStatsData = await getTopStats(
-      domain,
-      startDateString,
-      endDateString,
-      token || ""
-    );
-    const pagesData = await getPages(
-      domain,
-      startDateString,
-      endDateString,
-      token || ""
-    );
-    const referrersData = await getReferrers(
-      domain,
-      startDateString,
-      endDateString,
-      token || ""
-    );
-    const deviceTypesData = await getDeviceTypes(
-      domain,
-      startDateString,
-      endDateString,
-      token || ""
-    );
-    const osesData = await getOSes(
-      domain,
-      startDateString,
-      endDateString,
-      token || ""
-    );
-    const browsersData = await getBrowsers(
-      domain,
-      startDateString,
-      endDateString,
-      token || ""
-    );
-    const languagesData = await getLanguages(
-      domain,
-      startDateString,
-      endDateString,
-      token || ""
-    );
-    const countriesData = await getCountries(
-      domain,
-      startDateString,
-      endDateString,
-      token || ""
-    );
-    const regionsData = await getRegions(
-      domain,
-      startDateString,
-      endDateString,
-      token || ""
-    );
-    const citiesData = await getCities(
-      domain,
-      startDateString,
-      endDateString,
-      token || ""
-    );
-
-    console.log("yayaya", topStatsData);
-
-    return {
-      topStatsData,
-      pagesData,
-      referrersData,
-      deviceTypesData,
-      osesData,
-      browsersData,
-      languagesData,
-      countriesData,
-      regionsData,
-      citiesData,
-    };
-  };
-
-  // Fetch access token when session is available
+  // Fetch access token when it's available
   useEffect(() => {
     if (data?.backendTokens.accessToken) {
       setAccessToken(data.backendTokens.accessToken);
@@ -590,8 +573,8 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
 
   useEffect(() => {
     const { startDateString, endDateString } = getDateRange(selectedPeriod);
-    setStartDateString(startDateString);
-    setEndDateString(endDateString);
+    // setStartDateString(startDateString);
+    // setEndDateString(endDateString);
 
     const fetchDataAsync = async () => {
       if (!accessToken) {
@@ -615,7 +598,8 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
     };
 
     fetchDataAsync();
-    console.log(apiData);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedPeriod, domain, accessToken]);
 
   const handlePeriodChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -624,19 +608,12 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
     setSelectedPeriod(selected);
   };
 
-  // console.log(topStatsData);
-  // console.log(pagesData);
-  // console.log(referrersData);
-  // console.log(deviceTypesData);
-  // console.log(osesData);
-  // console.log(languagesData);
-  // console.log(browsersData);
-  // console.log(countriesData);
-  // console.log(regionsData);
-  // console.log(citiesData);
-
   if (loading) {
     return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
   }
 
   return (
@@ -658,7 +635,7 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
         <option value="all-time">All time</option>
       </select>
       {apiData.topStatsData && <TopStats data={apiData.topStatsData} />}
-      {/* <div className="flex flex-wrap gap-4 min-w-full my-12">
+      <div className="flex flex-wrap gap-4 min-w-full my-12">
         {apiData.pagesData && <Pages data={apiData.pagesData} />}
         {apiData.referrersData && <Referrers data={apiData.referrersData} />}
         {apiData.deviceTypesData && (
@@ -670,7 +647,7 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
         {apiData.countriesData && <Countries data={apiData.countriesData} />}
         {apiData.regionsData && <Regions data={apiData.regionsData} />}
         {apiData.citiesData && <Cities data={apiData.citiesData} />}
-      </div> */}
+      </div>
     </div>
   );
 }
