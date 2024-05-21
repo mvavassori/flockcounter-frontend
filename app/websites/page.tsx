@@ -16,7 +16,7 @@ async function getUserWebsites(userId: number, token: string) {
 
   try {
     const response = await fetch(
-      `${process.env.BACKEND_URL}/websites/user/${userId}`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/websites/user/${userId}`,
       { headers }
     );
     const text = await response.text();

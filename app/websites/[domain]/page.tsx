@@ -83,7 +83,7 @@ async function getPages(
 
   try {
     const response = await fetch(
-      `${process.env.BACKEND_URL}/dashboard/pages/${domain}?${params}`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/dashboard/pages/${domain}?${params}`,
       { headers }
     );
     const text = await response.text();
@@ -121,7 +121,7 @@ async function getReferrers(
 
   try {
     const response = await fetch(
-      `${process.env.BACKEND_URL}/dashboard/referrers/${domain}?${params}`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/dashboard/referrers/${domain}?${params}`,
       { headers }
     );
     const text = await response.text();
@@ -160,7 +160,7 @@ async function getDeviceTypes(
 
   try {
     const response = await fetch(
-      `${process.env.BACKEND_URL}/dashboard/device-types/${domain}?${params}`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/dashboard/device-types/${domain}?${params}`,
       { headers }
     );
     const text = await response.text();
@@ -198,7 +198,7 @@ async function getOSes(
 
   try {
     const response = await fetch(
-      `${process.env.BACKEND_URL}/dashboard/oses/${domain}?${params}`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/dashboard/oses/${domain}?${params}`,
       { headers }
     );
     const text = await response.text();
@@ -237,7 +237,7 @@ async function getBrowsers(
 
   try {
     const response = await fetch(
-      `${process.env.BACKEND_URL}/dashboard/browsers/${domain}?${params}`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/dashboard/browsers/${domain}?${params}`,
       { headers }
     );
     const text = await response.text();
@@ -276,7 +276,7 @@ async function getLanguages(
 
   try {
     const response = await fetch(
-      `${process.env.BACKEND_URL}/dashboard/languages/${domain}?${params}`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/dashboard/languages/${domain}?${params}`,
       { headers }
     );
     const text = await response.text();
@@ -315,7 +315,7 @@ async function getCountries(
 
   try {
     const response = await fetch(
-      `${process.env.BACKEND_URL}/dashboard/countries/${domain}?${params}`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/dashboard/countries/${domain}?${params}`,
       { headers }
     );
     const text = await response.text();
@@ -354,7 +354,7 @@ async function getRegions(
 
   try {
     const response = await fetch(
-      `${process.env.BACKEND_URL}/dashboard/regions/${domain}?${params}`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/dashboard/regions/${domain}?${params}`,
       { headers }
     );
     const text = await response.text();
@@ -393,7 +393,7 @@ async function getCities(
 
   try {
     const response = await fetch(
-      `${process.env.BACKEND_URL}/dashboard/cities/${domain}?${params}`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/dashboard/cities/${domain}?${params}`,
       { headers }
     );
     const text = await response.text();
