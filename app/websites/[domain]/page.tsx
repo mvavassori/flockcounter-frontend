@@ -27,7 +27,7 @@ async function getTopStats(
   const params = new URLSearchParams({
     startDate: startDate,
     endDate: endDate,
-    interval: "day",
+    interval: "day", // todo make state variable
   });
 
   console.log(
@@ -53,7 +53,7 @@ async function getTopStats(
         console.error(text);
       } else if (response.status === 401) {
         errorMessage = "Access denied";
-        // todo - test redirect to login
+        // todo - redirect to login
       }
       return errorMessage;
     }

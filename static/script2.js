@@ -1,3 +1,4 @@
+// todo test referrer in SPAs
 // Prepare payload data
 const now = new Date();
 const formattedStamp = now.toISOString();
@@ -9,6 +10,11 @@ let totalElapsedTime = 0;
 let currentUrl = window.location.href;
 
 let currentReferrer = document.referrer || null;
+
+if (currentReferrer) {
+  let url = new URL(currentReferrer);
+  currentReferrer = url.origin + url.pathname;
+}
 
 console.log("window.location.host", window.location.host);
 
@@ -45,7 +51,7 @@ window.addEventListener("visibilitychange", (event) => {
     totalElapsedTime += elapsedTime;
     console.log("Total elapsed time:", totalElapsedTime);
 
-    if (totalElapsedTime < 2000) {
+    if (totalElapsedTime < 5000) {
       console.log("Visit time less than 2 seconds, not sending data.");
       // Reset the timer without sending the visit data
       startTime = 0;
@@ -80,9 +86,21 @@ window.history.replaceState = overrideReplaceStateFunction(
 
 function handleRouteChange() {
   const newUrl = window.location.href;
+  let referrer;
+
+  if (document.referrer) {
+    // Parse the referrer URL
+    let referrerURL = new URL(document.referrer);
+
+    // Construct the referrer without query parameters
+    referrer = referrerURL.origin + referrerURL.pathname;
+  } else {
+    referrer = "Direct";
+  }
+
   if (newUrl !== currentUrl) {
     // Store the current URL as the previous referrer
-    currentReferrer = currentUrl;
+    currentReferrer = referrer;
 
     console.log("URL changed from", currentUrl, "to", newUrl);
     const elapsedTime = performance.now() - startTime;
