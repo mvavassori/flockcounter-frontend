@@ -1,3 +1,4 @@
+// ! TO UNDERSTAND HOW MANY CALLS REACT DOES CHECK THE BACKEND LOGS OF THE MIDDLEWARE
 "use client";
 import { notFound, redirect } from "next/navigation";
 // import { authOptions } from "@/lib/auth";
@@ -26,7 +27,13 @@ async function getTopStats(
   const params = new URLSearchParams({
     startDate: startDate,
     endDate: endDate,
+    interval: "day",
   });
+
+  console.log(
+    "qqq",
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/dashboard/top-stats/${domain}?${params}`
+  );
 
   const headers = new Headers();
   headers.append("Authorization", `Bearer ${token}`);
@@ -47,7 +54,6 @@ async function getTopStats(
       } else if (response.status === 401) {
         errorMessage = "Access denied";
         // todo - test redirect to login
-        // redirect("/signin");
       }
       return errorMessage;
     }
@@ -521,8 +527,8 @@ const getDateRange = (period: string) => {
       startDate = new Date(now);
       startDate.setFullYear(today.getFullYear() - 1);
       break;
-    case "all-time":
-      startDate = new Date(1970, 0, 1);
+    case "last-5-years":
+      startDate = new Date(now.getFullYear() - 5, 0, 1);
       break;
     default:
       startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000); // Last 7 Days
@@ -632,7 +638,7 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
         <option value="last-month">Last Month</option>
         <option value="year-to-date">Year to Date</option>
         <option value="last-12-months">Last 12 Months</option>
-        <option value="all-time">All time</option>
+        <option value="last-5-years">Last 5 Years</option>
       </select>
       {apiData.topStatsData && <TopStats data={apiData.topStatsData} />}
       <div className="flex flex-wrap gap-4 min-w-full my-12">
