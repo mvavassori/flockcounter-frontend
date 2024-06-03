@@ -22,12 +22,14 @@ async function getTopStats(
   domain: string,
   startDate: string,
   endDate: string,
-  token: string
+  token: string,
+  interval: string
 ) {
   const params = new URLSearchParams({
     startDate: startDate,
     endDate: endDate,
-    interval: "day", // todo make state variable
+    // interval: "day", // todo make state variable
+    interval: interval,
   });
 
   console.log(
@@ -418,13 +420,15 @@ const fetchData = async (
   domain: string,
   startDateString: string,
   endDateString: string,
-  token: string
+  token: string,
+  interval: string
 ) => {
   const topStatsData = await getTopStats(
     domain,
     startDateString,
     endDateString,
-    token
+    token,
+    interval
   );
   const pagesData = await getPages(
     domain,
@@ -552,6 +556,7 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
   let period = searchParams.get("period");
 
   const [selectedPeriod, setSelectedPeriod] = useState(period || "week");
+  const [interval, setInterval] = useState("day");
   // const [startDateString, setStartDateString] = useState("");
   // const [endDateString, setEndDateString] = useState("");
   const [loading, setLoading] = useState(true);
@@ -593,7 +598,8 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
           domain,
           startDateString,
           endDateString,
-          accessToken
+          accessToken,
+          interval
         );
         setApiData(fetchedData);
       } catch (err: Error | any) {
@@ -611,7 +617,41 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
   const handlePeriodChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selected = event.target.value;
     router.replace(`${pathname}?period=${selected}`, { scroll: false });
+    let newInterval = "day";
+
+    switch (selected) {
+      case "today":
+        newInterval = "hour";
+        break;
+      case "tomorrow":
+        newInterval = "hour";
+        break;
+      case "week":
+        newInterval = "day";
+        break;
+      case "month":
+        newInterval = "day";
+        break;
+      case "month-to-date":
+        newInterval = "day";
+        break;
+      case "last-month":
+        newInterval = "day";
+        break;
+      case "year-to-date":
+        newInterval = "month";
+        break;
+      case "last-12-months":
+        newInterval = "month";
+        break;
+      case "last-5-years":
+        newInterval = "month";
+        break;
+      default:
+        newInterval = "month";
+    }
     setSelectedPeriod(selected);
+    setInterval(newInterval);
   };
 
   if (loading) {
