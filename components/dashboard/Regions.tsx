@@ -11,8 +11,8 @@ interface RegionsProps {
 
 const Regions: React.FC<RegionsProps> = (props) => {
   const { data } = props;
-  const [counts, setCounts] = useState<number[]>(data.counts);
-  const [regions, setRegions] = useState<string[]>(data.regions);
+  const [counts, setCounts] = useState<number[]>(data.counts || []);
+  const [regions, setRegions] = useState<string[]>(data.regions || []);
   return (
     <div className="flex-grow w-min-200 bg-white rounded-lg p-4">
       <h2 className="font-semibold text-lg mb-2">Regions</h2>

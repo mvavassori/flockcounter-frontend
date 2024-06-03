@@ -11,8 +11,8 @@ interface PagesProps {
 
 const Pages: React.FC<PagesProps> = (props) => {
   const { data } = props;
-  const [counts, setCounts] = useState<number[]>(data.counts);
-  const [paths, setPaths] = useState<string[]>(data.paths);
+  const [counts, setCounts] = useState<number[]>(data.counts || []);
+  const [paths, setPaths] = useState<string[]>(data.paths || []);
   return (
     <div className="flex-grow w-min-200 bg-white rounded-lg p-4">
       <h2 className="font-semibold mb-2 text-lg">Top Pages</h2>
