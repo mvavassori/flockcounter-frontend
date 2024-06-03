@@ -1,8 +1,6 @@
 // ! TO UNDERSTAND HOW MANY CALLS REACT DOES CHECK THE BACKEND LOGS OF THE MIDDLEWARE
 "use client";
 import { notFound, redirect } from "next/navigation";
-// import { authOptions } from "@/lib/auth";
-// import { getServerSession } from "next-auth";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 
 import TopStats from "@/components/dashboard/TopStats";
@@ -28,7 +26,6 @@ async function getTopStats(
   const params = new URLSearchParams({
     startDate: startDate,
     endDate: endDate,
-    // interval: "day", // todo make state variable
     interval: interval,
   });
 
@@ -557,8 +554,6 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
 
   const [selectedPeriod, setSelectedPeriod] = useState(period || "week");
   const [interval, setInterval] = useState("day");
-  // const [startDateString, setStartDateString] = useState("");
-  // const [endDateString, setEndDateString] = useState("");
   const [loading, setLoading] = useState(true);
   const [apiData, setApiData] = useState({
     topStatsData: null,
@@ -584,8 +579,6 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
 
   useEffect(() => {
     const { startDateString, endDateString } = getDateRange(selectedPeriod);
-    // setStartDateString(startDateString);
-    // setEndDateString(endDateString);
 
     const fetchDataAsync = async () => {
       if (!accessToken) {
