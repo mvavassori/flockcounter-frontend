@@ -62,9 +62,24 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
           ) {
             const medianTimeSpent = item.medianTimeSpent as string;
             const timeParts = medianTimeSpent.split(" ");
-            const minutes = parseInt(timeParts[0].replace("m", ""));
-            const seconds = parseInt(timeParts[1].replace("s", ""));
-            return minutes * 60 + seconds;
+            console.log(timeParts);
+            // check whether the string contains "h" for time longer than 60 minutes "m" for time longer than 60 seconds or "s".
+            if (timeParts[0].includes("h")) {
+              const hours = parseInt(timeParts[0].replace("h", ""));
+              const minutes = parseInt(timeParts[1].replace("m", ""));
+              const seconds = parseInt(timeParts[2].replace("s", ""));
+              return hours * 60 * 60 + minutes * 60 + seconds;
+            } else if (timeParts[0].includes("m")) {
+              const minutes = parseInt(timeParts[0].replace("m", ""));
+              const seconds = parseInt(timeParts[1].replace("s", ""));
+              return minutes * 60 + seconds;
+            } else {
+              const seconds = parseInt(timeParts[0].replace("s", ""));
+              return seconds;
+            }
+            // const minutes = parseInt(timeParts[0].replace("m", ""));
+            // const seconds = parseInt(timeParts[1].replace("s", ""));
+            // return minutes * 60 + seconds;
           } else {
             return item.count;
           }
