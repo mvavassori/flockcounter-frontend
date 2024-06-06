@@ -77,9 +77,6 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
               const seconds = parseInt(timeParts[0].replace("s", ""));
               return seconds;
             }
-            // const minutes = parseInt(timeParts[0].replace("m", ""));
-            // const seconds = parseInt(timeParts[1].replace("s", ""));
-            // return minutes * 60 + seconds;
           } else {
             return item.count;
           }
@@ -99,6 +96,11 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
   const options = {
     interaction: {
       intersect: false,
+    },
+    plugins: {
+      legend: {
+        display: false,
+      },
     },
   };
 
