@@ -10,7 +10,6 @@ import {
   LineElement,
   Title,
   Tooltip,
-  Legend,
 } from "chart.js";
 
 interface PerIntervalStats {
@@ -34,8 +33,7 @@ ChartJS.register(
   PointElement,
   LineElement,
   Title,
-  Tooltip,
-  Legend
+  Tooltip
 );
 
 const TopStats: React.FC<TopStatsProps> = (props) => {
@@ -96,6 +94,12 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
   const options = {
     interaction: {
       intersect: false,
+    },
+    // make y axis start at 0
+    scales: {
+      y: {
+        min: 0,
+      },
     },
     plugins: {
       legend: {
