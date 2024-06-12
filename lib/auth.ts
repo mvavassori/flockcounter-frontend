@@ -79,9 +79,13 @@ export const authOptions: NextAuthOptions = {
         return { ...token, ...user };
       }
 
-      console.log(new Date().getTime());
-      console.log(token.backendTokens.expiresAt * 1000); // from unix timestamp to milliseconds
-      if (new Date().getTime() < token.backendTokens.expiresAt * 1000) {
+      const currentTimeInMilliseconds = Date.now();
+      const expirationTimeInMilliseconds = token.backendTokens.expiresAt * 1000;
+
+      console.log("curr", currentTimeInMilliseconds);
+      console.log("exp", expirationTimeInMilliseconds);
+
+      if (currentTimeInMilliseconds < expirationTimeInMilliseconds) {
         console.log("token not expired");
         return token;
       }
@@ -91,8 +95,12 @@ export const authOptions: NextAuthOptions = {
     },
 
     async session({ session, token, user }) {
-      session.user = token.user;
-      session.backendTokens = token.backendTokens;
+      if (token) {
+        session.user = token.user;
+        session.backendTokens = token.backendTokens;
+      }
+      // session.user = token.user;
+      // session.backendTokens = token.backendTokens;
       return session;
     },
   },
