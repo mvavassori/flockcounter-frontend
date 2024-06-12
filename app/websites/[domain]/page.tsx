@@ -69,6 +69,7 @@ async function getPages(
   const params = new URLSearchParams({
     startDate: startDate,
     endDate: endDate,
+    referrer: "localhost:3000/signin", // todo change with variable
   });
 
   const headers = new Headers();
