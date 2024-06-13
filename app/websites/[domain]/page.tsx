@@ -23,6 +23,11 @@ async function getTopStats(
   token: string,
   interval: string
 ) {
+  console.log("topStats params", {
+    startDate: startDate,
+    endDate: endDate,
+    interval: interval,
+  });
   const params = new URLSearchParams({
     startDate: startDate,
     endDate: endDate,
@@ -66,10 +71,15 @@ async function getPages(
   endDate: string,
   token: string
 ) {
+  console.log("getPages params", {
+    startDate: startDate,
+    endDate: endDate,
+  });
+
   const params = new URLSearchParams({
     startDate: startDate,
     endDate: endDate,
-    referrer: "localhost:3000/signin", // todo change with variable
+    // referrer: "localhost:3000/signin", // todo change with variable
   });
 
   const headers = new Headers();
@@ -488,9 +498,12 @@ const fetchData = async (
   };
 };
 
+// todo check with different timezones
 const getDateRange = (period: string) => {
   const now = new Date();
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const today = new Date(
+    Date.UTC(now.getFullYear(), now.getMonth(), now.getDate())
+  );
   let startDate;
   let endDate = now;
 
@@ -498,6 +511,67 @@ const getDateRange = (period: string) => {
     case "today":
       startDate = today;
       endDate = new Date(
+        Date.UTC(
+          today.getFullYear(),
+          today.getMonth(),
+          today.getDate(),
+          23,
+          59,
+          59,
+          999
+        )
+      );
+      break;
+    case "yesterday":
+      startDate = new Date(
+        Date.UTC(today.getFullYear(), today.getMonth(), today.getDate() - 1)
+      );
+      endDate = new Date(startDate.getTime() + 24 * 60 * 60 * 1000 - 1);
+      break;
+    case "week":
+      startDate = new Date(
+        Date.UTC(today.getFullYear(), today.getMonth(), today.getDate() - 7)
+      );
+      break;
+    case "month":
+      startDate = new Date(
+        Date.UTC(today.getFullYear(), today.getMonth(), today.getDate() - 30)
+      );
+      break;
+    case "month-to-date":
+      startDate = new Date(Date.UTC(today.getFullYear(), today.getMonth(), 1));
+      break;
+    case "last-month":
+      startDate = new Date(
+        Date.UTC(today.getFullYear(), today.getMonth() - 1, 1)
+      );
+      endDate = new Date(
+        Date.UTC(today.getFullYear(), today.getMonth(), 0, 23, 59, 59, 999)
+      );
+      break;
+    case "year-to-date":
+      startDate = new Date(Date.UTC(today.getFullYear(), 0, 1));
+      break;
+    case "last-12-months":
+      startDate = new Date(
+        Date.UTC(now.getFullYear() - 1, now.getMonth(), now.getDate())
+      );
+      break;
+    case "last-5-years":
+      startDate = new Date(
+        Date.UTC(now.getFullYear() - 5, now.getMonth(), now.getDate())
+      );
+      break;
+    default:
+      startDate = new Date(
+        Date.UTC(today.getFullYear(), today.getMonth(), today.getDate() - 7)
+      ); // Last 7 Days
+  }
+
+  // Adjust endDate to the end of the day if needed
+  if (period !== "today" && period !== "yesterday" && period !== "last-month") {
+    endDate = new Date(
+      Date.UTC(
         today.getFullYear(),
         today.getMonth(),
         today.getDate(),
@@ -505,47 +579,16 @@ const getDateRange = (period: string) => {
         59,
         59,
         999
-      );
-      break;
-    case "yesterday":
-      startDate = new Date(
-        today.getFullYear(),
-        today.getMonth(),
-        today.getDate() - 1
-      );
-      startDate.setHours(0, 0, 0, 0);
-      endDate = new Date(startDate.getTime() + 24 * 60 * 60 * 1000 - 1);
-      break;
-    case "week":
-      startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-      break;
-    case "month":
-      startDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-      break;
-    case "month-to-date":
-      startDate = new Date(today.getFullYear(), today.getMonth(), 1);
-      break;
-    case "last-month":
-      startDate = new Date(today.getFullYear(), today.getMonth() - 1, 1);
-      endDate = new Date(today.getFullYear(), today.getMonth(), 0);
-      endDate.setHours(23, 59, 59, 999);
-      break;
-    case "year-to-date":
-      startDate = new Date(today.getFullYear(), 0, 1);
-      break;
-    case "last-12-months":
-      startDate = new Date(now.getFullYear() - 1, 0, 1);
-      break;
-    case "last-5-years":
-      startDate = new Date(now.getFullYear() - 5, 0, 1);
-      break;
-    default:
-      startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000); // Last 7 Days
+      )
+    );
   }
 
+  console.log("locale", startDate.toLocaleString()); // Local time
+  console.log("iso", startDate.toISOString()); // UTC time
+
   return {
-    startDateString: startDate.toISOString(),
-    endDateString: endDate.toISOString(),
+    startDateString: startDate.toISOString(), // UTC time string
+    endDateString: endDate.toISOString(), // UTC time string
   };
 };
 
