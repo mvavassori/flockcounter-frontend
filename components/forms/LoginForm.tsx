@@ -1,38 +1,41 @@
-"use client"
-import React, { useState } from 'react';
-import Link from 'next/link';
-import { signIn } from 'next-auth/react';
+"use client";
+import React, { useState } from "react";
+import Link from "next/link";
+import { signIn } from "next-auth/react";
 
 const Login: React.FC = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  
-    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-      event.preventDefault();
-      // Handle your login logic here
-      try {
-        await signIn("credentials", {
-          email,
-          password,
-          callbackUrl: "/",
-        })
-      } catch (error) {
-        console.error("Sign in error:", error);
-      }
-    };
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    // Handle your login logic here
+    try {
+      await signIn("credentials", {
+        email,
+        password,
+        callbackUrl: "/",
+      });
+    } catch (error) {
+      console.error("Sign in error:", error);
+    }
+  };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Sign in to your account</h2>
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+            Sign in to your account
+          </h2>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <input type="hidden" name="remember" defaultValue="true" />
           <div className="rounded-md shadow-sm -space-y-px">
             <div>
-              <label htmlFor="email-address" className="sr-only">Email address</label>
+              <label htmlFor="email-address" className="sr-only">
+                Email address
+              </label>
               <input
                 id="email-address"
                 name="email"
@@ -46,7 +49,9 @@ const Login: React.FC = () => {
               />
             </div>
             <div>
-              <label htmlFor="password" className="sr-only">Password</label>
+              <label htmlFor="password" className="sr-only">
+                Password
+              </label>
               <input
                 id="password"
                 name="password"
@@ -71,9 +76,12 @@ const Login: React.FC = () => {
           </div>
           <div className="text-center">
             Don&apos;t have an account?
-            <Link href="/signup"
-              className="text-indigo-600 hover:text-indigo-700">
-              {" "}Sign Up
+            <Link
+              href="/signup"
+              className="text-indigo-600 hover:text-indigo-700"
+            >
+              {" "}
+              Sign Up
             </Link>
           </div>
         </form>
