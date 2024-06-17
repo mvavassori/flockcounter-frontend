@@ -69,16 +69,19 @@ async function getPages(
   domain: string,
   startDate: string,
   endDate: string,
-  token: string
+  token: string,
+  page: string
 ) {
   console.log("getPages params", {
     startDate: startDate,
     endDate: endDate,
+    pathname: page,
   });
 
   const params = new URLSearchParams({
     startDate: startDate,
     endDate: endDate,
+    pathname: page,
     // referrer: "localhost:3000/signin", // todo change with variable
   });
 
@@ -113,11 +116,19 @@ async function getReferrers(
   domain: string,
   startDate: string,
   endDate: string,
-  token: string
+  token: string,
+  referrer: string
 ) {
+  console.log("getReferrers params", {
+    startDate: startDate,
+    endDate: endDate,
+    referrer: referrer,
+  });
+
   const params = new URLSearchParams({
     startDate: startDate,
     endDate: endDate,
+    referrer: referrer,
   });
 
   const headers = new Headers();
@@ -425,7 +436,9 @@ const fetchData = async (
   startDateString: string,
   endDateString: string,
   token: string,
-  interval: string
+  interval: string,
+  page: string,
+  referrer: string
 ) => {
   const topStatsData = await getTopStats(
     domain,
@@ -438,13 +451,15 @@ const fetchData = async (
     domain,
     startDateString,
     endDateString,
-    token
+    token,
+    page
   );
   const referrersData = await getReferrers(
     domain,
     startDateString,
     endDateString,
-    token
+    token,
+    referrer
   );
   const deviceTypesData = await getDeviceTypes(
     domain,
@@ -602,8 +617,12 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
   const pathname = usePathname();
 
   let period = searchParams.get("period");
+  let page = searchParams.get("page");
+  let referrer = searchParams.get("referrer");
 
   const [selectedPeriod, setSelectedPeriod] = useState(period || "week");
+  const [selectedPage, setSelectedPage] = useState(page || "");
+  const [selectedReferrer, setSelectedReferrer] = useState(referrer || "");
   const [interval, setInterval] = useState("day");
   const [loading, setLoading] = useState(true);
   const [apiData, setApiData] = useState({
@@ -629,6 +648,11 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
   }, [data?.backendTokens.accessToken]);
 
   useEffect(() => {
+    setSelectedPage(page || "");
+    setSelectedReferrer(referrer || "");
+  }, [page, referrer, pathname]);
+
+  useEffect(() => {
     const { startDateString, endDateString } = getDateRange(selectedPeriod);
 
     const fetchDataAsync = async () => {
@@ -643,7 +667,9 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
           startDateString,
           endDateString,
           accessToken,
-          interval
+          interval,
+          selectedPage,
+          selectedReferrer
         );
         setApiData(fetchedData);
       } catch (err: Error | any) {
@@ -656,7 +682,14 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
     fetchDataAsync();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedPeriod, domain, accessToken]);
+  }, [
+    selectedPeriod,
+    domain,
+    accessToken,
+    searchParams,
+    selectedPage,
+    selectedReferrer,
+  ]);
 
   const handlePeriodChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selected = event.target.value;
