@@ -1,4 +1,3 @@
-// ! TO UNDERSTAND HOW MANY CALLS REACT DOES CHECK THE BACKEND LOGS OF THE MIDDLEWARE
 "use client";
 // import { notFound, redirect } from "next/navigation";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
@@ -20,8 +19,17 @@ async function getTopStats(
   domain: string,
   startDate: string,
   endDate: string,
+  interval: string,
   token: string,
-  interval: string
+  page: string,
+  referrer: string,
+  device: string,
+  os: string,
+  browser: string,
+  language: string,
+  country: string,
+  region: string,
+  city: string
 ) {
   console.log("topStats params", {
     startDate: startDate,
@@ -70,19 +78,42 @@ async function getPages(
   startDate: string,
   endDate: string,
   token: string,
-  page: string
+  page: string,
+  referrer: string,
+  device: string,
+  os: string,
+  browser: string,
+  language: string,
+  country: string,
+  region: string,
+  city: string
 ) {
   console.log("getPages params", {
     startDate: startDate,
     endDate: endDate,
     pathname: page,
+    referrer: referrer,
+    device_type: device,
+    os: os,
+    browser: browser,
+    language: language,
+    country: country,
+    region: region,
+    city: city,
   });
 
   const params = new URLSearchParams({
     startDate: startDate,
     endDate: endDate,
     pathname: page,
-    // referrer: "localhost:3000/signin", // todo change with variable
+    referrer: referrer,
+    device_type: device,
+    os: os,
+    browser: browser,
+    language: language,
+    country: country,
+    region: region,
+    city: city,
   });
 
   const headers = new Headers();
@@ -117,7 +148,15 @@ async function getReferrers(
   startDate: string,
   endDate: string,
   token: string,
-  referrer: string
+  page: string,
+  referrer: string,
+  device: string,
+  os: string,
+  browser: string,
+  language: string,
+  country: string,
+  region: string,
+  city: string
 ) {
   console.log("getReferrers params", {
     startDate: startDate,
@@ -128,7 +167,15 @@ async function getReferrers(
   const params = new URLSearchParams({
     startDate: startDate,
     endDate: endDate,
+    pathname: page,
     referrer: referrer,
+    device_type: device,
+    os: os,
+    browser: browser,
+    language: language,
+    country: country,
+    region: region,
+    city: city,
   });
 
   const headers = new Headers();
@@ -163,11 +210,29 @@ async function getDeviceTypes(
   domain: string,
   startDate: string,
   endDate: string,
-  token: string
+  token: string,
+  page: string,
+  referrer: string,
+  device: string,
+  os: string,
+  browser: string,
+  language: string,
+  country: string,
+  region: string,
+  city: string
 ) {
   const params = new URLSearchParams({
     startDate: startDate,
     endDate: endDate,
+    pathname: page,
+    referrer: referrer,
+    device_type: device,
+    os: os,
+    browser: browser,
+    language: language,
+    country: country,
+    region: region,
+    city: city,
   });
 
   const headers = new Headers();
@@ -201,11 +266,29 @@ async function getOSes(
   domain: string,
   startDate: string,
   endDate: string,
-  token: string
+  token: string,
+  page: string,
+  referrer: string,
+  device: string,
+  os: string,
+  browser: string,
+  language: string,
+  country: string,
+  region: string,
+  city: string
 ) {
   const params = new URLSearchParams({
     startDate: startDate,
     endDate: endDate,
+    pathname: page,
+    referrer: referrer,
+    device_type: device,
+    os: os,
+    browser: browser,
+    language: language,
+    country: country,
+    region: region,
+    city: city,
   });
 
   const headers = new Headers();
@@ -240,11 +323,29 @@ async function getBrowsers(
   domain: string,
   startDate: string,
   endDate: string,
-  token: string
+  token: string,
+  page: string,
+  referrer: string,
+  device: string,
+  os: string,
+  browser: string,
+  language: string,
+  country: string,
+  region: string,
+  city: string
 ) {
   const params = new URLSearchParams({
     startDate: startDate,
     endDate: endDate,
+    pathname: page,
+    referrer: referrer,
+    device_type: device,
+    os: os,
+    browser: browser,
+    language: language,
+    country: country,
+    region: region,
+    city: city,
   });
 
   const headers = new Headers();
@@ -279,11 +380,29 @@ async function getLanguages(
   domain: string,
   startDate: string,
   endDate: string,
-  token: string
+  token: string,
+  page: string,
+  referrer: string,
+  device: string,
+  os: string,
+  browser: string,
+  language: string,
+  country: string,
+  region: string,
+  city: string
 ) {
   const params = new URLSearchParams({
     startDate: startDate,
     endDate: endDate,
+    pathname: page,
+    referrer: referrer,
+    device_type: device,
+    os: os,
+    browser: browser,
+    language: language,
+    country: country,
+    region: region,
+    city: city,
   });
 
   const headers = new Headers();
@@ -318,11 +437,29 @@ async function getCountries(
   domain: string,
   startDate: string,
   endDate: string,
-  token: string
+  token: string,
+  page: string,
+  referrer: string,
+  device: string,
+  os: string,
+  browser: string,
+  language: string,
+  country: string,
+  region: string,
+  city: string
 ) {
   const params = new URLSearchParams({
     startDate: startDate,
     endDate: endDate,
+    pathname: page,
+    referrer: referrer,
+    device_type: device,
+    os: os,
+    browser: browser,
+    language: language,
+    country: country,
+    region: region,
+    city: city,
   });
 
   const headers = new Headers();
@@ -357,11 +494,29 @@ async function getRegions(
   domain: string,
   startDate: string,
   endDate: string,
-  token: string
+  token: string,
+  page: string,
+  referrer: string,
+  device: string,
+  os: string,
+  browser: string,
+  language: string,
+  country: string,
+  region: string,
+  city: string
 ) {
   const params = new URLSearchParams({
     startDate: startDate,
     endDate: endDate,
+    pathname: page,
+    referrer: referrer,
+    device_type: device,
+    os: os,
+    browser: browser,
+    language: language,
+    country: country,
+    region: region,
+    city: city,
   });
 
   const headers = new Headers();
@@ -396,11 +551,29 @@ async function getCities(
   domain: string,
   startDate: string,
   endDate: string,
-  token: string
+  token: string,
+  page: string,
+  referrer: string,
+  device: string,
+  os: string,
+  browser: string,
+  language: string,
+  country: string,
+  region: string,
+  city: string
 ) {
   const params = new URLSearchParams({
     startDate: startDate,
     endDate: endDate,
+    pathname: page,
+    referrer: referrer,
+    device_type: device,
+    os: os,
+    browser: browser,
+    language: language,
+    country: country,
+    region: region,
+    city: city,
   });
 
   const headers = new Headers();
@@ -438,65 +611,165 @@ const fetchData = async (
   token: string,
   interval: string,
   page: string,
-  referrer: string
+  referrer: string,
+  device: string,
+  os: string,
+  browser: string,
+  language: string,
+  country: string,
+  region: string,
+  city: string
 ) => {
   const topStatsData = await getTopStats(
     domain,
     startDateString,
     endDateString,
+    interval,
     token,
-    interval
+    page,
+    referrer,
+    device,
+    os,
+    browser,
+    language,
+    country,
+    region,
+    city
   );
   const pagesData = await getPages(
     domain,
     startDateString,
     endDateString,
     token,
-    page
+    page,
+    referrer,
+    device,
+    os,
+    browser,
+    language,
+    country,
+    region,
+    city
   );
   const referrersData = await getReferrers(
     domain,
     startDateString,
     endDateString,
     token,
-    referrer
+    page,
+    referrer,
+    device,
+    os,
+    browser,
+    language,
+    country,
+    region,
+    city
   );
   const deviceTypesData = await getDeviceTypes(
     domain,
     startDateString,
     endDateString,
-    token
+    token,
+    page,
+    referrer,
+    device,
+    os,
+    browser,
+    language,
+    country,
+    region,
+    city
   );
-  const osesData = await getOSes(domain, startDateString, endDateString, token);
+  const osesData = await getOSes(
+    domain,
+    startDateString,
+    endDateString,
+    token,
+    page,
+    referrer,
+    device,
+    os,
+    browser,
+    language,
+    country,
+    region,
+    city
+  );
   const browsersData = await getBrowsers(
     domain,
     startDateString,
     endDateString,
-    token
+    token,
+    page,
+    referrer,
+    device,
+    os,
+    browser,
+    language,
+    country,
+    region,
+    city
   );
   const languagesData = await getLanguages(
     domain,
     startDateString,
     endDateString,
-    token
+    token,
+    page,
+    referrer,
+    device,
+    os,
+    browser,
+    language,
+    country,
+    region,
+    city
   );
   const countriesData = await getCountries(
     domain,
     startDateString,
     endDateString,
-    token
+    token,
+    page,
+    referrer,
+    device,
+    os,
+    browser,
+    language,
+    country,
+    region,
+    city
   );
   const regionsData = await getRegions(
     domain,
     startDateString,
     endDateString,
-    token
+    token,
+    page,
+    referrer,
+    device,
+    os,
+    browser,
+    language,
+    country,
+    region,
+    city
   );
   const citiesData = await getCities(
     domain,
     startDateString,
     endDateString,
-    token
+    token,
+    page,
+    referrer,
+    device,
+    os,
+    browser,
+    language,
+    country,
+    region,
+    city
   );
 
   return {
@@ -619,10 +892,24 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
   let period = searchParams.get("period");
   let page = searchParams.get("page");
   let referrer = searchParams.get("referrer");
+  let device = searchParams.get("device");
+  let os = searchParams.get("os");
+  let browser = searchParams.get("browser");
+  let language = searchParams.get("language");
+  let country = searchParams.get("country");
+  let region = searchParams.get("region");
+  let city = searchParams.get("city");
 
   const [selectedPeriod, setSelectedPeriod] = useState(period || "week");
   const [selectedPage, setSelectedPage] = useState(page || "");
   const [selectedReferrer, setSelectedReferrer] = useState(referrer || "");
+  const [selectedDevice, setSelectedDevice] = useState(device || "");
+  const [selectedOs, setSelectedOs] = useState(os || "");
+  const [selectedBrowser, setSelectedBrowser] = useState(browser || "");
+  const [selectedLanguage, setSelectedLanguage] = useState(language || "");
+  const [selectedCountry, setSelectedCountry] = useState(country || "");
+  const [selectedRegion, setSelectedRegion] = useState(region || "");
+  const [selectedCity, setSelectedCity] = useState(city || "");
   const [interval, setInterval] = useState("day");
   const [loading, setLoading] = useState(true);
   const [apiData, setApiData] = useState({
@@ -650,7 +937,25 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
   useEffect(() => {
     setSelectedPage(page || "");
     setSelectedReferrer(referrer || "");
-  }, [page, referrer, pathname]);
+    setSelectedDevice(device || "");
+    setSelectedOs(os || "");
+    setSelectedBrowser(browser || "");
+    setSelectedLanguage(language || "");
+    setSelectedCountry(country || "");
+    setSelectedRegion(region || "");
+    setSelectedCity(city || "");
+  }, [
+    pathname,
+    page,
+    referrer,
+    device,
+    os,
+    browser,
+    language,
+    country,
+    region,
+    city,
+  ]);
 
   useEffect(() => {
     const { startDateString, endDateString } = getDateRange(selectedPeriod);
@@ -669,7 +974,14 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
           accessToken,
           interval,
           selectedPage,
-          selectedReferrer
+          selectedReferrer,
+          selectedDevice,
+          selectedOs,
+          selectedBrowser,
+          selectedLanguage,
+          selectedCountry,
+          selectedRegion,
+          selectedCity
         );
         setApiData(fetchedData);
       } catch (err: Error | any) {
@@ -689,6 +1001,13 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
     searchParams,
     selectedPage,
     selectedReferrer,
+    selectedDevice,
+    selectedOs,
+    selectedBrowser,
+    selectedLanguage,
+    selectedCountry,
+    selectedRegion,
+    selectedCity,
   ]);
 
   const handlePeriodChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
