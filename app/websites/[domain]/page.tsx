@@ -40,6 +40,15 @@ async function getTopStats(
     startDate: startDate,
     endDate: endDate,
     interval: interval,
+    pathname: page,
+    referrer: referrer,
+    device_type: device,
+    os: os,
+    browser: browser,
+    language: language,
+    country: country,
+    region: region,
+    city: city,
   });
 
   const headers = new Headers();
