@@ -23,7 +23,7 @@ const Pages: React.FC<PagesProps> = (props) => {
   };
 
   return (
-    <div className="flex-grow w-min-100 bg-slate-200 rounded-lg p-4">
+    <div className="flex-grow w-min-100 bg-slate-200 rounded-lg p-4 max-w-sm">
       <h2 className="font-semibold mb-2 text-lg">Top Pages</h2>
       <ul>
         {data.paths.map((path, index) => (
@@ -32,7 +32,9 @@ const Pages: React.FC<PagesProps> = (props) => {
             className="flex items-center justify-between cursor-pointer hover:underline"
             onClick={() => handlePageSelectedChange(path)}
           >
-            <span className="font-semibold text-gray-800">{path}</span>
+            <span className="font-semibold text-gray-800 truncate" title={path}>
+              {path}
+            </span>
             <span className="ml-2 text-blue-500 font-bold">
               {data.counts[index]}
             </span>

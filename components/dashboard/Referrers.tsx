@@ -23,7 +23,7 @@ const Referrers: React.FC<ReferrersProps> = (props) => {
     });
   };
   return (
-    <div className="flex-grow w-min-200 bg-slate-200 rounded-lg p-4">
+    <div className="flex-grow w-min-200 bg-slate-200 rounded-lg p-4 max-w-sm">
       <h2 className="font-semibold text-lg mb-2">Top Referrers</h2>
       <ul>
         {data.referrers.map((referrer, index) => (
@@ -32,7 +32,12 @@ const Referrers: React.FC<ReferrersProps> = (props) => {
             className="flex items-center justify-between cursor-pointer hover:underline"
             onClick={() => handleSelectedReferrerChange(referrer)}
           >
-            <span className="font-semibold text-gray-800">{referrer}</span>
+            <span
+              className="font-semibold text-gray-800 truncate"
+              title={referrer}
+            >
+              {referrer}
+            </span>
             <span className="ml-2 text-blue-500 font-bold">
               {data.counts[index]}
             </span>
