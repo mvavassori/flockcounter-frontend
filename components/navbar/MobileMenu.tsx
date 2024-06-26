@@ -75,7 +75,7 @@ export default function MobileMenu() {
         </div>
         {/* Toggle Button */}
         <button onClick={toggleMobileMenu} className="z-30">
-          {isOpen ? <CloseIcon /> : <HamburgerIcon />}
+          {isOpen ? <CloseIcon width={24} height={24} /> : <HamburgerIcon />}
         </button>
       </div>
     </div>
