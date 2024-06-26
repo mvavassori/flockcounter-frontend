@@ -14,6 +14,7 @@ import Regions from "@/components/dashboard/Regions";
 import Cities from "@/components/dashboard/Cities";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
+import CloseIcon from "@/components/icons/CloseIcon";
 
 async function getTopStats(
   domain: string,
@@ -919,6 +920,7 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
   const [selectedCountry, setSelectedCountry] = useState(country || "");
   const [selectedRegion, setSelectedRegion] = useState(region || "");
   const [selectedCity, setSelectedCity] = useState(city || "");
+
   const [interval, setInterval] = useState("day");
   const [loading, setLoading] = useState(true);
   const [apiData, setApiData] = useState({
@@ -1059,6 +1061,60 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
     setInterval(newInterval);
   };
 
+  const clearFilter = (filter: string) => {
+    const newParams = new URLSearchParams(searchParams);
+    newParams.delete(filter);
+    router.replace(`${pathname}?${newParams.toString()}`);
+
+    // Also clear the state
+    switch (filter) {
+      case "device":
+        setSelectedDevice("");
+        break;
+      case "os":
+        setSelectedOs("");
+        break;
+      case "browser":
+        setSelectedBrowser("");
+        break;
+      case "language":
+        setSelectedLanguage("");
+        break;
+      case "country":
+        setSelectedCountry("");
+        break;
+      case "region":
+        setSelectedRegion("");
+        break;
+      case "city":
+        setSelectedCity("");
+        break;
+      case "referrer":
+        setSelectedReferrer("");
+        break;
+      case "page":
+        setSelectedPage("");
+        break;
+      case "period":
+        setSelectedPeriod("week");
+        break;
+      default:
+        break;
+    }
+  };
+
+  const filters = [
+    { label: "Device", value: selectedDevice, key: "device" },
+    { label: "OS", value: selectedOs, key: "os" },
+    { label: "Browser", value: selectedBrowser, key: "browser" },
+    { label: "Language", value: selectedLanguage, key: "language" },
+    { label: "Country", value: selectedCountry, key: "country" },
+    { label: "Region", value: selectedRegion, key: "region" },
+    { label: "City", value: selectedCity, key: "city" },
+    { label: "Referrer", value: selectedReferrer, key: "referrer" },
+    { label: "Page", value: selectedPage, key: "page" },
+  ];
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -1070,21 +1126,48 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
   return (
     <div className="w-full p-4">
       <h1 className="pt-8 text-3xl font-semibold">{params.domain}</h1>
-      <select
-        value={selectedPeriod}
-        onChange={handlePeriodChange}
-        className="p-2 border rounded"
-      >
-        <option value="today">Today</option>
-        <option value="yesterday">Yesterday</option>
-        <option value="week">Last 7 Days</option>
-        <option value="month">Last 30 Days</option>
-        <option value="month-to-date">Month to Date</option>
-        <option value="last-month">Last Month</option>
-        <option value="year-to-date">Year to Date</option>
-        <option value="last-12-months">Last 12 Months</option>
-        <option value="last-5-years">Last 5 Years</option>
-      </select>
+      <div className="flex justify-between mt-8 items-start">
+        {/* make a div that renders whether there is a filter active (i.e. if there is a selected value) and a button to clear it */}
+        <div className="flex gap-2 flex-wrap">
+          {filters.map(
+            (filter) =>
+              filter.value && (
+                <div
+                  key={filter.key}
+                  className="text-sm bg-slate-100 p-2 rounded flex items-center"
+                >
+                  <span>
+                    {filter.label}: {filter.value}
+                  </span>
+                  <span
+                    className="ml-2 cursor-pointer hover:text-red-500"
+                    onClick={() => clearFilter(filter.key)}
+                    title={`Clear filter: ${filter.value}`}
+                  >
+                    <CloseIcon width={16} height={16} />
+                  </span>
+                </div>
+              )
+          )}
+        </div>
+
+        <select
+          value={selectedPeriod}
+          onChange={handlePeriodChange}
+          className="p-2 border rounded flex-grow-0"
+        >
+          <option value="today">Today</option>
+          <option value="yesterday">Yesterday</option>
+          <option value="week">Last 7 Days</option>
+          <option value="month">Last 30 Days</option>
+          <option value="month-to-date">Month to Date</option>
+          <option value="last-month">Last Month</option>
+          <option value="year-to-date">Year to Date</option>
+          <option value="last-12-months">Last 12 Months</option>
+          <option value="last-5-years">Last 5 Years</option>
+        </select>
+      </div>
+
       {apiData.topStatsData && <TopStats data={apiData.topStatsData} />}
       <div className="flex flex-wrap gap-4 min-w-full my-12">
         {apiData.pagesData && <Pages data={apiData.pagesData} />}
