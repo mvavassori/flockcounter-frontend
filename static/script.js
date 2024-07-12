@@ -1,97 +1,152 @@
-const trackVisit = (isUniqueVisit, timeSpentOnPage) => {
-    // Prepare payload data
-    const now = new Date();
-  
-    // Use toISOString for ISO 8601 format with UTC timezone
-    const formattedStamp = now.toISOString();
-  
-    const payloadData = {
-      timestamp: formattedStamp,
-      referrer: document.referrer || null,
-      url: window.location.href,
-      pathname: window.location.pathname,
-      userAgent: navigator.userAgent,
-      language: navigator.language,
-      country: getCountry(),
-      state: getState(),
-      isUnique: isUniqueVisit,
-      timeSpentOnPage: timeSpentOnPage
-    };
-  
-    console.log(payloadData);
-  
-    // Construct full API endpoint URL
-    const apiUrl = "http://localhost:8080/api/visit";
-  
-    try {
-      fetch(apiUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payloadData),
-      }).then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-      }).catch(error => {
-        console.error("Error sending visit data:", error);
-      });
-    } catch (error) {
-      console.error("Error sending visit data:", error);
-    }
-};
-
-// when the user arrives to the page, start a timer to count the time spent on the page
-const trackTimeSpentOnPage = () => {
-    pageLoadTime = performance.now();
-}
-
+// todo test referrer in SPAs
 // Prepare payload data
 const now = new Date();
-  
-// Use toISOString for ISO 8601 format with UTC timezone
 const formattedStamp = now.toISOString();
+const backendUrl = "http://localhost:8080/api/visit";
 
 // Get the current time in milliseconds when the page loads
 let startTime = performance.now();
+let totalElapsedTime = 0;
+let currentUrl = window.location.href;
 
+let currentReferrer = document.referrer || null;
 
-
-const url = 'http://localhost:8080/api/visit';
-
-window.addEventListener("visibilitychange", (event) => {
-    // Calculate the elapsed time in milliseconds
-    let elapsedTime = performance.now() - startTime;
-    console.log(elapsedTime)
-    sendVisit(event, elapsedTime);
-});
-
-window.addEventListener("popstate", (event) => {
-    // Calculate the elapsed time in milliseconds
-    let elapsedTime = performance.now() - startTime;
-    console.log(elapsedTime)
-    sendVisit(event, elapsedTime);
-})
-
-function sendVisit(event, elapsedTime) {
-    const payloadData = {
-      timestamp: formattedStamp,
-      referrer: document.referrer || null,
-      url: window.location.href,
-      pathname: window.location.pathname,
-      userAgent: navigator.userAgent,
-      language: navigator.language,
-      timeSpentOnPage: elapsedTime
-    };
-    let data = JSON.stringify(payloadData);
-    // if the visitor has just spent 5 seconds on the page, don't count it as a visit
-    if (elapsedTime < 7000) {
-      return
-    }
-    if (document.visibilityState === 'hidden') {
-      navigator.sendBeacon(url, data);
-      startTime = performance.now();
-    }
+if (currentReferrer) {
+  let url = new URL(currentReferrer);
+  currentReferrer = url.origin + url.pathname;
 }
 
+console.log("window.location.host", window.location.host);
+
+let previousPathname = window.location.pathname;
+
+console.log("Page loaded, startTime:", startTime);
+
+// Function to handle sending the visit data
+function sendVisit(elapsedTime) {
+  const payloadData = {
+    timestamp: formattedStamp,
+    referrer: currentReferrer,
+    url: currentUrl,
+    pathname: previousPathname,
+    userAgent: navigator.userAgent,
+    language: navigator.language,
+    timeSpentOnPage: Math.round(elapsedTime),
+  };
+  let data = JSON.stringify(payloadData);
+  console.log("Sending visit data:", payloadData);
+  navigator.sendBeacon(backendUrl, data);
+}
+
+// Event listener for page visibility changes
+window.addEventListener("visibilitychange", (event) => {
+  if (document.visibilityState === "visible") {
+    // Page became visible, restart the timer
+    startTime = performance.now();
+    console.log("Page became visible, startTime updated:", startTime);
+  } else {
+    // Page became hidden
+    const elapsedTime = performance.now() - startTime;
+    console.log("Page became hidden, elapsed time:", elapsedTime);
+    totalElapsedTime += elapsedTime;
+    console.log("Total elapsed time:", totalElapsedTime);
+
+    if (totalElapsedTime < 5000) {
+      console.log("Visit time less than 2 seconds, not sending data.");
+      // Reset the timer without sending the visit data
+      startTime = 0;
+      totalElapsedTime = 0;
+      console.log(
+        "Timer reset, startTime:",
+        startTime,
+        "totalElapsedTime:",
+        totalElapsedTime
+      );
+    } else {
+      sendVisit(totalElapsedTime);
+      // Reset the timer after sending the visit data
+      startTime = 0;
+      totalElapsedTime = 0;
+      console.log(
+        "Timer reset, startTime:",
+        startTime,
+        "totalElapsedTime:",
+        totalElapsedTime
+      );
+    }
+  }
+});
+
+// Event listener for route changes
+window.addEventListener("popstate", handleRouteChange);
+window.history.pushState = overridePushStateFunction(window.history.pushState);
+window.history.replaceState = overrideReplaceStateFunction(
+  window.history.replaceState
+);
+
+function handleRouteChange() {
+  const newUrl = window.location.href;
+  let referrer;
+
+  if (document.referrer) {
+    // Parse the referrer URL
+    let referrerURL = new URL(document.referrer);
+
+    // Construct the referrer without query parameters
+    referrer = referrerURL.origin + referrerURL.pathname;
+  } else {
+    referrer = "Direct";
+  }
+
+  if (newUrl !== currentUrl) {
+    // Store the current URL as the previous referrer
+    currentReferrer = referrer;
+
+    console.log("URL changed from", currentUrl, "to", newUrl);
+    const elapsedTime = performance.now() - startTime;
+    console.log("Page changed, elapsed time:", elapsedTime);
+    totalElapsedTime += elapsedTime;
+    console.log("Total elapsed time:", totalElapsedTime);
+    if (totalElapsedTime < 5000) {
+      console.log("Visit time less than 5 seconds, not sending data.");
+      // Reset the timer without sending the visit data
+      startTime = performance.now();
+      totalElapsedTime = 0;
+      console.log(
+        "New page, startTime updated:",
+        startTime,
+        "totalElapsedTime:",
+        totalElapsedTime
+      );
+    } else {
+      sendVisit(totalElapsedTime);
+      currentUrl = newUrl;
+      startTime = performance.now();
+      totalElapsedTime = 0;
+      console.log(
+        "New page, startTime updated:",
+        startTime,
+        "totalElapsedTime:",
+        totalElapsedTime
+      );
+    }
+  }
+}
+
+function overridePushStateFunction(originalPushState) {
+  return function overridenPushState(...args) {
+    previousPathname = window.location.pathname; // Store the previous pathname before calling handleRouteChange
+    const result = originalPushState.apply(this, args);
+    handleRouteChange();
+    return result;
+  };
+}
+
+function overrideReplaceStateFunction(originalReplaceState) {
+  return function overridenReplaceState(...args) {
+    previousPathname = window.location.pathname;
+    const result = originalReplaceState.apply(this, args);
+    handleRouteChange();
+    return result;
+  };
+}

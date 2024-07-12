@@ -20,8 +20,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      {/* <Script crossOrigin="anonymous" src="/static/script.js"></Script> */}
-      <Script crossOrigin="anonymous" src="/static/script2.js"></Script>
+      <Script crossOrigin="anonymous" src="/static/script.js"></Script>
+      <Script
+        crossOrigin="anonymous"
+        strategy="lazyOnload"
+        src="/static/events.js"
+      ></Script>
       <body className={inter.className}>
         <ClientAuthProvider>
           <Navbar />
