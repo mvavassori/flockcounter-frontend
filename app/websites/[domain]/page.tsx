@@ -15,6 +15,7 @@ import Cities from "@/components/dashboard/Cities";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import CloseIcon from "@/components/icons/CloseIcon";
+import Events from "@/components/dashboard/Events";
 
 async function getTopStats(
   domain: string,
@@ -614,6 +615,45 @@ async function getCities(
   }
 }
 
+async function getEvents(
+  domain: string,
+  startDate: string,
+  endDate: string,
+  token: string
+) {
+  const params = new URLSearchParams({
+    startDate: startDate,
+    endDate: endDate,
+  });
+
+  const headers = new Headers();
+  headers.append("Authorization", `Bearer ${token}`);
+
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/events/${domain}?${params}`,
+      { headers }
+    );
+    const text = await response.text();
+
+    if (!response.ok) {
+      console.error(`HTTP error! status: ${response.status}, body: ${text}`);
+      let errorMessage = `HTTP error! status: ${response.status}`;
+      if (response.status === 404) {
+        errorMessage = "Invalid domain";
+      } else if (response.status === 401) {
+        errorMessage = "Access denied";
+      }
+      return errorMessage;
+    }
+    const data = JSON.parse(text);
+    return data;
+  } catch (error) {
+    console.error("Network error:", error);
+    return "Network error, please check your connection and try again.";
+  }
+}
+
 const fetchData = async (
   domain: string,
   startDateString: string,
@@ -628,7 +668,8 @@ const fetchData = async (
   language: string,
   country: string,
   region: string,
-  city: string
+  city: string,
+  event: string
 ) => {
   const topStatsData = await getTopStats(
     domain,
@@ -782,6 +823,13 @@ const fetchData = async (
     city
   );
 
+  const eventsData = await getEvents(
+    domain,
+    startDateString,
+    endDateString,
+    token
+  );
+
   return {
     topStatsData,
     pagesData,
@@ -793,6 +841,7 @@ const fetchData = async (
     countriesData,
     regionsData,
     citiesData,
+    eventsData,
   };
 };
 
@@ -909,6 +958,7 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
   let country = searchParams.get("country");
   let region = searchParams.get("region");
   let city = searchParams.get("city");
+  let event = searchParams.get("event");
 
   const [selectedPeriod, setSelectedPeriod] = useState(period || "week");
   const [selectedPage, setSelectedPage] = useState(page || "");
@@ -920,6 +970,7 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
   const [selectedCountry, setSelectedCountry] = useState(country || "");
   const [selectedRegion, setSelectedRegion] = useState(region || "");
   const [selectedCity, setSelectedCity] = useState(city || "");
+  const [selectedEvent, setSelectedEvent] = useState(event || "");
 
   const [interval, setInterval] = useState("day");
   const [loading, setLoading] = useState(true);
@@ -934,6 +985,7 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
     countriesData: null,
     regionsData: null,
     citiesData: null,
+    eventsData: null,
   });
   const [error, setError] = useState(null);
   const [accessToken, setAccessToken] = useState("");
@@ -955,6 +1007,7 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
     setSelectedCountry(country || "");
     setSelectedRegion(region || "");
     setSelectedCity(city || "");
+    setSelectedEvent(event || "");
   }, [
     pathname,
     page,
@@ -966,6 +1019,7 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
     country,
     region,
     city,
+    event,
   ]);
 
   useEffect(() => {
@@ -992,7 +1046,8 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
           selectedLanguage,
           selectedCountry,
           selectedRegion,
-          selectedCity
+          selectedCity,
+          selectedEvent
         );
         setApiData(fetchedData);
       } catch (err: Error | any) {
@@ -1170,7 +1225,7 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
 
       {apiData.topStatsData && <TopStats data={apiData.topStatsData} />}
       <div className="flex flex-wrap gap-4 min-w-full my-12">
-        {apiData.pagesData && <Pages data={apiData.pagesData} />}
+        {apiData?.pagesData && <Pages data={apiData.pagesData} />}
         {apiData.referrersData && <Referrers data={apiData.referrersData} />}
         {apiData.deviceTypesData && (
           <DeviceTypes data={apiData.deviceTypesData} />
@@ -1181,6 +1236,7 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
         {apiData.countriesData && <Countries data={apiData.countriesData} />}
         {apiData.regionsData && <Regions data={apiData.regionsData} />}
         {apiData.citiesData && <Cities data={apiData.citiesData} />}
+        {apiData.eventsData && <Events data={apiData.eventsData} />}
       </div>
     </div>
   );

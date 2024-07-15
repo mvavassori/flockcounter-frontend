@@ -1,3 +1,5 @@
+"use client";
+
 export default function Playground() {
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
@@ -7,6 +9,7 @@ export default function Playground() {
         href="/static/example-pdf.pdf"
         download
         className="text-blue-500 underline mb-4 block"
+        onClick={() => window.trackCustomEvent("download_example")}
       >
         Download Link
       </a>
@@ -14,6 +17,7 @@ export default function Playground() {
       <a
         href="mailto:example@example.com"
         className="text-blue-500 underline mb-4 block"
+        onClick={() => window.trackCustomEvent("mailto_example")}
       >
         Mail To Link
       </a>
@@ -22,6 +26,7 @@ export default function Playground() {
         href="https://www.google.com"
         target="_blank"
         className="text-blue-500 underline mb-4 block"
+        onClick={() => window.trackCustomEvent("outbound_google")}
       >
         Outbound Link
       </a>
@@ -30,6 +35,10 @@ export default function Playground() {
         action="https://example.com/submit"
         method="post"
         className="bg-white p-4 rounded shadow-md mb-4"
+        onSubmit={(e) => {
+          e.preventDefault();
+          window.trackCustomEvent("form_submit");
+        }}
       >
         <input
           type="text"
@@ -45,7 +54,10 @@ export default function Playground() {
         </button>
       </form>
       {/* button */}
-      <button className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600">
+      <button
+        className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+        onClick={() => window.trackCustomEvent("button_click")}
+      >
         Button
       </button>
     </div>

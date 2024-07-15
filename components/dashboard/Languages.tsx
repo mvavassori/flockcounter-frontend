@@ -26,20 +26,22 @@ const Languages: React.FC<LanguagesProps> = (props) => {
   return (
     <div className="flex-grow w-min-200 bg-slate-200 rounded-lg p-4">
       <h2 className="font-semibold text-lg mb-2">Languages</h2>
-      <ul>
-        {data.languages.map((language, index) => (
-          <li
-            key={index}
-            className="flex items-center justify-between cursor-pointer hover:underline"
-            onClick={() => handleSelectedLanguageChange(language)}
-          >
-            <span className="font-semibold text-gray-800">{language}</span>
-            <span className="ml-2 text-blue-500 font-bold">
-              {data.counts[index]}
-            </span>
-          </li>
-        ))}
-      </ul>
+      {data.languages && (
+        <ul>
+          {data.languages.map((language, index) => (
+            <li
+              key={index}
+              className="flex items-center justify-between cursor-pointer hover:underline"
+              onClick={() => handleSelectedLanguageChange(language)}
+            >
+              <span className="font-semibold text-gray-800">{language}</span>
+              <span className="ml-2 text-blue-500 font-bold">
+                {data.counts[index]}
+              </span>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 };
