@@ -15,7 +15,7 @@ import Cities from "@/components/dashboard/Cities";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import CloseIcon from "@/components/icons/CloseIcon";
-import Events from "@/components/dashboard/Events";
+import Events from "@/components/Events";
 
 async function getTopStats(
   domain: string,
@@ -33,11 +33,6 @@ async function getTopStats(
   region: string,
   city: string
 ) {
-  console.log("topStats params", {
-    startDate: startDate,
-    endDate: endDate,
-    interval: interval,
-  });
   const params = new URLSearchParams({
     startDate: startDate,
     endDate: endDate,
@@ -99,20 +94,6 @@ async function getPages(
   region: string,
   city: string
 ) {
-  console.log("getPages params", {
-    startDate: startDate,
-    endDate: endDate,
-    pathname: page,
-    referrer: referrer,
-    device_type: device,
-    os: os,
-    browser: browser,
-    language: language,
-    country: country,
-    region: region,
-    city: city,
-  });
-
   const params = new URLSearchParams({
     startDate: startDate,
     endDate: endDate,
@@ -154,6 +135,7 @@ async function getPages(
     return "Network error, please check your connection and try again.";
   }
 }
+
 async function getReferrers(
   domain: string,
   startDate: string,
@@ -169,12 +151,6 @@ async function getReferrers(
   region: string,
   city: string
 ) {
-  console.log("getReferrers params", {
-    startDate: startDate,
-    endDate: endDate,
-    referrer: referrer,
-  });
-
   const params = new URLSearchParams({
     startDate: startDate,
     endDate: endDate,
@@ -273,6 +249,7 @@ async function getDeviceTypes(
     return "Network error, please check your connection and try again.";
   }
 }
+
 async function getOSes(
   domain: string,
   startDate: string,
@@ -615,45 +592,6 @@ async function getCities(
   }
 }
 
-async function getEvents(
-  domain: string,
-  startDate: string,
-  endDate: string,
-  token: string
-) {
-  const params = new URLSearchParams({
-    startDate: startDate,
-    endDate: endDate,
-  });
-
-  const headers = new Headers();
-  headers.append("Authorization", `Bearer ${token}`);
-
-  try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/events/${domain}?${params}`,
-      { headers }
-    );
-    const text = await response.text();
-
-    if (!response.ok) {
-      console.error(`HTTP error! status: ${response.status}, body: ${text}`);
-      let errorMessage = `HTTP error! status: ${response.status}`;
-      if (response.status === 404) {
-        errorMessage = "Invalid domain";
-      } else if (response.status === 401) {
-        errorMessage = "Access denied";
-      }
-      return errorMessage;
-    }
-    const data = JSON.parse(text);
-    return data;
-  } catch (error) {
-    console.error("Network error:", error);
-    return "Network error, please check your connection and try again.";
-  }
-}
-
 const fetchData = async (
   domain: string,
   startDateString: string,
@@ -668,8 +606,7 @@ const fetchData = async (
   language: string,
   country: string,
   region: string,
-  city: string,
-  event: string
+  city: string
 ) => {
   const topStatsData = await getTopStats(
     domain,
@@ -823,13 +760,6 @@ const fetchData = async (
     city
   );
 
-  const eventsData = await getEvents(
-    domain,
-    startDateString,
-    endDateString,
-    token
-  );
-
   return {
     topStatsData,
     pagesData,
@@ -841,7 +771,6 @@ const fetchData = async (
     countriesData,
     regionsData,
     citiesData,
-    eventsData,
   };
 };
 
@@ -958,7 +887,6 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
   let country = searchParams.get("country");
   let region = searchParams.get("region");
   let city = searchParams.get("city");
-  let event = searchParams.get("event");
 
   const [selectedPeriod, setSelectedPeriod] = useState(period || "week");
   const [selectedPage, setSelectedPage] = useState(page || "");
@@ -970,7 +898,9 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
   const [selectedCountry, setSelectedCountry] = useState(country || "");
   const [selectedRegion, setSelectedRegion] = useState(region || "");
   const [selectedCity, setSelectedCity] = useState(city || "");
-  const [selectedEvent, setSelectedEvent] = useState(event || "");
+
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
   const [interval, setInterval] = useState("day");
   const [loading, setLoading] = useState(true);
@@ -985,7 +915,6 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
     countriesData: null,
     regionsData: null,
     citiesData: null,
-    eventsData: null,
   });
   const [error, setError] = useState(null);
   const [accessToken, setAccessToken] = useState("");
@@ -1007,7 +936,6 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
     setSelectedCountry(country || "");
     setSelectedRegion(region || "");
     setSelectedCity(city || "");
-    setSelectedEvent(event || "");
   }, [
     pathname,
     page,
@@ -1019,11 +947,12 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
     country,
     region,
     city,
-    event,
   ]);
 
   useEffect(() => {
     const { startDateString, endDateString } = getDateRange(selectedPeriod);
+    setStartDate(startDateString);
+    setEndDate(endDateString);
 
     const fetchDataAsync = async () => {
       if (!accessToken) {
@@ -1046,8 +975,7 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
           selectedLanguage,
           selectedCountry,
           selectedRegion,
-          selectedCity,
-          selectedEvent
+          selectedCity
         );
         setApiData(fetchedData);
       } catch (err: Error | any) {
@@ -1181,31 +1109,29 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
   return (
     <div className="w-full p-4">
       <h1 className="pt-8 text-3xl font-semibold">{params.domain}</h1>
-      <div className="flex justify-between mt-8 items-start">
-        {/* make a div that renders whether there is a filter active (i.e. if there is a selected value) and a button to clear it */}
-        <div className="flex gap-2 flex-wrap">
-          {filters.map(
-            (filter) =>
-              filter.value && (
-                <div
-                  key={filter.key}
-                  className="text-sm bg-slate-100 p-2 rounded flex items-center"
-                >
-                  <span>
-                    {filter.label}: {filter.value}
-                  </span>
-                  <span
-                    className="ml-2 cursor-pointer hover:text-red-500"
-                    onClick={() => clearFilter(filter.key)}
-                    title={`Clear filter: ${filter.value}`}
-                  >
-                    <CloseIcon width={16} height={16} />
-                  </span>
-                </div>
-              )
-          )}
+      <div className="flex justify-between items-end mt-6 mb-4 align-baseline">
+        <div className="flex gap-4 mt-6">
+          <button
+            className={
+              pathname === `/websites/${params.domain}`
+                ? "border-b-4 border-blue-500 font-semibold px-2 py-1"
+                : "border-b-4 border-transparent font-semibold text-gray-500 hover:text-gray-600 hover:border-gray-600 px-2 py-1"
+            }
+            onClick={() => router.push(`/websites/${params.domain}`)}
+          >
+            Dashboard
+          </button>
+          <button
+            className={
+              pathname === `/websites/${params.domain}/events`
+                ? "border-b-4 border-blue-500 font-semibold px-2 py-1"
+                : "border-b-4 border-transparent font-semibold text-gray-500 hover:text-gray-600 hover:border-gray-600 px-2 py-1"
+            }
+            onClick={() => router.push(`/websites/${params.domain}/events`)}
+          >
+            Events
+          </button>
         </div>
-
         <select
           value={selectedPeriod}
           onChange={handlePeriodChange}
@@ -1223,21 +1149,66 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
         </select>
       </div>
 
-      {apiData.topStatsData && <TopStats data={apiData.topStatsData} />}
-      <div className="flex flex-wrap gap-4 min-w-full my-12">
-        {apiData?.pagesData && <Pages data={apiData.pagesData} />}
-        {apiData.referrersData && <Referrers data={apiData.referrersData} />}
-        {apiData.deviceTypesData && (
-          <DeviceTypes data={apiData.deviceTypesData} />
-        )}
-        {apiData.osesData && <OSes data={apiData.osesData} />}
-        {apiData.browsersData && <Browsers data={apiData.browsersData} />}
-        {apiData.languagesData && <Languages data={apiData.languagesData} />}
-        {apiData.countriesData && <Countries data={apiData.countriesData} />}
-        {apiData.regionsData && <Regions data={apiData.regionsData} />}
-        {apiData.citiesData && <Cities data={apiData.citiesData} />}
-        {apiData.eventsData && <Events data={apiData.eventsData} />}
-      </div>
+      {/* dashboard component*/}
+      {pathname === `/websites/${params.domain}` && (
+        <div>
+          <div className="flex gap-2 flex-wrap">
+            {filters.map(
+              (filter) =>
+                filter.value && (
+                  <div
+                    key={filter.key}
+                    className="text-sm bg-slate-100 p-2 rounded flex items-center"
+                  >
+                    <span>
+                      {filter.label}: {filter.value}
+                    </span>
+                    <span
+                      className="ml-2 cursor-pointer hover:text-red-500"
+                      onClick={() => clearFilter(filter.key)}
+                      title={`Clear filter: ${filter.value}`}
+                    >
+                      <CloseIcon width={16} height={16} />
+                    </span>
+                  </div>
+                )
+            )}
+          </div>
+
+          {apiData.topStatsData && <TopStats data={apiData.topStatsData} />}
+          <div className="flex flex-wrap gap-4 min-w-full my-12">
+            {apiData?.pagesData && <Pages data={apiData.pagesData} />}
+            {apiData.referrersData && (
+              <Referrers data={apiData.referrersData} />
+            )}
+            {apiData.deviceTypesData && (
+              <DeviceTypes data={apiData.deviceTypesData} />
+            )}
+            {apiData.osesData && <OSes data={apiData.osesData} />}
+            {apiData.browsersData && <Browsers data={apiData.browsersData} />}
+            {apiData.languagesData && (
+              <Languages data={apiData.languagesData} />
+            )}
+            {apiData.countriesData && (
+              <Countries data={apiData.countriesData} />
+            )}
+            {apiData.regionsData && <Regions data={apiData.regionsData} />}
+            {apiData.citiesData && <Cities data={apiData.citiesData} />}
+          </div>
+        </div>
+      )}
+
+      {/* events component */}
+      {pathname === `/websites/${params.domain}/events` && (
+        <div>
+          <Events
+            domain={params.domain}
+            accessToken={accessToken}
+            startDate={startDate}
+            endDate={endDate}
+          />
+        </div>
+      )}
     </div>
   );
 }
