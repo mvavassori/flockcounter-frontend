@@ -573,6 +573,45 @@ async function getCities(
   }
 }
 
+async function getEvents(
+  domain: string,
+  startDate: string,
+  endDate: string,
+  token: string
+) {
+  const params = new URLSearchParams({
+    startDate: startDate,
+    endDate: endDate,
+  });
+
+  const headers = new Headers();
+  headers.append("Authorization", `Bearer ${token}`);
+
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/events/${domain}?${params}`,
+      { headers }
+    );
+    const text = await response.text();
+
+    if (!response.ok) {
+      console.error(`HTTP error! status: ${response.status}, body: ${text}`);
+      let errorMessage = `HTTP error! status: ${response.status}`;
+      if (response.status === 404) {
+        errorMessage = "Invalid domain";
+      } else if (response.status === 401) {
+        errorMessage = "Access denied";
+      }
+      return errorMessage;
+    }
+    const data = JSON.parse(text);
+    return data;
+  } catch (error) {
+    console.error("Network error:", error);
+    return "Network error, please check your connection and try again.";
+  }
+}
+
 export {
   getTopStats,
   getPages,
@@ -584,4 +623,5 @@ export {
   getCountries,
   getRegions,
   getCities,
+  getEvents,
 };
