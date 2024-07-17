@@ -93,13 +93,6 @@ const Events = ({ domain, startDate, endDate }: EventsProps) => {
     fetchEventsAsync();
   }, [domain, startDate, endDate, accessToken]);
 
-  // console.log(domain);
-  // console.log(accessToken);
-  // console.log(startDate);
-  // console.log(endDate);
-
-  // console.log(events);
-
   if (loading) {
     return <div>Loading...</div>;
   }
