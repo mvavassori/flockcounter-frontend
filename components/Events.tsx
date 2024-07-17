@@ -15,7 +15,8 @@ interface EventData {
   counts: number[];
 }
 
-const Events = ({ domain, startDate, endDate }: EventsProps) => {
+const Events: React.FC<EventsProps> = (props) => {
+  const { domain, startDate, endDate } = props;
   const { data } = useSession();
 
   const [events, setEvents] = useState<EventData | null>(null);
@@ -44,8 +45,6 @@ const Events = ({ domain, startDate, endDate }: EventsProps) => {
           accessToken
         );
         setEvents(eventsData);
-
-        console.log(eventsData);
       } catch (err: Error | any) {
         setError(err.message);
       } finally {
