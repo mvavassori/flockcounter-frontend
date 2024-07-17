@@ -627,7 +627,21 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
 
           {apiData.topStatsData && <TopStats data={apiData.topStatsData} />}
           <div className="flex flex-wrap gap-4 min-w-full my-12">
-            {apiData?.pagesData && <Pages data={apiData.pagesData} />}
+            {/* {apiData?.pagesData && <Pages data={apiData.pagesData} />} */}
+            <Pages
+              domain={params.domain}
+              startDate={startDate}
+              endDate={endDate}
+              page={selectedPage}
+              referrer={selectedReferrer}
+              device={selectedDevice}
+              os={selectedOs}
+              browser={selectedBrowser}
+              language={selectedLanguage}
+              country={selectedCountry}
+              region={selectedRegion}
+              city={selectedCity}
+            />
             {apiData.referrersData && (
               <Referrers data={apiData.referrersData} />
             )}

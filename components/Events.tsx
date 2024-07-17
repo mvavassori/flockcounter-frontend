@@ -10,7 +10,7 @@ interface EventsProps {
   endDate: string;
 }
 
-interface EventData {
+interface EventsData {
   eventNames: string[];
   counts: number[];
 }
@@ -19,7 +19,7 @@ const Events: React.FC<EventsProps> = (props) => {
   const { domain, startDate, endDate } = props;
   const { data } = useSession();
 
-  const [events, setEvents] = useState<EventData | null>(null);
+  const [events, setEvents] = useState<EventsData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -36,7 +36,7 @@ const Events: React.FC<EventsProps> = (props) => {
       return;
     }
     setLoading(true);
-    const fetchEventsAsync = async () => {
+    const fetchEvents = async () => {
       try {
         const eventsData = await getEvents(
           domain,
@@ -51,7 +51,7 @@ const Events: React.FC<EventsProps> = (props) => {
         setLoading(false);
       }
     };
-    fetchEventsAsync();
+    fetchEvents();
   }, [domain, startDate, endDate, accessToken]);
 
   if (loading) {
