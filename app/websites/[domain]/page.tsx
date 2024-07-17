@@ -446,9 +446,15 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
 
   const handlePeriodChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const existingParams = new URLSearchParams(searchParams);
-
     const selected = event.target.value;
-    router.push(`${pathname}?period=${selected}&${existingParams.toString()}`, {
+
+    // Remove the existing period paramter
+    existingParams.delete("period");
+
+    // Set the new period paramter
+    existingParams.set("period", selected);
+
+    router.push(`${pathname}?${existingParams.toString()}`, {
       scroll: false,
     });
     let newInterval = "day";
