@@ -1,8 +1,17 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
+
 interface EventsProps {
   domain: string;
-  accessToken: string;
   startDate: string;
   endDate: string;
+}
+
+interface EventData {
+  eventNames: string[];
+  counts: number[];
 }
 
 async function getEvents(
@@ -44,34 +53,78 @@ async function getEvents(
   }
 }
 
-export default async function Events({
-  domain,
-  accessToken,
-  startDate,
-  endDate,
-}: EventsProps) {
-  const { data } = await getEvents(domain, startDate, endDate, accessToken);
+const Events = ({ domain, startDate, endDate }: EventsProps) => {
+  const { data } = useSession();
 
-  console.log(data);
+  const [events, setEvents] = useState<EventData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const [accessToken, setAccessToken] = useState("");
+
+  useEffect(() => {
+    if (data?.backendTokens.accessToken) {
+      setAccessToken(data.backendTokens.accessToken);
+    }
+  }, [data?.backendTokens.accessToken]);
+
+  useEffect(() => {
+    if (!accessToken) {
+      return;
+    }
+    setLoading(true);
+    const fetchEventsAsync = async () => {
+      try {
+        const eventsData = await getEvents(
+          domain,
+          startDate,
+          endDate,
+          accessToken
+        );
+        setEvents(eventsData);
+
+        console.log(eventsData);
+      } catch (err: Error | any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchEventsAsync();
+  }, [domain, startDate, endDate, accessToken]);
+
+  // console.log(domain);
+  // console.log(accessToken);
+  // console.log(startDate);
+  // console.log(endDate);
+
+  // console.log(events);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   return (
     <div className="flex-grow w-min-200 bg-slate-200 rounded-lg p-4">
       <h2 className="font-semibold text-lg mb-2">Events</h2>
-      {data.eventNames && (
+      {events && events.eventNames && (
         <ul>
-          {/* {data.eventNames.map((event, index) => (
-            <li
-              key={index}
-              className="flex items-center justify-between"
-            >
+          {events.eventNames.map((event: string, index: number) => (
+            <li key={index} className="flex items-center justify-between">
               <span className="font-semibold text-gray-800">{event}</span>
               <span className="ml-2 text-blue-500 font-bold">
-                {data.counts[index]}
+                {events.counts[index]}
               </span>
             </li>
-          ))} */}
+          ))}
         </ul>
       )}
     </div>
   );
-}
+};
+
+export default Events;

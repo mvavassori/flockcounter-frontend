@@ -919,6 +919,8 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
   const [error, setError] = useState(null);
   const [accessToken, setAccessToken] = useState("");
 
+  const [currentView, setCurrentView] = useState("dashboard");
+
   // Fetch access token when it's available
   useEffect(() => {
     if (data?.backendTokens.accessToken) {
@@ -1113,21 +1115,21 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
         <div className="flex gap-4 mt-6">
           <button
             className={
-              pathname === `/websites/${params.domain}`
+              currentView === "dashboard"
                 ? "border-b-4 border-blue-500 font-semibold px-2 py-1"
                 : "border-b-4 border-transparent font-semibold text-gray-500 hover:text-gray-600 hover:border-gray-600 px-2 py-1"
             }
-            onClick={() => router.push(`/websites/${params.domain}`)}
+            onClick={() => setCurrentView("dashboard")}
           >
             Dashboard
           </button>
           <button
             className={
-              pathname === `/websites/${params.domain}/events`
+              currentView === "events"
                 ? "border-b-4 border-blue-500 font-semibold px-2 py-1"
                 : "border-b-4 border-transparent font-semibold text-gray-500 hover:text-gray-600 hover:border-gray-600 px-2 py-1"
             }
-            onClick={() => router.push(`/websites/${params.domain}/events`)}
+            onClick={() => setCurrentView("events")}
           >
             Events
           </button>
@@ -1150,7 +1152,7 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
       </div>
 
       {/* dashboard component*/}
-      {pathname === `/websites/${params.domain}` && (
+      {currentView === "dashboard" && (
         <div>
           <div className="flex gap-2 flex-wrap">
             {filters.map(
@@ -1199,11 +1201,10 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
       )}
 
       {/* events component */}
-      {pathname === `/websites/${params.domain}/events` && (
+      {currentView === "events" && (
         <div>
           <Events
             domain={params.domain}
-            accessToken={accessToken}
             startDate={startDate}
             endDate={endDate}
           />
