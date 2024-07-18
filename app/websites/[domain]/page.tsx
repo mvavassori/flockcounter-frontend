@@ -1,5 +1,4 @@
 "use client";
-// import { notFound, redirect } from "next/navigation";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 
 import TopStats from "@/components/dashboard/TopStats";
@@ -12,207 +11,10 @@ import Languages from "@/components/dashboard/Languages";
 import Countries from "@/components/dashboard/Countries";
 import Regions from "@/components/dashboard/Regions";
 import Cities from "@/components/dashboard/Cities";
-import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import CloseIcon from "@/components/icons/CloseIcon";
 import Events from "@/components/Events";
 
-import {
-  getTopStats,
-  getPages,
-  getReferrers,
-  getDeviceTypes,
-  getOSes,
-  getBrowsers,
-  getLanguages,
-  getCountries,
-  getRegions,
-  getCities,
-} from "@/service/backendCalls";
-
-const fetchData = async (
-  domain: string,
-  startDateString: string,
-  endDateString: string,
-  token: string,
-  interval: string,
-  page: string,
-  referrer: string,
-  device: string,
-  os: string,
-  browser: string,
-  language: string,
-  country: string,
-  region: string,
-  city: string
-) => {
-  const topStatsData = await getTopStats(
-    domain,
-    startDateString,
-    endDateString,
-    interval,
-    token,
-    page,
-    referrer,
-    device,
-    os,
-    browser,
-    language,
-    country,
-    region,
-    city
-  );
-  const pagesData = await getPages(
-    domain,
-    startDateString,
-    endDateString,
-    token,
-    page,
-    referrer,
-    device,
-    os,
-    browser,
-    language,
-    country,
-    region,
-    city
-  );
-  const referrersData = await getReferrers(
-    domain,
-    startDateString,
-    endDateString,
-    token,
-    page,
-    referrer,
-    device,
-    os,
-    browser,
-    language,
-    country,
-    region,
-    city
-  );
-  const deviceTypesData = await getDeviceTypes(
-    domain,
-    startDateString,
-    endDateString,
-    token,
-    page,
-    referrer,
-    device,
-    os,
-    browser,
-    language,
-    country,
-    region,
-    city
-  );
-  const osesData = await getOSes(
-    domain,
-    startDateString,
-    endDateString,
-    token,
-    page,
-    referrer,
-    device,
-    os,
-    browser,
-    language,
-    country,
-    region,
-    city
-  );
-  const browsersData = await getBrowsers(
-    domain,
-    startDateString,
-    endDateString,
-    token,
-    page,
-    referrer,
-    device,
-    os,
-    browser,
-    language,
-    country,
-    region,
-    city
-  );
-  const languagesData = await getLanguages(
-    domain,
-    startDateString,
-    endDateString,
-    token,
-    page,
-    referrer,
-    device,
-    os,
-    browser,
-    language,
-    country,
-    region,
-    city
-  );
-  const countriesData = await getCountries(
-    domain,
-    startDateString,
-    endDateString,
-    token,
-    page,
-    referrer,
-    device,
-    os,
-    browser,
-    language,
-    country,
-    region,
-    city
-  );
-  const regionsData = await getRegions(
-    domain,
-    startDateString,
-    endDateString,
-    token,
-    page,
-    referrer,
-    device,
-    os,
-    browser,
-    language,
-    country,
-    region,
-    city
-  );
-  const citiesData = await getCities(
-    domain,
-    startDateString,
-    endDateString,
-    token,
-    page,
-    referrer,
-    device,
-    os,
-    browser,
-    language,
-    country,
-    region,
-    city
-  );
-
-  return {
-    topStatsData,
-    pagesData,
-    referrersData,
-    deviceTypesData,
-    osesData,
-    browsersData,
-    languagesData,
-    countriesData,
-    regionsData,
-    citiesData,
-  };
-};
-
-// todo check with different timezones
 const getDateRange = (period: string) => {
   const now = new Date();
   const today = new Date(
@@ -309,8 +111,6 @@ const getDateRange = (period: string) => {
 export default function Dashboard({ params }: { params: { domain: string } }) {
   const { domain } = params;
 
-  const { data } = useSession();
-
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -341,31 +141,10 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
   const [endDate, setEndDate] = useState("");
 
   const [interval, setInterval] = useState("day");
-  const [loading, setLoading] = useState(true);
-  const [apiData, setApiData] = useState({
-    topStatsData: null,
-    pagesData: null,
-    referrersData: null,
-    deviceTypesData: null,
-    osesData: null,
-    browsersData: null,
-    languagesData: null,
-    countriesData: null,
-    regionsData: null,
-    citiesData: null,
-  });
-  const [error, setError] = useState(null);
-  const [accessToken, setAccessToken] = useState("");
 
   const [currentView, setCurrentView] = useState("dashboard");
 
-  // Fetch access token when it's available
-  useEffect(() => {
-    if (data?.backendTokens.accessToken) {
-      setAccessToken(data.backendTokens.accessToken);
-    }
-  }, [data?.backendTokens.accessToken]);
-
+  // Set the selected filters from the URL params
   useEffect(() => {
     setSelectedPage(page || "");
     setSelectedReferrer(referrer || "");
@@ -393,56 +172,7 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
     const { startDateString, endDateString } = getDateRange(selectedPeriod);
     setStartDate(startDateString);
     setEndDate(endDateString);
-
-    const fetchDataAsync = async () => {
-      if (!accessToken) {
-        return;
-      }
-      setLoading(true);
-      setError(null);
-      try {
-        const fetchedData = await fetchData(
-          domain,
-          startDateString,
-          endDateString,
-          accessToken,
-          interval,
-          selectedPage,
-          selectedReferrer,
-          selectedDevice,
-          selectedOs,
-          selectedBrowser,
-          selectedLanguage,
-          selectedCountry,
-          selectedRegion,
-          selectedCity
-        );
-        setApiData(fetchedData);
-      } catch (err: Error | any) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchDataAsync();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    selectedPeriod,
-    domain,
-    accessToken,
-    searchParams,
-    selectedPage,
-    selectedReferrer,
-    selectedDevice,
-    selectedOs,
-    selectedBrowser,
-    selectedLanguage,
-    selectedCountry,
-    selectedRegion,
-    selectedCity,
-  ]);
+  }, [selectedPeriod]);
 
   const handlePeriodChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const existingParams = new URLSearchParams(searchParams);
@@ -496,6 +226,7 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
 
   const clearFilter = (filter: string) => {
     const newParams = new URLSearchParams(searchParams);
+    // remove the filter from the URL
     newParams.delete(filter);
     router.replace(`${pathname}?${newParams.toString()}`);
 
@@ -548,17 +279,25 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
     { label: "Page", value: selectedPage, key: "page" },
   ];
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
+  // props to pass to the dashboard components who need the same props
+  const sharedProps = {
+    domain: domain,
+    startDate: startDate,
+    endDate: endDate,
+    page: selectedPage,
+    referrer: selectedReferrer,
+    device: selectedDevice,
+    os: selectedOs,
+    browser: selectedBrowser,
+    language: selectedLanguage,
+    country: selectedCountry,
+    region: selectedRegion,
+    city: selectedCity,
+  };
 
   return (
     <div className="w-full p-4">
-      <h1 className="pt-8 text-3xl font-semibold">{params.domain}</h1>
+      <h1 className="pt-8 text-3xl font-semibold">{domain}</h1>
       <div className="flex justify-between items-end mt-6 mb-4 align-baseline">
         <div className="flex gap-4 mt-6">
           <button
@@ -625,39 +364,31 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
             )}
           </div>
 
-          {apiData.topStatsData && <TopStats data={apiData.topStatsData} />}
+          <TopStats
+            domain={domain}
+            startDate={startDate}
+            endDate={endDate}
+            interval={interval}
+            page={selectedPage}
+            referrer={selectedReferrer}
+            device={selectedDevice}
+            os={selectedOs}
+            browser={selectedBrowser}
+            language={selectedLanguage}
+            country={selectedCountry}
+            region={selectedRegion}
+            city={selectedCity}
+          />
           <div className="flex flex-wrap gap-4 min-w-full my-12">
-            {/* {apiData?.pagesData && <Pages data={apiData.pagesData} />} */}
-            <Pages
-              domain={params.domain}
-              startDate={startDate}
-              endDate={endDate}
-              page={selectedPage}
-              referrer={selectedReferrer}
-              device={selectedDevice}
-              os={selectedOs}
-              browser={selectedBrowser}
-              language={selectedLanguage}
-              country={selectedCountry}
-              region={selectedRegion}
-              city={selectedCity}
-            />
-            {apiData.referrersData && (
-              <Referrers data={apiData.referrersData} />
-            )}
-            {apiData.deviceTypesData && (
-              <DeviceTypes data={apiData.deviceTypesData} />
-            )}
-            {apiData.osesData && <OSes data={apiData.osesData} />}
-            {apiData.browsersData && <Browsers data={apiData.browsersData} />}
-            {apiData.languagesData && (
-              <Languages data={apiData.languagesData} />
-            )}
-            {apiData.countriesData && (
-              <Countries data={apiData.countriesData} />
-            )}
-            {apiData.regionsData && <Regions data={apiData.regionsData} />}
-            {apiData.citiesData && <Cities data={apiData.citiesData} />}
+            <Pages {...sharedProps} />
+            <Referrers {...sharedProps} />
+            <DeviceTypes {...sharedProps} />
+            <OSes {...sharedProps} />
+            <Browsers {...sharedProps} />
+            <Languages {...sharedProps} />
+            <Countries {...sharedProps} />
+            <Regions {...sharedProps} />
+            <Cities {...sharedProps} />
           </div>
         </div>
       )}
@@ -665,11 +396,7 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
       {/* events component */}
       {currentView === "events" && (
         <div>
-          <Events
-            domain={params.domain}
-            startDate={startDate}
-            endDate={endDate}
-          />
+          <Events domain={domain} startDate={startDate} endDate={endDate} />
         </div>
       )}
     </div>

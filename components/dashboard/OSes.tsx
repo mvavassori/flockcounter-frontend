@@ -1,18 +1,95 @@
-import { useRouter, usePathname, useSearchParams } from "next/navigation";
+"use client";
 
-interface OSesProps {
-  data: {
-    counts: number[];
-    oses: string[];
-  };
+import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import { getOSes } from "@/service/backendCalls";
+import { CommonDashboardComponentProps } from "@/types/commonTypes";
+
+interface OSesData {
+  counts: number[];
+  oses: string[];
 }
 
-const OSes: React.FC<OSesProps> = (props) => {
-  const { data } = props;
+const OSes: React.FC<CommonDashboardComponentProps> = (props) => {
+  const {
+    domain,
+    startDate,
+    endDate,
+    page,
+    referrer,
+    device,
+    os,
+    browser,
+    language,
+    country,
+    region,
+    city,
+  } = props;
+
+  const { data } = useSession();
 
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+
+  const [oses, setOSes] = useState<OSesData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const [accessToken, setAccessToken] = useState("");
+
+  useEffect(() => {
+    if (data?.backendTokens.accessToken) {
+      setAccessToken(data.backendTokens.accessToken);
+    }
+  }, [data?.backendTokens.accessToken]);
+
+  useEffect(() => {
+    if (!accessToken) {
+      return;
+    }
+    setLoading(true);
+    const fetchPages = async () => {
+      try {
+        const OSesData = await getOSes(
+          domain,
+          startDate,
+          endDate,
+          accessToken,
+          page,
+          referrer,
+          device,
+          os,
+          browser,
+          language,
+          country,
+          region,
+          city
+        );
+        setOSes(OSesData);
+      } catch (err: Error | any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPages();
+  }, [
+    domain,
+    startDate,
+    endDate,
+    accessToken,
+    page,
+    referrer,
+    device,
+    os,
+    browser,
+    language,
+    country,
+    region,
+    city,
+  ]);
 
   const handleSelectedOsChange = (os: string) => {
     const existingSearchParams = searchParams.toString();
@@ -23,12 +100,20 @@ const OSes: React.FC<OSesProps> = (props) => {
     });
   };
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
   return (
     <div className="flex-grow w-min-200 bg-slate-200 rounded-lg p-4">
       <h2 className="font-semibold text-lg mb-2">Operating Systems</h2>
-      {data.oses && (
+      {oses && oses.oses && (
         <ul>
-          {data.oses.map((os, index) => (
+          {oses.oses.map((os, index) => (
             <li
               key={index}
               className="flex items-center justify-between cursor-pointer hover:underline"
@@ -36,7 +121,7 @@ const OSes: React.FC<OSesProps> = (props) => {
             >
               <span className="font-semibold text-gray-800">{os}</span>
               <span className="ml-2 text-blue-500 font-bold">
-                {data.counts[index]}
+                {oses.counts[index]}
               </span>
             </li>
           ))}

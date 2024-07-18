@@ -1,18 +1,96 @@
-import { useRouter, usePathname, useSearchParams } from "next/navigation";
+"use client";
 
-interface RegionsProps {
-  data: {
-    counts: number[];
-    regions: string[];
-  };
+import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import { getRegions } from "@/service/backendCalls";
+import { CommonDashboardComponentProps } from "@/types/commonTypes";
+
+interface RegionsData {
+  counts: number[];
+  regions: string[];
 }
 
-const Regions: React.FC<RegionsProps> = (props) => {
-  const { data } = props;
+const Regions: React.FC<CommonDashboardComponentProps> = (props) => {
+  const {
+    domain,
+    startDate,
+    endDate,
+    page,
+    referrer,
+    device,
+    os,
+    browser,
+    language,
+    country,
+    region,
+    city,
+  } = props;
+
+  const { data } = useSession();
 
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+
+  const [regions, setRegions] = useState<RegionsData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const [accessToken, setAccessToken] = useState("");
+
+  useEffect(() => {
+    if (data?.backendTokens.accessToken) {
+      setAccessToken(data.backendTokens.accessToken);
+    }
+  }, [data?.backendTokens.accessToken]);
+
+  useEffect(() => {
+    if (!accessToken) {
+      return;
+    }
+    setLoading(true);
+    const fetchRegions = async () => {
+      try {
+        const regionsData = await getRegions(
+          domain,
+          startDate,
+          endDate,
+          accessToken,
+          page,
+          referrer,
+          device,
+          os,
+          browser,
+          language,
+          country,
+          region,
+          city
+        );
+        setRegions(regionsData);
+        console.log(regionsData);
+      } catch (err: Error | any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchRegions();
+  }, [
+    domain,
+    startDate,
+    endDate,
+    accessToken,
+    page,
+    referrer,
+    device,
+    os,
+    browser,
+    language,
+    country,
+    region,
+    city,
+  ]);
 
   const handleSelectedRegionChange = (region: string) => {
     const existingSearchParams = searchParams.toString();
@@ -23,12 +101,20 @@ const Regions: React.FC<RegionsProps> = (props) => {
     });
   };
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
   return (
     <div className="flex-grow w-min-200 bg-slate-200 rounded-lg p-4">
       <h2 className="font-semibold text-lg mb-2">Regions</h2>
-      {data.regions && (
+      {regions && regions.regions && (
         <ul>
-          {data.regions.map((region, index) => (
+          {regions.regions.map((region, index) => (
             <li
               key={index}
               className="flex items-center justify-between cursor-pointer hover:underline"
@@ -36,7 +122,7 @@ const Regions: React.FC<RegionsProps> = (props) => {
             >
               <span className="font-semibold text-gray-800">{region}</span>
               <span className="ml-2 text-blue-500 font-bold">
-                {data.counts[index]}
+                {regions.counts[index]}
               </span>
             </li>
           ))}

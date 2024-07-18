@@ -1,18 +1,96 @@
-import { useRouter, usePathname, useSearchParams } from "next/navigation";
+"use client";
 
-interface CitiesProps {
-  data: {
-    counts: number[];
-    cities: string[];
-  };
+import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import { getCities } from "@/service/backendCalls";
+import { CommonDashboardComponentProps } from "@/types/commonTypes";
+
+interface CitiesData {
+  counts: number[];
+  cities: string[];
 }
 
-const Cities: React.FC<CitiesProps> = (props) => {
-  const { data } = props;
+const Cities: React.FC<CommonDashboardComponentProps> = (props) => {
+  const {
+    domain,
+    startDate,
+    endDate,
+    page,
+    referrer,
+    device,
+    os,
+    browser,
+    language,
+    country,
+    region,
+    city,
+  } = props;
+
+  const { data } = useSession();
 
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+
+  const [cities, setCities] = useState<CitiesData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const [accessToken, setAccessToken] = useState("");
+
+  useEffect(() => {
+    if (data?.backendTokens.accessToken) {
+      setAccessToken(data.backendTokens.accessToken);
+    }
+  }, [data?.backendTokens.accessToken]);
+
+  useEffect(() => {
+    if (!accessToken) {
+      return;
+    }
+    setLoading(true);
+    const fetchCities = async () => {
+      try {
+        const citiesData = await getCities(
+          domain,
+          startDate,
+          endDate,
+          accessToken,
+          page,
+          referrer,
+          device,
+          os,
+          browser,
+          language,
+          country,
+          region,
+          city
+        );
+        setCities(citiesData);
+        console.log(citiesData);
+      } catch (err: Error | any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCities();
+  }, [
+    domain,
+    startDate,
+    endDate,
+    accessToken,
+    page,
+    referrer,
+    device,
+    os,
+    browser,
+    language,
+    country,
+    region,
+    city,
+  ]);
 
   const handleSelectedCityChange = (city: string) => {
     const existingSearchParams = searchParams.toString();
@@ -23,12 +101,20 @@ const Cities: React.FC<CitiesProps> = (props) => {
     });
   };
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
   return (
     <div className="flex-grow w-min-200 bg-slate-200 rounded-lg p-4">
       <h2 className="font-semibold text-lg mb-2">Cities</h2>
-      {data.cities && (
+      {cities && cities.cities && (
         <ul>
-          {data.cities.map((city, index) => (
+          {cities.cities.map((city, index) => (
             <li
               key={index}
               className="flex items-center justify-between cursor-pointer hover:underline"
@@ -36,7 +122,7 @@ const Cities: React.FC<CitiesProps> = (props) => {
             >
               <span className="font-semibold text-gray-800">{city}</span>
               <span className="ml-2 text-blue-500 font-bold">
-                {data.counts[index]}
+                {cities.counts[index]}
               </span>
             </li>
           ))}

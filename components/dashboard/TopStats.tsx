@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Line } from "react-chartjs-2";
+import { useSession } from "next-auth/react";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -12,19 +13,35 @@ import {
   Tooltip,
 } from "chart.js";
 
+import { getTopStats } from "@/service/backendCalls";
+
 interface PerIntervalStats {
   [key: string]: { count: number; period: string }[];
 }
 
 interface TopStatsProps {
-  data: {
-    aggregates: {
-      medianVisitDuration: string;
-      totalVisits: number;
-      uniqueVisitors: number;
-    };
-    perIntervalStats: PerIntervalStats;
+  domain: string;
+  startDate: string;
+  endDate: string;
+  interval: string;
+  page: string;
+  referrer: string;
+  device: string;
+  os: string;
+  browser: string;
+  language: string;
+  country: string;
+  region: string;
+  city: string;
+}
+
+interface TopStatsData {
+  aggregates: {
+    medianVisitDuration: string;
+    totalVisits: number;
+    uniqueVisitors: number;
   };
+  perIntervalStats: PerIntervalStats;
 }
 
 ChartJS.register(
@@ -37,14 +54,100 @@ ChartJS.register(
 );
 
 const TopStats: React.FC<TopStatsProps> = (props) => {
-  const { data } = props;
+  const {
+    domain,
+    startDate,
+    endDate,
+    interval,
+    page,
+    referrer,
+    device,
+    os,
+    browser,
+    language,
+    country,
+    region,
+    city,
+  } = props;
 
   const [selectedMetric, setSelectedMetric] = useState<
     "totalVisits" | "uniqueVisitors" | "medianVisitDuration"
   >("totalVisits");
 
+  const { data } = useSession();
+
+  const [topStats, setTopStats] = useState<TopStatsData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const [accessToken, setAccessToken] = useState("");
+
+  useEffect(() => {
+    if (data?.backendTokens.accessToken) {
+      setAccessToken(data.backendTokens.accessToken);
+    }
+  }, [data?.backendTokens.accessToken]);
+
+  useEffect(() => {
+    if (!accessToken) {
+      return;
+    }
+    setLoading(true);
+    const fetchTopStats = async () => {
+      try {
+        const topStatsData = await getTopStats(
+          domain,
+          startDate,
+          endDate,
+          interval,
+          accessToken,
+          page,
+          referrer,
+          device,
+          os,
+          browser,
+          language,
+          country,
+          region,
+          city
+        );
+        setTopStats(topStatsData);
+      } catch (err: Error | any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchTopStats();
+  }, [
+    domain,
+    startDate,
+    endDate,
+    interval,
+    accessToken,
+    page,
+    referrer,
+    device,
+    os,
+    browser,
+    language,
+    country,
+    region,
+    city,
+  ]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
   const chartData = {
-    labels: data.perIntervalStats[selectedMetric].map((item) => item.period),
+    labels: topStats?.perIntervalStats[selectedMetric].map(
+      (item) => item.period
+    ),
     datasets: [
       {
         label:
@@ -53,7 +156,7 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
             : selectedMetric === "uniqueVisitors"
             ? "Unique visitors"
             : "Median visit duration",
-        data: data.perIntervalStats[selectedMetric].map((item) => {
+        data: topStats?.perIntervalStats[selectedMetric].map((item) => {
           if (
             selectedMetric === "medianVisitDuration" &&
             "medianTimeSpent" in item
@@ -125,7 +228,7 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
               : "font-semibold text-lg cursor-pointer"
           }
         >
-          Total visits: {data.aggregates.totalVisits}
+          Total visits: {topStats?.aggregates.totalVisits}
         </li>
         <li
           onClick={() => handleMetricChange("uniqueVisitors")}
@@ -135,7 +238,7 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
               : "font-semibold text-lg cursor-pointer"
           }
         >
-          Unique visitors: {data.aggregates.uniqueVisitors}
+          Unique visitors: {topStats?.aggregates.uniqueVisitors}
         </li>
         <li
           onClick={() => handleMetricChange("medianVisitDuration")}
@@ -145,7 +248,7 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
               : "font-semibold text-lg cursor-pointer"
           }
         >
-          Median visit duration: {data.aggregates.medianVisitDuration}
+          Median visit duration: {topStats?.aggregates.medianVisitDuration}
         </li>
       </ul>
       <div className="flex justify-center bg-white rounded-b-lg pb-4 shadow-lg">

@@ -4,29 +4,14 @@ import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { getPages } from "@/service/backendCalls";
-
-interface PagesProps {
-  domain: string;
-  startDate: string;
-  endDate: string;
-  page: string;
-  referrer: string;
-  device: string;
-  os: string;
-  browser: string;
-  language: string;
-  country: string;
-  region: string;
-  city: string;
-}
+import { CommonDashboardComponentProps } from "@/types/commonTypes";
 
 interface PagesData {
   counts: number[];
   paths: string[];
 }
 
-const Pages: React.FC<PagesProps> = (props) => {
-  // const { data } = props;
+const Pages: React.FC<CommonDashboardComponentProps> = (props) => {
   const {
     domain,
     startDate,
@@ -83,7 +68,6 @@ const Pages: React.FC<PagesProps> = (props) => {
           city
         );
         setPages(pagesData);
-        console.log(pagesData);
       } catch (err: Error | any) {
         setError(err.message);
       } finally {
@@ -115,6 +99,14 @@ const Pages: React.FC<PagesProps> = (props) => {
       scroll: false,
     });
   };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   return (
     <div className="flex-grow w-min-100 bg-slate-200 rounded-lg p-4 max-w-sm">
