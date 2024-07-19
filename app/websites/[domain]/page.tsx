@@ -1,4 +1,6 @@
 "use client";
+
+import { useEffect, useState } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 
 import TopStats from "@/components/dashboard/TopStats";
@@ -11,7 +13,6 @@ import Languages from "@/components/dashboard/Languages";
 import Countries from "@/components/dashboard/Countries";
 import Regions from "@/components/dashboard/Regions";
 import Cities from "@/components/dashboard/Cities";
-import { useEffect, useState } from "react";
 import CloseIcon from "@/components/icons/CloseIcon";
 import Events from "@/components/Events";
 
@@ -228,7 +229,9 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
     const newParams = new URLSearchParams(searchParams);
     // remove the filter from the URL
     newParams.delete(filter);
-    router.replace(`${pathname}?${newParams.toString()}`);
+    router.replace(`${pathname}?${newParams.toString()}`, {
+      scroll: false,
+    });
 
     // Also clear the state
     switch (filter) {
@@ -338,7 +341,7 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
         </select>
       </div>
 
-      {/* dashboard component*/}
+      {/* dashboard components*/}
       {currentView === "dashboard" && (
         <div>
           <div className="flex gap-2 flex-wrap">
@@ -368,7 +371,7 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
             domain={domain}
             startDate={startDate}
             endDate={endDate}
-            interval={interval}
+            interval={interval} // here i also need to pass the interval (hour,day,month)
             page={selectedPage}
             referrer={selectedReferrer}
             device={selectedDevice}

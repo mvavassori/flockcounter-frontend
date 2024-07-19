@@ -14,6 +14,7 @@ import {
 } from "chart.js";
 
 import { getTopStats } from "@/service/backendCalls";
+import Spinner from "../Spinner";
 
 interface PerIntervalStats {
   [key: string]: { count: number; period: string }[];
@@ -136,14 +137,6 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
     city,
   ]);
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
-
   const chartData = {
     labels: topStats?.perIntervalStats[selectedMetric].map(
       (item) => item.period
@@ -217,8 +210,34 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
     setSelectedMetric(metric);
   };
 
+  // skeleton loader
+  if (loading) {
+    return (
+      <div className="w-full mt-8">
+        <ul className="flex gap-4 bg-white rounded-t-lg p-4">
+          <li className="font-semibold text-gray-600 text-lg flex items-baseline gap-2">
+            Total visits: <Spinner />
+          </li>
+          <li className="font-semibold text-gray-600 text-lg flex items-baseline gap-2">
+            Unique visitors: <Spinner />
+          </li>
+          <li className="font-semibold text-gray-600 text-lg flex items-baseline gap-2">
+            Median visit duration: <Spinner />
+          </li>
+        </ul>
+        <div className="flex justify-center items-center pb-4 h-[512px]">
+          <Spinner />
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
   return (
-    <div className="w-full mt-8 shadow-lg">
+    <div className="w-full mt-8">
       <ul className="flex gap-4 bg-white rounded-t-lg p-4">
         <li
           onClick={() => handleMetricChange("totalVisits")}
@@ -251,7 +270,7 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
           Median visit duration: {topStats?.aggregates.medianVisitDuration}
         </li>
       </ul>
-      <div className="flex justify-center bg-white rounded-b-lg pb-4 shadow-lg">
+      <div className="flex justify-center bg-white pb-4">
         <Line options={options} data={chartData} />
       </div>
     </div>

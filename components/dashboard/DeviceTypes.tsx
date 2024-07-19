@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { getDeviceTypes } from "@/service/backendCalls";
 import { CommonDashboardComponentProps } from "@/types/commonTypes";
+import Spinner from "@/components/Spinner";
 
 interface DeviceTypesData {
   counts: number[];
@@ -102,7 +103,14 @@ const DeviceTypes: React.FC<CommonDashboardComponentProps> = (props) => {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex-grow w-min-100 bg-slate-200 rounded-lg p-4 max-w-sm">
+        <h2 className="font-semibold mb-2 text-lg">Devices</h2>
+        <div className="flex justify-center items-center pb-4 h-[200px]">
+          <Spinner />
+        </div>
+      </div>
+    );
   }
 
   if (error) {
