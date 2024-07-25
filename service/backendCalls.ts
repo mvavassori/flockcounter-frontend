@@ -73,7 +73,9 @@ async function getPages(
   language: string,
   country: string,
   region: string,
-  city: string
+  city: string,
+  limit: number,
+  offset: number
 ) {
   const params = new URLSearchParams({
     startDate: startDate,
@@ -87,6 +89,8 @@ async function getPages(
     country: country,
     region: region,
     city: city,
+    limit: String(limit),
+    offset: String(offset),
   });
 
   const headers = new Headers();
