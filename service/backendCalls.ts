@@ -1,3 +1,5 @@
+import { signOut } from "next-auth/react";
+
 async function getTopStats(
   domain: string,
   startDate: string,
@@ -37,26 +39,24 @@ async function getTopStats(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/dashboard/top-stats/${domain}?${params}`,
       { headers }
     );
-    const text = await response.text();
 
     if (!response.ok) {
+      const text = await response.text();
       console.error(`HTTP error! status: ${response.status}, body: ${text}`);
-      let errorMessage = `HTTP error! status: ${response.status}`;
-      if (response.status === 404) {
-        // errorMessage = "Invalid domain";
-        console.error(text);
-      } else if (response.status === 401) {
-        errorMessage = "Access denied";
-        // todo - redirect to login
+      if (response.status === 401) {
+        // signOut(); // added to sign out the user when on the dashboard component(s)
+        throw new Error("Unauthorized");
+      } else if (response.status === 404) {
+        throw new Error("Invalid domain");
+      } else {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-      return errorMessage;
     }
-    const data = JSON.parse(text);
-    console.log(data);
+    const data = await response.json();
     return data;
   } catch (error) {
     console.error("Network error:", error);
-    return "Network error, please check your connection and try again.";
+    throw error; // Re-throw the error to be caught in the useEffect
   }
 }
 
@@ -101,23 +101,22 @@ async function getPages(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/dashboard/pages/${domain}?${params}`,
       { headers }
     );
-    const text = await response.text();
-
     if (!response.ok) {
+      const text = await response.text();
       console.error(`HTTP error! status: ${response.status}, body: ${text}`);
-      let errorMessage = `HTTP error! status: ${response.status}`;
-      if (response.status === 404) {
-        errorMessage = "Invalid domain";
-      } else if (response.status === 401) {
-        errorMessage = "Access denied";
+      if (response.status === 401) {
+        throw new Error("Unauthorized");
+      } else if (response.status === 404) {
+        throw new Error("Invalid domain");
+      } else {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-      return errorMessage;
     }
-    const data = JSON.parse(text);
+    const data = await response.json();
     return data;
   } catch (error) {
     console.error("Network error:", error);
-    return "Network error, please check your connection and try again.";
+    throw error; // Re-throw the error to be caught in the useEffect
   }
 }
 
@@ -158,23 +157,22 @@ async function getReferrers(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/dashboard/referrers/${domain}?${params}`,
       { headers }
     );
-    const text = await response.text();
-
     if (!response.ok) {
+      const text = await response.text();
       console.error(`HTTP error! status: ${response.status}, body: ${text}`);
-      let errorMessage = `HTTP error! status: ${response.status}`;
-      if (response.status === 404) {
-        errorMessage = "Invalid domain";
-      } else if (response.status === 401) {
-        errorMessage = "Access denied";
+      if (response.status === 401) {
+        throw new Error("Unauthorized");
+      } else if (response.status === 404) {
+        throw new Error("Invalid domain");
+      } else {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-      return errorMessage;
     }
-    const data = JSON.parse(text);
+    const data = await response.json();
     return data;
   } catch (error) {
     console.error("Network error:", error);
-    return "Network error, please check your connection and try again.";
+    throw error; // Re-throw the error to be caught in the useEffect
   }
 }
 
@@ -215,23 +213,22 @@ async function getDeviceTypes(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/dashboard/device-types/${domain}?${params}`,
       { headers }
     );
-    const text = await response.text();
-
     if (!response.ok) {
+      const text = await response.text();
       console.error(`HTTP error! status: ${response.status}, body: ${text}`);
-      let errorMessage = `HTTP error! status: ${response.status}`;
-      if (response.status === 404) {
-        errorMessage = "Invalid domain";
-      } else if (response.status === 401) {
-        errorMessage = "Access denied";
+      if (response.status === 401) {
+        throw new Error("Unauthorized");
+      } else if (response.status === 404) {
+        throw new Error("Invalid domain");
+      } else {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-      return errorMessage;
     }
-    const data = JSON.parse(text);
+    const data = await response.json();
     return data;
   } catch (error) {
     console.error("Network error:", error);
-    return "Network error, please check your connection and try again.";
+    throw error; // Re-throw the error to be caught in the useEffect
   }
 }
 
@@ -272,23 +269,22 @@ async function getOSes(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/dashboard/oses/${domain}?${params}`,
       { headers }
     );
-    const text = await response.text();
-
     if (!response.ok) {
+      const text = await response.text();
       console.error(`HTTP error! status: ${response.status}, body: ${text}`);
-      let errorMessage = `HTTP error! status: ${response.status}`;
-      if (response.status === 404) {
-        errorMessage = "Invalid domain";
-      } else if (response.status === 401) {
-        errorMessage = "Access denied";
+      if (response.status === 401) {
+        throw new Error("Unauthorized");
+      } else if (response.status === 404) {
+        throw new Error("Invalid domain");
+      } else {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-      return errorMessage;
     }
-    const data = JSON.parse(text);
+    const data = await response.json();
     return data;
   } catch (error) {
     console.error("Network error:", error);
-    return "Network error, please check your connection and try again.";
+    throw error; // Re-throw the error to be caught in the useEffect
   }
 }
 
@@ -329,23 +325,22 @@ async function getBrowsers(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/dashboard/browsers/${domain}?${params}`,
       { headers }
     );
-    const text = await response.text();
-
     if (!response.ok) {
+      const text = await response.text();
       console.error(`HTTP error! status: ${response.status}, body: ${text}`);
-      let errorMessage = `HTTP error! status: ${response.status}`;
-      if (response.status === 404) {
-        errorMessage = "Invalid domain";
-      } else if (response.status === 401) {
-        errorMessage = "Access denied";
+      if (response.status === 401) {
+        throw new Error("Unauthorized");
+      } else if (response.status === 404) {
+        throw new Error("Invalid domain");
+      } else {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-      return errorMessage;
     }
-    const data = JSON.parse(text);
+    const data = await response.json();
     return data;
   } catch (error) {
     console.error("Network error:", error);
-    return "Network error, please check your connection and try again.";
+    throw error; // Re-throw the error to be caught in the useEffect
   }
 }
 
@@ -386,23 +381,22 @@ async function getLanguages(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/dashboard/languages/${domain}?${params}`,
       { headers }
     );
-    const text = await response.text();
-
     if (!response.ok) {
+      const text = await response.text();
       console.error(`HTTP error! status: ${response.status}, body: ${text}`);
-      let errorMessage = `HTTP error! status: ${response.status}`;
-      if (response.status === 404) {
-        errorMessage = "Invalid domain";
-      } else if (response.status === 401) {
-        errorMessage = "Access denied";
+      if (response.status === 401) {
+        throw new Error("Unauthorized");
+      } else if (response.status === 404) {
+        throw new Error("Invalid domain");
+      } else {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-      return errorMessage;
     }
-    const data = JSON.parse(text);
+    const data = await response.json();
     return data;
   } catch (error) {
     console.error("Network error:", error);
-    return "Network error, please check your connection and try again.";
+    throw error; // Re-throw the error to be caught in the useEffect
   }
 }
 
@@ -443,23 +437,22 @@ async function getCountries(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/dashboard/countries/${domain}?${params}`,
       { headers }
     );
-    const text = await response.text();
-
     if (!response.ok) {
+      const text = await response.text();
       console.error(`HTTP error! status: ${response.status}, body: ${text}`);
-      let errorMessage = `HTTP error! status: ${response.status}`;
-      if (response.status === 404) {
-        errorMessage = "Invalid domain";
-      } else if (response.status === 401) {
-        errorMessage = "Access denied";
+      if (response.status === 401) {
+        throw new Error("Unauthorized");
+      } else if (response.status === 404) {
+        throw new Error("Invalid domain");
+      } else {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-      return errorMessage;
     }
-    const data = JSON.parse(text);
+    const data = await response.json();
     return data;
   } catch (error) {
     console.error("Network error:", error);
-    return "Network error, please check your connection and try again.";
+    throw error; // Re-throw the error to be caught in the useEffect
   }
 }
 
@@ -500,23 +493,22 @@ async function getRegions(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/dashboard/regions/${domain}?${params}`,
       { headers }
     );
-    const text = await response.text();
-
     if (!response.ok) {
+      const text = await response.text();
       console.error(`HTTP error! status: ${response.status}, body: ${text}`);
-      let errorMessage = `HTTP error! status: ${response.status}`;
-      if (response.status === 404) {
-        errorMessage = "Invalid domain";
-      } else if (response.status === 401) {
-        errorMessage = "Access denied";
+      if (response.status === 401) {
+        throw new Error("Unauthorized");
+      } else if (response.status === 404) {
+        throw new Error("Invalid domain");
+      } else {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-      return errorMessage;
     }
-    const data = JSON.parse(text);
+    const data = await response.json();
     return data;
   } catch (error) {
     console.error("Network error:", error);
-    return "Network error, please check your connection and try again.";
+    throw error; // Re-throw the error to be caught in the useEffect
   }
 }
 
@@ -557,23 +549,22 @@ async function getCities(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/dashboard/cities/${domain}?${params}`,
       { headers }
     );
-    const text = await response.text();
-
     if (!response.ok) {
+      const text = await response.text();
       console.error(`HTTP error! status: ${response.status}, body: ${text}`);
-      let errorMessage = `HTTP error! status: ${response.status}`;
-      if (response.status === 404) {
-        errorMessage = "Invalid domain";
-      } else if (response.status === 401) {
-        errorMessage = "Access denied";
+      if (response.status === 401) {
+        throw new Error("Unauthorized");
+      } else if (response.status === 404) {
+        throw new Error("Invalid domain");
+      } else {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-      return errorMessage;
     }
-    const data = JSON.parse(text);
+    const data = await response.json();
     return data;
   } catch (error) {
     console.error("Network error:", error);
-    return "Network error, please check your connection and try again.";
+    throw error; // Re-throw the error to be caught in the useEffect
   }
 }
 
@@ -596,23 +587,23 @@ async function getEvents(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/events/${domain}?${params}`,
       { headers }
     );
-    const text = await response.text();
-
     if (!response.ok) {
+      const text = await response.text();
       console.error(`HTTP error! status: ${response.status}, body: ${text}`);
-      let errorMessage = `HTTP error! status: ${response.status}`;
-      if (response.status === 404) {
-        errorMessage = "Invalid domain";
-      } else if (response.status === 401) {
-        errorMessage = "Access denied";
+      if (response.status === 401) {
+        // signOut(); // added to sign out the user when on the events component
+        throw new Error("Unauthorized");
+      } else if (response.status === 404) {
+        throw new Error("Invalid domain");
+      } else {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-      return errorMessage;
     }
-    const data = JSON.parse(text);
+    const data = await response.json();
     return data;
   } catch (error) {
     console.error("Network error:", error);
-    return "Network error, please check your connection and try again.";
+    throw error; // Re-throw the error to be caught in the useEffect
   }
 }
 
