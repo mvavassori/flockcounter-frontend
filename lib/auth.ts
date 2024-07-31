@@ -1,27 +1,39 @@
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { JWT } from "next-auth/jwt";
+import { signOut } from "next-auth/react";
 
 async function refreshToken(token: JWT): Promise<JWT> {
-  const res = await fetch("http://localhost:8080/api/user/refresh-token", {
-    method: "POST",
-    headers: {
-      authorization: `Refresh ${token.backendTokens.refreshToken}`,
-    },
-  });
-
-  console.log("refreshed");
-
-  const response = await res.json();
-
-  if (!res.ok) {
-    throw new Error(response.message);
+  try {
+    const res = await fetch("http://localhost:8080/api/user/refresh-token", {
+      method: "POST",
+      headers: {
+        authorization: `Refresh ${token.backendTokens.refreshToken}`,
+      },
+    });
+    console.log("refreshToken called");
+    const response = await res.json();
+    console.log("response", response);
+    if (!res.ok) {
+      throw new Error(response.message);
+    }
+    // if (
+    //   response.message === "invalid refresh token" ||
+    //   response.message === "refresh token expired"
+    // ) {
+    //   signOut();
+    // }
+    return {
+      ...token,
+      backendTokens: response,
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      ...token,
+      error: "RefreshAccessTokenError" as const,
+    };
   }
-
-  return {
-    ...token,
-    backendTokens: response,
-  };
 }
 
 export const authOptions: NextAuthOptions = {
@@ -53,25 +65,37 @@ export const authOptions: NextAuthOptions = {
         // e.g. return { id: 1, name: 'J Smith', email: 'jsmith@example.com' }
         // You can also use the `req` object to obtain additional parameters
         // (i.e., the request IP address)
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/user/login`,
-          {
-            method: "POST",
-            body: JSON.stringify(credentials),
-            headers: { "Content-Type": "application/json" },
-          }
-        );
-        const user = await res.json();
 
-        // If no error and we have user data, return it
-        if (res.ok && user) {
-          return user;
+        try {
+          const res = await fetch(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/user/login`,
+            {
+              method: "POST",
+              body: JSON.stringify(credentials),
+              headers: { "Content-Type": "application/json" },
+            }
+          );
+          const user = await res.json();
+
+          // If no error and we have user data, return it
+          if (res.ok && user) {
+            return user;
+          }
+
+          // Return null if user data could not be retrieved
+          return null;
+        } catch (error) {
+          console.error(error);
+          return null;
         }
-        // Return null if user data could not be retrieved
-        return null;
       },
     }),
   ],
+  // session: {
+  //   strategy: "jwt",
+  //   maxAge: 10, // 10 seconds
+  //   // updateAge: 5, // 5 seconds
+  // },
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
@@ -82,25 +106,27 @@ export const authOptions: NextAuthOptions = {
       const currentTimeInMilliseconds = Date.now();
       const expirationTimeInMilliseconds = token.backendTokens.expiresAt * 1000;
 
-      console.log("curr", currentTimeInMilliseconds);
-      console.log("exp", expirationTimeInMilliseconds);
+      console.log("curr", new Date(currentTimeInMilliseconds).toLocaleString());
+      console.log(
+        "exp",
+        new Date(expirationTimeInMilliseconds).toLocaleString()
+      );
 
       if (currentTimeInMilliseconds < expirationTimeInMilliseconds) {
         console.log("token not expired");
-        return token;
+        return token; // return previous token
       }
 
       console.log("token expired");
       return await refreshToken(token);
     },
 
-    async session({ session, token, user }) {
+    async session({ session, token }) {
       if (token) {
         session.user = token.user;
         session.backendTokens = token.backendTokens;
       }
-      // session.user = token.user;
-      // session.backendTokens = token.backendTokens;
+
       return session;
     },
   },

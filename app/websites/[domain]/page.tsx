@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { signIn, useSession } from "next-auth/react";
 
 import TopStats from "@/components/dashboard/TopStats";
 import Pages from "@/components/dashboard/Pages";
@@ -111,10 +112,11 @@ const getDateRange = (period: string) => {
 
 export default function Dashboard({ params }: { params: { domain: string } }) {
   const { domain } = params;
-
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
+
+  const { data: session } = useSession();
 
   let period = searchParams.get("period");
   let page = searchParams.get("page");
@@ -144,6 +146,12 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
   const [interval, setInterval] = useState("day");
 
   const [currentView, setCurrentView] = useState("dashboard");
+
+  useEffect(() => {
+    if (session?.error === "RefreshAccessTokenError") {
+      signIn();
+    }
+  }, [session]);
 
   // Set the selected filters from the URL params
   useEffect(() => {

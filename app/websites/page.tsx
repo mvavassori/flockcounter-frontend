@@ -1,6 +1,7 @@
 import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 interface Website {
   id: number;
@@ -19,44 +20,70 @@ async function getUserWebsites(userId: number, token: string) {
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/websites/user/${userId}`,
       { headers }
     );
-    const text = await response.text();
 
     if (!response.ok) {
+      const text = await response.text();
       console.error(`HTTP error! status: ${response.status}, body: ${text}`);
-      let errorMessage = `HTTP error! status: ${response.status}`;
-      if (response.status === 404) {
-        errorMessage = "Invalid id";
-      } else if (response.status === 401) {
-        errorMessage = "Access denied";
+      if (response.status === 401) {
+        throw new Error("Unauthorized");
+      } else if (response.status === 404) {
+        throw new Error("Invalid id");
+      } else {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-      return errorMessage;
     }
-    const data = JSON.parse(text);
+    const data = await response.json();
     return data;
   } catch (error) {
-    console.error("Network error:", error);
-    return "Network error, please check your connection and try again.";
+    // console.error("Network error:", error);
+    throw error;
   }
 }
 
 export default async function AllWebsites() {
   const session = await getServerSession(authOptions);
-  const websites = await getUserWebsites(
-    Number(session?.user.id),
-    session?.backendTokens.accessToken || ""
-  );
-  console.log(websites);
+  if (!session?.user) {
+    // redirect("/signin");
+  }
+
+  let websites: Website[] = [];
+  let error: string | null = null;
+
+  try {
+    const data = await getUserWebsites(
+      Number(session?.user.id),
+      session?.backendTokens.accessToken || ""
+    );
+    if (Array.isArray(data)) {
+      websites = data;
+    } else {
+      error = data;
+    }
+  } catch (err: Error | any) {
+    error = err.message;
+  }
+
+  // const websites = await getUserWebsites(
+  //   Number(session?.user.id),
+  //   session?.backendTokens.accessToken || ""
+  // );
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
   return (
     <div className="container mx-auto p-4 pt-6 md:p-6 lg:p-12">
       <h1 className="text-2xl font-bold mb-4">Your Websites</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {websites.map((website: Website) => (
-          <Link key={website.id} href={`/websites/${website.domain}`}>
-            <div className="bg-white shadow-md rounded p-4 border-2 border-black hover:border-blue-500">
-              <h2 className="text-lg font-bold">{website.domain}</h2>
-            </div>
-          </Link>
-        ))}
+        {websites !== null &&
+          websites?.map((website: Website) => (
+            <Link key={website.id} href={`/websites/${website.domain}`}>
+              <div className="bg-white shadow-md rounded p-4 border-2 border-black hover:border-blue-500">
+                <h2 className="text-lg font-bold">{website.domain}</h2>
+              </div>
+            </Link>
+          ))}
       </div>
     </div>
   );
