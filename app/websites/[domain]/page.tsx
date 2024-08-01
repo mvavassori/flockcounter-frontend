@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
-import { signIn, useSession } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 
 import TopStats from "@/components/dashboard/TopStats";
 import Pages from "@/components/dashboard/Pages";
@@ -116,7 +116,7 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
 
-  const { data: session } = useSession();
+  const { data: session } = useSession({ required: true });
 
   let period = searchParams.get("period");
   let page = searchParams.get("page");
@@ -149,9 +149,10 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
 
   useEffect(() => {
     if (session?.error === "RefreshAccessTokenError") {
-      signIn();
+      console.log("RefreshAccessTokenError pages.tsx");
+      signOut();
     }
-  }, [session]);
+  }, [session, router]);
 
   // Set the selected filters from the URL params
   useEffect(() => {

@@ -1,5 +1,6 @@
 import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
+import SignOutButton from "@/components/SignOutButton";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
@@ -42,8 +43,9 @@ async function getUserWebsites(userId: number, token: string) {
 
 export default async function AllWebsites() {
   const session = await getServerSession(authOptions);
-  if (!session?.user) {
-    // redirect("/signin");
+  if (session?.error === "RefreshAccessTokenError") {
+    console.log("RefreshAccessTokenError allWebsites.tsx");
+    redirect("/auth/signout");
   }
 
   let websites: Website[] = [];
@@ -63,13 +65,13 @@ export default async function AllWebsites() {
     error = err.message;
   }
 
-  // const websites = await getUserWebsites(
-  //   Number(session?.user.id),
-  //   session?.backendTokens.accessToken || ""
-  // );
-
   if (error) {
-    return <div>Error: {error}</div>;
+    return (
+      <div>
+        <p>Error: {error}</p>
+        <SignOutButton />
+      </div>
+    );
   }
 
   return (

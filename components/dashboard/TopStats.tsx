@@ -14,7 +14,7 @@ import {
 } from "chart.js";
 
 import { getTopStats } from "@/service/backendCalls";
-import Spinner from "../Spinner";
+import Spinner from "@/components/Spinner";
 
 interface PerIntervalStats {
   [key: string]: { count: number; period: string }[];
@@ -75,26 +75,32 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
     "totalVisits" | "uniqueVisitors" | "medianVisitDuration"
   >("totalVisits");
 
-  const { data } = useSession();
+  const { data, update } = useSession();
 
   const [topStats, setTopStats] = useState<TopStatsData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
   const [accessToken, setAccessToken] = useState("");
+
+  const [shouldRefetch, setShouldRefetch] = useState(false);
+  const [triggerFetch, setTriggerFetch] = useState(false);
 
   useEffect(() => {
     if (data?.backendTokens.accessToken) {
       setAccessToken(data.backendTokens.accessToken);
+      if (shouldRefetch) {
+        setShouldRefetch(false);
+        setTriggerFetch(true); // Set triggerFetch to true to refetch data
+      }
     }
-  }, [data?.backendTokens.accessToken]);
+  }, [data?.backendTokens.accessToken, shouldRefetch]);
 
   useEffect(() => {
-    if (!accessToken) {
-      return;
-    }
-    setLoading(true);
     const fetchTopStats = async () => {
+      if (!accessToken) {
+        return;
+      }
+      setLoading(true);
       try {
         const topStatsData = await getTopStats(
           domain,
@@ -114,12 +120,21 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
         );
         setTopStats(topStatsData);
       } catch (err: Error | any) {
-        setError(err.message);
+        if (err.message === "Unauthorized") {
+          await update();
+          setShouldRefetch(true); // Set shouldRefetch to true to refetch after updating session
+        } else {
+          setError(err.message);
+        }
       } finally {
         setLoading(false);
       }
     };
-    fetchTopStats();
+
+    if (triggerFetch || accessToken) {
+      setTriggerFetch(false);
+      fetchTopStats();
+    }
   }, [
     domain,
     startDate,
@@ -135,10 +150,11 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
     country,
     region,
     city,
+    triggerFetch, // Add triggerFetch to the dependencies array
   ]);
 
   const chartData = {
-    labels: topStats?.perIntervalStats[selectedMetric].map(
+    labels: topStats?.perIntervalStats?.[selectedMetric]?.map(
       (item) => item.period
     ),
     datasets: [
@@ -149,7 +165,7 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
             : selectedMetric === "uniqueVisitors"
             ? "Unique visitors"
             : "Median visit duration",
-        data: topStats?.perIntervalStats[selectedMetric].map((item) => {
+        data: topStats?.perIntervalStats?.[selectedMetric]?.map((item) => {
           if (
             selectedMetric === "medianVisitDuration" &&
             "medianTimeSpent" in item
@@ -247,7 +263,7 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
               : "font-semibold text-lg cursor-pointer"
           }
         >
-          Total visits: {topStats?.aggregates.totalVisits}
+          Total visits: {topStats?.aggregates?.totalVisits}
         </li>
         <li
           onClick={() => handleMetricChange("uniqueVisitors")}
@@ -257,7 +273,7 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
               : "font-semibold text-lg cursor-pointer"
           }
         >
-          Unique visitors: {topStats?.aggregates.uniqueVisitors}
+          Unique visitors: {topStats?.aggregates?.uniqueVisitors}
         </li>
         <li
           onClick={() => handleMetricChange("medianVisitDuration")}
@@ -267,7 +283,7 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
               : "font-semibold text-lg cursor-pointer"
           }
         >
-          Median visit duration: {topStats?.aggregates.medianVisitDuration}
+          Median visit duration: {topStats?.aggregates?.medianVisitDuration}
         </li>
       </ul>
       <div className="flex justify-center bg-white pb-4">

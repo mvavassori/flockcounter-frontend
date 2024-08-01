@@ -12,9 +12,9 @@ import RightArrow from "@/components/icons/RightArrow";
 interface PagesData {
   counts: number[];
   paths: string[];
+  totalCount: number;
 }
 
-// todo: add pagination
 const Pages: React.FC<CommonDashboardComponentProps> = (props) => {
   const {
     domain,
@@ -163,22 +163,26 @@ const Pages: React.FC<CommonDashboardComponentProps> = (props) => {
           ))}
         </ul>
       )}
-      {/* TODO: Pagination */}
-      <div className="flex justify-left items-center gap-2 mt-4">
-        <button
-          onClick={handlePrevPage}
-          className={pageNumber > 1 ? "cursor-pointer" : "opacity-50"}
-        >
-          <LeftArrow />
-        </button>
-        <span>{pageNumber}</span>
-        <button
-          onClick={handleNextPage}
-          className={pageNumber < totalPages ? "cursor-pointer" : "opacity-50"}
-        >
-          <RightArrow />
-        </button>
-      </div>
+      {/* Pagination */}
+      {pages && pages.totalCount > 10 && (
+        <div className="flex justify-left items-center gap-2 mt-4">
+          <button
+            onClick={handlePrevPage}
+            className={pageNumber > 1 ? "cursor-pointer" : "opacity-50"}
+          >
+            <LeftArrow />
+          </button>
+          <span>{pageNumber}</span>
+          <button
+            onClick={handleNextPage}
+            className={
+              pageNumber < totalPages ? "cursor-pointer" : "opacity-50"
+            }
+          >
+            <RightArrow />
+          </button>
+        </div>
+      )}
     </div>
   );
 };

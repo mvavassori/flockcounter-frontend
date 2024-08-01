@@ -1,7 +1,6 @@
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { JWT } from "next-auth/jwt";
-import { signOut } from "next-auth/react";
 
 async function refreshToken(token: JWT): Promise<JWT> {
   try {
@@ -17,18 +16,14 @@ async function refreshToken(token: JWT): Promise<JWT> {
     if (!res.ok) {
       throw new Error(response.message);
     }
-    // if (
-    //   response.message === "invalid refresh token" ||
-    //   response.message === "refresh token expired"
-    // ) {
-    //   signOut();
-    // }
     return {
       ...token,
       backendTokens: response,
     };
-  } catch (error) {
-    console.error(error);
+  } catch (error: Error | any) {
+    console.error(error.message);
+    console.log("token", token);
+    // console.log("RefreshAccessTokenError auth.ts");
     return {
       ...token,
       error: "RefreshAccessTokenError" as const,
@@ -125,7 +120,12 @@ export const authOptions: NextAuthOptions = {
       if (token) {
         session.user = token.user;
         session.backendTokens = token.backendTokens;
+        if (token.error) {
+          session.error = token.error;
+        }
       }
+
+      console.log("session", session);
 
       return session;
     },
