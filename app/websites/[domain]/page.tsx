@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 
 import TopStats from "@/components/dashboard/TopStats";
 import Pages from "@/components/dashboard/Pages";
@@ -101,9 +101,6 @@ const getDateRange = (period: string) => {
     );
   }
 
-  console.log("locale", startDate.toLocaleString()); // Local time
-  console.log("iso", startDate.toISOString()); // UTC time
-
   return {
     startDateString: startDate.toISOString(), // UTC time string
     endDateString: endDate.toISOString(), // UTC time string
@@ -140,6 +137,7 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
   const [selectedRegion, setSelectedRegion] = useState(region || "");
   const [selectedCity, setSelectedCity] = useState(city || "");
 
+  const [accessToken, setAccessToken] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
 
@@ -152,7 +150,17 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
       console.log("RefreshAccessTokenError pages.tsx");
       signOut();
     }
-  }, [session, router]);
+  }, [session, router]); // check if router is required
+
+  useEffect(() => {
+    let accessTokenNumber = Number(session?.backendTokens.expiresAt);
+    let myDate = new Date(accessTokenNumber * 1000);
+    console.log("1212accessToken", session?.backendTokens.accessToken);
+    console.log("1212expiresAt", myDate.toLocaleString());
+    if (session?.backendTokens.accessToken) {
+      setAccessToken(session.backendTokens.accessToken);
+    }
+  }, [session?.backendTokens]);
 
   // Set the selected filters from the URL params
   useEffect(() => {
@@ -305,6 +313,7 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
     country: selectedCountry,
     region: selectedRegion,
     city: selectedCity,
+    accessToken: accessToken,
   };
 
   return (

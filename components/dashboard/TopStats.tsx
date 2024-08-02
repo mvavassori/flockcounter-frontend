@@ -120,12 +120,12 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
         );
         setTopStats(topStatsData);
       } catch (err: Error | any) {
-        if (err.message === "Unauthorized") {
-          await update();
-          setShouldRefetch(true); // Set shouldRefetch to true to refetch after updating session
-        } else {
-          setError(err.message);
-        }
+        // if (err.message === "Unauthorized") {
+        //   await update();
+        //   setShouldRefetch(true); // Set shouldRefetch to true to refetch after updating session
+        // } else {
+        //   setError(err.message);
+        // }
       } finally {
         setLoading(false);
       }
@@ -150,7 +150,7 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
     country,
     region,
     city,
-    triggerFetch, // Add triggerFetch to the dependencies array
+    triggerFetch,
   ]);
 
   const chartData = {
@@ -249,7 +249,24 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
   }
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return (
+      <div className="w-full mt-8">
+        <ul className="flex gap-4 bg-white rounded-t-lg p-4">
+          <li className="font-semibold text-gray-600 text-lg flex items-baseline gap-2">
+            Total visits: <Spinner />
+          </li>
+          <li className="font-semibold text-gray-600 text-lg flex items-baseline gap-2">
+            Unique visitors: <Spinner />
+          </li>
+          <li className="font-semibold text-gray-600 text-lg flex items-baseline gap-2">
+            Median visit duration: <Spinner />
+          </li>
+        </ul>
+        <div className="flex justify-center items-center pb-4 h-[512px]">
+          Error: {error}
+        </div>
+      </div>
+    );
   }
 
   return (

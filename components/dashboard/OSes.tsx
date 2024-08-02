@@ -26,6 +26,7 @@ const OSes: React.FC<CommonDashboardComponentProps> = (props) => {
     country,
     region,
     city,
+    accessToken,
   } = props;
 
   const { data } = useSession();
@@ -37,14 +38,6 @@ const OSes: React.FC<CommonDashboardComponentProps> = (props) => {
   const [oses, setOSes] = useState<OSesData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  const [accessToken, setAccessToken] = useState("");
-
-  useEffect(() => {
-    if (data?.backendTokens.accessToken) {
-      setAccessToken(data.backendTokens.accessToken);
-    }
-  }, [data?.backendTokens.accessToken]);
 
   useEffect(() => {
     if (!accessToken) {
@@ -113,7 +106,14 @@ const OSes: React.FC<CommonDashboardComponentProps> = (props) => {
   }
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return (
+      <div className="flex-grow w-min-100 bg-slate-200 rounded-lg p-4 max-w-sm">
+        <h2 className="font-semibold mb-2 text-lg">Operating Systems</h2>
+        <div className="flex justify-center items-center pb-4 h-[200px]">
+          Error: {error}
+        </div>
+      </div>
+    );
   }
 
   return (

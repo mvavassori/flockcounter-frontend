@@ -12,7 +12,7 @@ async function refreshToken(token: JWT): Promise<JWT> {
     });
     console.log("refreshToken called");
     const response = await res.json();
-    console.log("response", response);
+    // console.log("response", response);
     if (!res.ok) {
       throw new Error(response.message);
     }
@@ -68,7 +68,7 @@ export const authOptions: NextAuthOptions = {
               method: "POST",
               body: JSON.stringify(credentials),
               headers: { "Content-Type": "application/json" },
-            }
+            },
           );
           const user = await res.json();
 
@@ -104,7 +104,7 @@ export const authOptions: NextAuthOptions = {
       console.log("curr", new Date(currentTimeInMilliseconds).toLocaleString());
       console.log(
         "exp",
-        new Date(expirationTimeInMilliseconds).toLocaleString()
+        new Date(expirationTimeInMilliseconds).toLocaleString(),
       );
 
       if (currentTimeInMilliseconds < expirationTimeInMilliseconds) {
@@ -125,7 +125,8 @@ export const authOptions: NextAuthOptions = {
         }
       }
 
-      console.log("session", session);
+      console.log("session accessToken", session.backendTokens.accessToken);
+      console.log(new Date(Date.now()).toLocaleString());
 
       return session;
     },

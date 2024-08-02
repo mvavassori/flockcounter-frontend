@@ -11,6 +11,7 @@ interface CommonDashboardComponentProps {
   country: string;
   region: string;
   city: string;
+  accessToken: string;
 }
 
 export type { CommonDashboardComponentProps };

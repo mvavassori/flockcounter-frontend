@@ -26,9 +26,10 @@ const DeviceTypes: React.FC<CommonDashboardComponentProps> = (props) => {
     country,
     region,
     city,
+    accessToken,
   } = props;
 
-  const { data } = useSession();
+  const { data: session } = useSession();
 
   const router = useRouter();
   const pathname = usePathname();
@@ -37,14 +38,6 @@ const DeviceTypes: React.FC<CommonDashboardComponentProps> = (props) => {
   const [deviceTypes, setDeviceTypes] = useState<DeviceTypesData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  const [accessToken, setAccessToken] = useState("");
-
-  useEffect(() => {
-    if (data?.backendTokens.accessToken) {
-      setAccessToken(data.backendTokens.accessToken);
-    }
-  }, [data?.backendTokens.accessToken]);
 
   useEffect(() => {
     if (!accessToken) {
