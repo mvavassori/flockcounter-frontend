@@ -107,7 +107,14 @@ const DeviceTypes: React.FC<CommonDashboardComponentProps> = (props) => {
   }
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return (
+      <div className="flex-grow w-min-100 bg-slate-200 rounded-lg p-4 max-w-sm">
+        <h2 className="font-semibold mb-2 text-lg">Devices</h2>
+        <div className="flex justify-center items-center pb-4 h-[200px]">
+          Error: {error}
+        </div>
+      </div>
+    );
   }
 
   return (
