@@ -7,6 +7,8 @@ import { getCities } from "@/service/backendCalls";
 import { CommonDashboardComponentProps } from "@/types/commonTypes";
 import Spinner from "@/components/Spinner";
 
+import { useRefetch } from "@/context/RefetchContext";
+
 interface CitiesData {
   counts: number[];
   cities: string[];
@@ -30,7 +32,9 @@ const Cities: React.FC<CommonDashboardComponentProps> = (props) => {
     accessToken,
   } = props;
 
-  const { data: session } = useSession();
+  const { data: session, update } = useSession();
+
+  const { shouldRefetch, triggerRefetch } = useRefetch();
 
   const router = useRouter();
   const pathname = usePathname();
@@ -65,12 +69,19 @@ const Cities: React.FC<CommonDashboardComponentProps> = (props) => {
         setCities(citiesData);
         console.log(citiesData);
       } catch (err: Error | any) {
-        setError(err.message);
+        if (err.message === "Unauthorized") {
+          // await update();
+          triggerRefetch();
+        } else {
+          setError(err.message);
+        }
       } finally {
         setLoading(false);
       }
     };
-    fetchCities();
+    if (accessToken || shouldRefetch) {
+      fetchCities();
+    }
   }, [
     domain,
     startDate,

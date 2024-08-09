@@ -7,6 +7,8 @@ import { getReferrers } from "@/service/backendCalls";
 import { CommonDashboardComponentProps } from "@/types/commonTypes";
 import Spinner from "@/components/Spinner";
 
+import { useRefetch } from "@/context/RefetchContext";
+
 interface ReferrersData {
   counts: number[];
   referrers: string[];
@@ -30,7 +32,9 @@ const Referrers: React.FC<CommonDashboardComponentProps> = (props) => {
     accessToken,
   } = props;
 
-  const { data } = useSession();
+  const { data: session, update } = useSession();
+
+  const { shouldRefetch, triggerRefetch } = useRefetch();
 
   const router = useRouter();
   const pathname = usePathname();
@@ -65,12 +69,19 @@ const Referrers: React.FC<CommonDashboardComponentProps> = (props) => {
         setReferrers(referrersData);
         console.log(referrersData);
       } catch (err: Error | any) {
-        setError(err.message);
+        if (err.message === "Unauthorized") {
+          // await update();
+          triggerRefetch();
+        } else {
+          setError(err.message);
+        }
       } finally {
         setLoading(false);
       }
     };
-    fetchReferrers();
+    if (accessToken || shouldRefetch) {
+      fetchReferrers();
+    }
   }, [
     domain,
     startDate,

@@ -6,6 +6,7 @@ import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { getOSes } from "@/service/backendCalls";
 import { CommonDashboardComponentProps } from "@/types/commonTypes";
 import Spinner from "@/components/Spinner";
+import { useRefetch } from "@/context/RefetchContext";
 
 interface OSesData {
   counts: number[];
@@ -29,7 +30,9 @@ const OSes: React.FC<CommonDashboardComponentProps> = (props) => {
     accessToken,
   } = props;
 
-  const { data } = useSession();
+  const { data: session, update } = useSession();
+
+  const { shouldRefetch, triggerRefetch } = useRefetch();
 
   const router = useRouter();
   const pathname = usePathname();
@@ -44,7 +47,7 @@ const OSes: React.FC<CommonDashboardComponentProps> = (props) => {
       return;
     }
     setLoading(true);
-    const fetchPages = async () => {
+    const fetchOSes = async () => {
       try {
         const OSesData = await getOSes(
           domain,
@@ -63,12 +66,19 @@ const OSes: React.FC<CommonDashboardComponentProps> = (props) => {
         );
         setOSes(OSesData);
       } catch (err: Error | any) {
-        setError(err.message);
+        if (err.message === "Unauthorized") {
+          // await update();
+          triggerRefetch();
+        } else {
+          setError(err.message);
+        }
       } finally {
         setLoading(false);
       }
     };
-    fetchPages();
+    if (accessToken || shouldRefetch) {
+      fetchOSes();
+    }
   }, [
     domain,
     startDate,

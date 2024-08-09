@@ -6,6 +6,7 @@ import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { getLanguages } from "@/service/backendCalls";
 import { CommonDashboardComponentProps } from "@/types/commonTypes";
 import Spinner from "@/components/Spinner";
+import { useRefetch } from "@/context/RefetchContext";
 
 interface LanguagesData {
   counts: number[];
@@ -30,7 +31,9 @@ const Languages: React.FC<CommonDashboardComponentProps> = (props) => {
     accessToken,
   } = props;
 
-  const { data: session } = useSession();
+  const { data: session, update } = useSession();
+
+  const { shouldRefetch, triggerRefetch } = useRefetch();
 
   const router = useRouter();
   const pathname = usePathname();
@@ -65,12 +68,19 @@ const Languages: React.FC<CommonDashboardComponentProps> = (props) => {
         setLanguages(languagesData);
         console.log(languagesData);
       } catch (err: Error | any) {
-        setError(err.message);
+        if (err.message === "Unauthorized") {
+          // await update();
+          triggerRefetch();
+        } else {
+          setError(err.message);
+        }
       } finally {
         setLoading(false);
       }
     };
-    fetchLanguages();
+    if (accessToken || shouldRefetch) {
+      fetchLanguages();
+    }
   }, [
     domain,
     startDate,

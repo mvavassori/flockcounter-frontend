@@ -16,6 +16,8 @@ import {
 import { getTopStats } from "@/service/backendCalls";
 import Spinner from "@/components/Spinner";
 
+import { useRefetch } from "@/context/RefetchContext";
+
 interface PerIntervalStats {
   [key: string]: { count: number; period: string }[];
 }
@@ -76,22 +78,23 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
   >("totalVisits");
 
   const { data, update } = useSession();
+  const { shouldRefetch, triggerRefetch } = useRefetch();
 
   const [topStats, setTopStats] = useState<TopStatsData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [accessToken, setAccessToken] = useState("");
 
-  const [shouldRefetch, setShouldRefetch] = useState(false);
-  const [triggerFetch, setTriggerFetch] = useState(false);
+  // const [shouldRefetch, setShouldRefetch] = useState(false);
+  // const [triggerFetch, setTriggerFetch] = useState(false);
 
   useEffect(() => {
     if (data?.backendTokens.accessToken) {
       setAccessToken(data.backendTokens.accessToken);
-      if (shouldRefetch) {
-        setShouldRefetch(false);
-        setTriggerFetch(true); // Set triggerFetch to true to refetch data
-      }
+      // if (shouldRefetch) {
+      //   setShouldRefetch(false);
+      //   setTriggerFetch(true); // Set triggerFetch to true to refetch data
+      // }
     }
   }, [data?.backendTokens.accessToken, shouldRefetch]);
 
@@ -120,19 +123,19 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
         );
         setTopStats(topStatsData);
       } catch (err: Error | any) {
-        // if (err.message === "Unauthorized") {
-        //   await update();
-        //   setShouldRefetch(true); // Set shouldRefetch to true to refetch after updating session
-        // } else {
-        //   setError(err.message);
-        // }
+        if (err.message === "Unauthorized") {
+          await update();
+          // setShouldRefetch(true); // Set shouldRefetch to true to refetch after updating session
+          triggerRefetch();
+        } else {
+          setError(err.message);
+        }
       } finally {
         setLoading(false);
       }
     };
 
-    if (triggerFetch || accessToken) {
-      setTriggerFetch(false);
+    if (accessToken || shouldRefetch) {
       fetchTopStats();
     }
   }, [
@@ -150,7 +153,7 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
     country,
     region,
     city,
-    triggerFetch,
+    shouldRefetch,
   ]);
 
   const chartData = {

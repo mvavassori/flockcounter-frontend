@@ -9,6 +9,8 @@ import Spinner from "@/components/Spinner";
 import LeftArrow from "@/components/icons/LeftArrow";
 import RightArrow from "@/components/icons/RightArrow";
 
+import { useRefetch } from "@/context/RefetchContext";
+
 interface PagesData {
   counts: number[];
   paths: string[];
@@ -32,7 +34,9 @@ const Pages: React.FC<CommonDashboardComponentProps> = (props) => {
     accessToken,
   } = props;
 
-  const { data: session } = useSession();
+  const { data: session, update } = useSession();
+
+  const { shouldRefetch, triggerRefetch } = useRefetch();
 
   const router = useRouter();
   const pathname = usePathname();
@@ -74,12 +78,19 @@ const Pages: React.FC<CommonDashboardComponentProps> = (props) => {
         // Assume totalPages is calculated based on total counts divided by limit
         setTotalPages(Math.ceil(pagesData.totalCount / limit));
       } catch (err: Error | any) {
-        setError(err.message);
+        if (err.message === "Unauthorized") {
+          // await update();
+          triggerRefetch();
+        } else {
+          setError(err.message);
+        }
       } finally {
         setLoading(false);
       }
     };
-    fetchPages();
+    if (accessToken || shouldRefetch) {
+      fetchPages();
+    }
   }, [
     domain,
     startDate,

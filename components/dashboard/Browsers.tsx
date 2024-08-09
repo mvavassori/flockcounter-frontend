@@ -6,6 +6,7 @@ import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { getBrowsers } from "@/service/backendCalls";
 import { CommonDashboardComponentProps } from "@/types/commonTypes";
 import Spinner from "@/components/Spinner";
+import { useRefetch } from "@/context/RefetchContext";
 
 interface BrowsersData {
   counts: number[];
@@ -29,7 +30,9 @@ const Browsers: React.FC<CommonDashboardComponentProps> = (props) => {
     accessToken,
   } = props;
 
-  const { data: session } = useSession();
+  const { data: session, update } = useSession();
+
+  const { shouldRefetch, triggerRefetch } = useRefetch();
 
   const router = useRouter();
   const pathname = usePathname();
@@ -64,12 +67,19 @@ const Browsers: React.FC<CommonDashboardComponentProps> = (props) => {
         setBrowsers(browsersData);
         console.log(browsersData);
       } catch (err: Error | any) {
-        setError(err.message);
+        if (err.message === "Unauthorized") {
+          // await update();
+          triggerRefetch();
+        } else {
+          setError(err.message);
+        }
       } finally {
         setLoading(false);
       }
     };
-    fetchBrowsers();
+    if (accessToken || shouldRefetch) {
+      fetchBrowsers();
+    }
   }, [
     domain,
     startDate,

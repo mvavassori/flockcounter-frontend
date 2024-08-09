@@ -17,6 +17,8 @@ import Cities from "@/components/dashboard/Cities";
 import CloseIcon from "@/components/icons/CloseIcon";
 import Events from "@/components/Events";
 
+import { RefetchProvider } from "@/context/RefetchContext";
+
 const getDateRange = (period: string) => {
   const now = new Date();
   const today = new Date(
@@ -385,32 +387,34 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
             )}
           </div>
 
-          <TopStats
-            domain={domain}
-            startDate={startDate}
-            endDate={endDate}
-            interval={interval} // here i also need to pass the interval (hour,day,month)
-            page={selectedPage}
-            referrer={selectedReferrer}
-            device={selectedDevice}
-            os={selectedOs}
-            browser={selectedBrowser}
-            language={selectedLanguage}
-            country={selectedCountry}
-            region={selectedRegion}
-            city={selectedCity}
-          />
-          <div className="flex flex-wrap gap-4 min-w-full my-12">
-            <Pages {...sharedProps} />
-            <Referrers {...sharedProps} />
-            <DeviceTypes {...sharedProps} />
-            <OSes {...sharedProps} />
-            <Browsers {...sharedProps} />
-            <Languages {...sharedProps} />
-            <Countries {...sharedProps} />
-            <Regions {...sharedProps} />
-            <Cities {...sharedProps} />
-          </div>
+          <RefetchProvider>
+            <TopStats
+              domain={domain}
+              startDate={startDate}
+              endDate={endDate}
+              interval={interval} // here i also need to pass the interval (hour,day,month)
+              page={selectedPage}
+              referrer={selectedReferrer}
+              device={selectedDevice}
+              os={selectedOs}
+              browser={selectedBrowser}
+              language={selectedLanguage}
+              country={selectedCountry}
+              region={selectedRegion}
+              city={selectedCity}
+            />
+            <div className="flex flex-wrap gap-4 min-w-full my-12">
+              <Pages {...sharedProps} />
+              <Referrers {...sharedProps} />
+              <DeviceTypes {...sharedProps} />
+              <OSes {...sharedProps} />
+              <Browsers {...sharedProps} />
+              <Languages {...sharedProps} />
+              <Countries {...sharedProps} />
+              <Regions {...sharedProps} />
+              <Cities {...sharedProps} />
+            </div>
+          </RefetchProvider>
         </div>
       )}
 
