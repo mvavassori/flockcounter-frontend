@@ -17,7 +17,7 @@ interface EventsData {
 
 const Events: React.FC<EventsProps> = (props) => {
   const { domain, startDate, endDate } = props;
-  const { data } = useSession();
+  const { data: session, update } = useSession();
 
   const [events, setEvents] = useState<EventsData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -25,11 +25,18 @@ const Events: React.FC<EventsProps> = (props) => {
 
   const [accessToken, setAccessToken] = useState("");
 
+  const [shouldRefetch, setShouldRefetch] = useState(false);
+  const [triggerFetch, setTriggerFetch] = useState(false);
+
   useEffect(() => {
-    if (data?.backendTokens.accessToken) {
-      setAccessToken(data.backendTokens.accessToken);
+    if (session?.backendTokens.accessToken) {
+      setAccessToken(session.backendTokens.accessToken);
+      if (shouldRefetch) {
+        setShouldRefetch(false);
+        setTriggerFetch(true); // Set triggerFetch to true to refetch data
+      }
     }
-  }, [data?.backendTokens.accessToken]);
+  }, [session?.backendTokens.accessToken, shouldRefetch]);
 
   useEffect(() => {
     if (!accessToken) {
@@ -46,13 +53,21 @@ const Events: React.FC<EventsProps> = (props) => {
         );
         setEvents(eventsData);
       } catch (err: Error | any) {
-        setError(err.message);
+        if (err.message === "Unauthorized") {
+          await update();
+          setShouldRefetch(true); // Set shouldRefetch to true to refetch after updating session
+        } else {
+          setError(err.message);
+        }
       } finally {
         setLoading(false);
       }
     };
-    fetchEvents();
-  }, [domain, startDate, endDate, accessToken]);
+    if (accessToken || accessToken) {
+      setTriggerFetch(false);
+      fetchEvents();
+    }
+  }, [domain, startDate, endDate, accessToken, triggerFetch, accessToken]);
 
   if (loading) {
     return <div>Loading...</div>;

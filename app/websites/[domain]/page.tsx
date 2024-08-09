@@ -315,7 +315,7 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
     country: selectedCountry,
     region: selectedRegion,
     city: selectedCity,
-    accessToken: accessToken,
+    // accessToken: accessToken,
   };
 
   return (
@@ -402,6 +402,7 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
               country={selectedCountry}
               region={selectedRegion}
               city={selectedCity}
+              // accessToken={accessToken}
             />
             <div className="flex flex-wrap gap-4 min-w-full my-12">
               <Pages {...sharedProps} />

@@ -77,7 +77,7 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
     "totalVisits" | "uniqueVisitors" | "medianVisitDuration"
   >("totalVisits");
 
-  const { data, update } = useSession();
+  const { data: session, update } = useSession();
   const { shouldRefetch, triggerRefetch } = useRefetch();
 
   const [topStats, setTopStats] = useState<TopStatsData | null>(null);
@@ -89,14 +89,14 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
   // const [triggerFetch, setTriggerFetch] = useState(false);
 
   useEffect(() => {
-    if (data?.backendTokens.accessToken) {
-      setAccessToken(data.backendTokens.accessToken);
+    if (session?.backendTokens.accessToken) {
+      setAccessToken(session.backendTokens.accessToken);
       // if (shouldRefetch) {
       //   setShouldRefetch(false);
       //   setTriggerFetch(true); // Set triggerFetch to true to refetch data
       // }
     }
-  }, [data?.backendTokens.accessToken, shouldRefetch]);
+  }, [session?.backendTokens.accessToken, shouldRefetch]);
 
   useEffect(() => {
     const fetchTopStats = async () => {

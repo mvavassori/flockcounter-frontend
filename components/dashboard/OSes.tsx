@@ -27,7 +27,6 @@ const OSes: React.FC<CommonDashboardComponentProps> = (props) => {
     country,
     region,
     city,
-    accessToken,
   } = props;
 
   const { data: session, update } = useSession();
@@ -41,6 +40,14 @@ const OSes: React.FC<CommonDashboardComponentProps> = (props) => {
   const [oses, setOSes] = useState<OSesData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const [accessToken, setAccessToken] = useState("");
+
+  useEffect(() => {
+    if (session?.backendTokens.accessToken) {
+      setAccessToken(session.backendTokens.accessToken);
+    }
+  }, [session?.backendTokens.accessToken, shouldRefetch]);
 
   useEffect(() => {
     if (!accessToken) {
@@ -93,6 +100,7 @@ const OSes: React.FC<CommonDashboardComponentProps> = (props) => {
     country,
     region,
     city,
+    shouldRefetch,
   ]);
 
   const handleSelectedOsChange = (os: string) => {

@@ -31,7 +31,6 @@ const Pages: React.FC<CommonDashboardComponentProps> = (props) => {
     country,
     region,
     city,
-    accessToken,
   } = props;
 
   const { data: session, update } = useSession();
@@ -45,6 +44,14 @@ const Pages: React.FC<CommonDashboardComponentProps> = (props) => {
   const [pages, setPages] = useState<PagesData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const [accessToken, setAccessToken] = useState("");
+
+  useEffect(() => {
+    if (session?.backendTokens.accessToken) {
+      setAccessToken(session.backendTokens.accessToken);
+    }
+  }, [session?.backendTokens.accessToken, shouldRefetch]);
   const [pageNumber, setPageNumber] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
 
@@ -106,6 +113,7 @@ const Pages: React.FC<CommonDashboardComponentProps> = (props) => {
     region,
     city,
     pageNumber,
+    shouldRefetch,
   ]);
 
   const handlePageSelectedChange = (selectedPath: string) => {

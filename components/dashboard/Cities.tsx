@@ -29,7 +29,6 @@ const Cities: React.FC<CommonDashboardComponentProps> = (props) => {
     country,
     region,
     city,
-    accessToken,
   } = props;
 
   const { data: session, update } = useSession();
@@ -43,6 +42,14 @@ const Cities: React.FC<CommonDashboardComponentProps> = (props) => {
   const [cities, setCities] = useState<CitiesData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const [accessToken, setAccessToken] = useState("");
+
+  useEffect(() => {
+    if (session?.backendTokens.accessToken) {
+      setAccessToken(session.backendTokens.accessToken);
+    }
+  }, [session?.backendTokens.accessToken, shouldRefetch]);
 
   useEffect(() => {
     if (!accessToken) {
@@ -96,6 +103,7 @@ const Cities: React.FC<CommonDashboardComponentProps> = (props) => {
     country,
     region,
     city,
+    shouldRefetch,
   ]);
 
   const handleSelectedCityChange = (city: string) => {
