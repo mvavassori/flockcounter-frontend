@@ -44,16 +44,15 @@ const Pages: React.FC<CommonDashboardComponentProps> = (props) => {
   const [pages, setPages] = useState<PagesData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
   const [accessToken, setAccessToken] = useState("");
+  const [pageNumber, setPageNumber] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
 
   useEffect(() => {
     if (session?.backendTokens.accessToken) {
       setAccessToken(session.backendTokens.accessToken);
     }
   }, [session?.backendTokens.accessToken, shouldRefetch]);
-  const [pageNumber, setPageNumber] = useState(1);
-  const [totalPages, setTotalPages] = useState(0);
 
   useEffect(() => {
     if (!accessToken) {
@@ -160,7 +159,7 @@ const Pages: React.FC<CommonDashboardComponentProps> = (props) => {
   }
 
   return (
-    <div className="flex-grow w-min-100 bg-slate-200 rounded-lg p-4 max-w-sm">
+    <div className="flex-grow w-min-100 bg-slate-200 rounded-lg p-4 w-full">
       <h2 className="font-semibold mb-2 text-lg">Top Pages</h2>
       {pages && pages.paths && (
         <ul>
@@ -188,15 +187,21 @@ const Pages: React.FC<CommonDashboardComponentProps> = (props) => {
         <div className="flex justify-left items-center gap-2 mt-4">
           <button
             onClick={handlePrevPage}
-            className={pageNumber > 1 ? "cursor-pointer" : "opacity-50"}
+            className={
+              pageNumber > 1
+                ? "cursor-pointer hover:text-blue-500"
+                : "opacity-50 cursor-default"
+            }
           >
             <LeftArrow />
           </button>
-          <span>{pageNumber}</span>
+          <span className="cursor-default">{pageNumber}</span>
           <button
             onClick={handleNextPage}
             className={
-              pageNumber < totalPages ? "cursor-pointer" : "opacity-50"
+              pageNumber < totalPages
+                ? "cursor-pointer hover:text-blue-500"
+                : "opacity-50 cursor-default"
             }
           >
             <RightArrow />

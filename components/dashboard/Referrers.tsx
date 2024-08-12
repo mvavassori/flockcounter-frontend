@@ -6,15 +6,16 @@ import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { getReferrers } from "@/service/backendCalls";
 import { CommonDashboardComponentProps } from "@/types/commonTypes";
 import Spinner from "@/components/Spinner";
-
 import { useRefetch } from "@/context/RefetchContext";
+import LeftArrow from "@/components/icons/LeftArrow";
+import RightArrow from "@/components/icons/RightArrow";
 
 interface ReferrersData {
   counts: number[];
   referrers: string[];
+  totalCount: number;
 }
 
-// todo: add pagination
 const Referrers: React.FC<CommonDashboardComponentProps> = (props) => {
   const {
     domain,
@@ -43,8 +44,9 @@ const Referrers: React.FC<CommonDashboardComponentProps> = (props) => {
   const [referrers, setReferrers] = useState<ReferrersData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
   const [accessToken, setAccessToken] = useState("");
+  const [pageNumber, setPageNumber] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
 
   useEffect(() => {
     if (session?.backendTokens.accessToken) {
@@ -58,6 +60,8 @@ const Referrers: React.FC<CommonDashboardComponentProps> = (props) => {
     }
     setLoading(true);
     const fetchReferrers = async () => {
+      let limit = 10;
+      let offset = (pageNumber - 1) * limit;
       try {
         const referrersData = await getReferrers(
           domain,
@@ -72,10 +76,12 @@ const Referrers: React.FC<CommonDashboardComponentProps> = (props) => {
           language,
           country,
           region,
-          city
+          city,
+          limit,
+          offset
         );
         setReferrers(referrersData);
-        console.log(referrersData);
+        setTotalPages(Math.ceil(referrersData.totalCount / limit));
       } catch (err: Error | any) {
         if (err.message === "Unauthorized") {
           // await update();
@@ -104,6 +110,7 @@ const Referrers: React.FC<CommonDashboardComponentProps> = (props) => {
     country,
     region,
     city,
+    pageNumber,
     shouldRefetch,
   ]);
 
@@ -114,6 +121,18 @@ const Referrers: React.FC<CommonDashboardComponentProps> = (props) => {
     router.replace(`${pathname}?${newSearchParams.toString()}`, {
       scroll: false,
     });
+  };
+
+  const handlePrevPage = () => {
+    if (pageNumber > 1) {
+      setPageNumber(pageNumber - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (pageNumber < totalPages) {
+      setPageNumber(pageNumber + 1);
+    }
   };
 
   if (loading) {
@@ -139,7 +158,7 @@ const Referrers: React.FC<CommonDashboardComponentProps> = (props) => {
   }
 
   return (
-    <div className="flex-grow w-min-200 bg-slate-200 rounded-lg p-4 max-w-sm">
+    <div className="flex-grow w-min-200 bg-slate-200 rounded-lg p-4 w-full">
       <h2 className="font-semibold text-lg mb-2">Top Referrers</h2>
       {referrers && referrers.referrers && (
         <ul>
@@ -161,6 +180,32 @@ const Referrers: React.FC<CommonDashboardComponentProps> = (props) => {
             </li>
           ))}
         </ul>
+      )}
+      {/* Pagination */}
+      {referrers && referrers.totalCount > 10 && (
+        <div className="flex justify-left items-center gap-2 mt-4">
+          <button
+            onClick={handlePrevPage}
+            className={
+              pageNumber > 1
+                ? "cursor-pointer hover:text-blue-500"
+                : "opacity-50 cursor-default"
+            }
+          >
+            <LeftArrow />
+          </button>
+          <span className="cursor-default">{pageNumber}</span>
+          <button
+            onClick={handleNextPage}
+            className={
+              pageNumber < totalPages
+                ? "cursor-pointer hover:text-blue-500"
+                : "opacity-50 cursor-default"
+            }
+          >
+            <RightArrow />
+          </button>
+        </div>
       )}
     </div>
   );

@@ -1,5 +1,3 @@
-import { signOut } from "next-auth/react";
-
 async function getTopStats(
   domain: string,
   startDate: string,
@@ -134,7 +132,9 @@ async function getReferrers(
   language: string,
   country: string,
   region: string,
-  city: string
+  city: string,
+  limit: number,
+  offset: number
 ) {
   const params = new URLSearchParams({
     startDate: startDate,
@@ -148,6 +148,8 @@ async function getReferrers(
     country: country,
     region: region,
     city: city,
+    limit: String(limit),
+    offset: String(offset),
   });
 
   const headers = new Headers();
@@ -358,7 +360,9 @@ async function getLanguages(
   language: string,
   country: string,
   region: string,
-  city: string
+  city: string,
+  limit: number,
+  offset: number
 ) {
   const params = new URLSearchParams({
     startDate: startDate,
@@ -372,6 +376,8 @@ async function getLanguages(
     country: country,
     region: region,
     city: city,
+    limit: String(limit),
+    offset: String(offset),
   });
 
   const headers = new Headers();
@@ -414,7 +420,9 @@ async function getCountries(
   language: string,
   country: string,
   region: string,
-  city: string
+  city: string,
+  limit: number,
+  offset: number
 ) {
   const params = new URLSearchParams({
     startDate: startDate,
@@ -428,6 +436,8 @@ async function getCountries(
     country: country,
     region: region,
     city: city,
+    limit: String(limit),
+    offset: String(offset),
   });
 
   const headers = new Headers();
@@ -470,7 +480,9 @@ async function getRegions(
   language: string,
   country: string,
   region: string,
-  city: string
+  city: string,
+  limit: number,
+  offset: number
 ) {
   const params = new URLSearchParams({
     startDate: startDate,
@@ -484,6 +496,8 @@ async function getRegions(
     country: country,
     region: region,
     city: city,
+    limit: String(limit),
+    offset: String(offset),
   });
 
   const headers = new Headers();
@@ -526,7 +540,9 @@ async function getCities(
   language: string,
   country: string,
   region: string,
-  city: string
+  city: string,
+  limit: number,
+  offset: number
 ) {
   const params = new URLSearchParams({
     startDate: startDate,
@@ -540,6 +556,8 @@ async function getCities(
     country: country,
     region: region,
     city: city,
+    limit: String(limit),
+    offset: String(offset),
   });
 
   const headers = new Headers();
