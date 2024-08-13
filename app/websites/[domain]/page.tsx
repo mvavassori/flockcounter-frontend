@@ -16,7 +16,6 @@ import Regions from "@/components/dashboard/Regions";
 import Cities from "@/components/dashboard/Cities";
 import CloseIcon from "@/components/icons/CloseIcon";
 import Events from "@/components/Events";
-
 import { RefetchProvider } from "@/context/RefetchContext";
 
 const getDateRange = (period: string) => {
@@ -127,8 +126,10 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
   let country = searchParams.get("country");
   let region = searchParams.get("region");
   let city = searchParams.get("city");
+  let interval = searchParams.get("interval");
 
   const [selectedPeriod, setSelectedPeriod] = useState(period || "week");
+  const [selectedInterval, setSelectedInterval] = useState(interval || "day");
   const [selectedPage, setSelectedPage] = useState(page || "");
   const [selectedReferrer, setSelectedReferrer] = useState(referrer || "");
   const [selectedDevice, setSelectedDevice] = useState(device || "");
@@ -139,11 +140,9 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
   const [selectedRegion, setSelectedRegion] = useState(region || "");
   const [selectedCity, setSelectedCity] = useState(city || "");
 
-  const [accessToken, setAccessToken] = useState("");
+  // const [accessToken, setAccessToken] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-
-  const [interval, setInterval] = useState("day");
 
   const [currentView, setCurrentView] = useState("dashboard");
 
@@ -154,15 +153,15 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
     }
   }, [session, router]); // check if router is required
 
-  useEffect(() => {
-    let accessTokenNumber = Number(session?.backendTokens.expiresAt);
-    let myDate = new Date(accessTokenNumber * 1000);
-    console.log("1212accessToken", session?.backendTokens.accessToken);
-    console.log("1212expiresAt", myDate.toLocaleString());
-    if (session?.backendTokens.accessToken) {
-      setAccessToken(session.backendTokens.accessToken);
-    }
-  }, [session?.backendTokens]);
+  // useEffect(() => {
+  //   let accessTokenNumber = Number(session?.backendTokens.expiresAt);
+  //   let myDate = new Date(accessTokenNumber * 1000);
+  //   console.log("1212accessToken", session?.backendTokens.accessToken);
+  //   console.log("1212expiresAt", myDate.toLocaleString());
+  //   if (session?.backendTokens.accessToken) {
+  //     setAccessToken(session.backendTokens.accessToken);
+  //   }
+  // }, [session?.backendTokens]);
 
   // Set the selected filters from the URL params
   useEffect(() => {
@@ -175,6 +174,7 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
     setSelectedCountry(country || "");
     setSelectedRegion(region || "");
     setSelectedCity(city || "");
+    setSelectedInterval(interval || "day");
   }, [
     pathname,
     page,
@@ -186,6 +186,7 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
     country,
     region,
     city,
+    interval,
   ]);
 
   useEffect(() => {
@@ -201,12 +202,8 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
     // Remove the existing period paramter
     existingParams.delete("period");
 
-    // Set the new period paramter
-    existingParams.set("period", selected);
+    // existingParams.delete("interval");
 
-    router.push(`${pathname}?${existingParams.toString()}`, {
-      scroll: false,
-    });
     let newInterval = "day";
 
     switch (selected) {
@@ -240,8 +237,19 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
       default:
         newInterval = "month";
     }
+
     setSelectedPeriod(selected);
-    setInterval(newInterval);
+    setSelectedInterval(newInterval);
+
+    // Set the new period paramter
+    existingParams.set("period", selected);
+
+    // Set the new interval paramter
+    existingParams.set("interval", newInterval);
+
+    router.push(`${pathname}?${existingParams.toString()}`, {
+      scroll: false,
+    });
   };
 
   const clearFilter = (filter: string) => {
@@ -392,7 +400,7 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
               domain={domain}
               startDate={startDate}
               endDate={endDate}
-              interval={interval} // here i also need to pass the interval (hour,day,month)
+              interval={selectedInterval} // here i also need to pass the interval (hour,day,month)
               page={selectedPage}
               referrer={selectedReferrer}
               device={selectedDevice}
