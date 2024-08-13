@@ -64,6 +64,13 @@ export default function MobileMenu() {
               Websites
             </Link>
             <Link
+              href="/pricing"
+              className="text-lg block p-2 w-full"
+              onClick={toggleMobileMenu}
+            >
+              Pricing
+            </Link>
+            <Link
               href="/about"
               className="text-lg block p-2 w-full"
               onClick={toggleMobileMenu}

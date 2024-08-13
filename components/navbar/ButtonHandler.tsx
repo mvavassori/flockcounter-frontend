@@ -18,7 +18,6 @@ export default function ButtonHandler() {
       ) : (
         <Link
           href="/api/auth/signin"
-          // href="/signin"
           className="hidden md:block mr-4 text-sm hover:bg-blue-600 justify-end bg-blue-500 text-white px-2 py-1 rounded-full"
         >
           Sign In
