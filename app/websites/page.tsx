@@ -75,7 +75,7 @@ export default async function AllWebsites() {
   }
 
   return (
-    <div className="container mx-auto p-4 pt-6 md:p-6 lg:p-12">
+    <div className="w-full px-4 pb-4 pt-12">
       <h1 className="text-2xl font-bold mb-4">Your Websites</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {websites !== null &&

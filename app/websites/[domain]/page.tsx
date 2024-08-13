@@ -327,10 +327,10 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
   };
 
   return (
-    <div className="w-full p-4">
-      <h1 className="pt-8 text-3xl font-semibold">{domain}</h1>
+    <div className="w-full px-4 pb-4 pt-12">
+      <h1 className="text-3xl font-semibold">{domain}</h1>
       <div className="flex justify-between items-end mt-6 mb-4 align-baseline">
-        <div className="flex gap-4 mt-6">
+        <div className="flex gap-4">
           <button
             className={
               currentView === "dashboard"
