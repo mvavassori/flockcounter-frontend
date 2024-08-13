@@ -4,8 +4,6 @@ import SignOutButton from "@/components/SignOutButton";
 
 export default async function Profile() {
   const session = await getServerSession(authOptions);
-  // console.log("session", session);
-  // console.log("adminsession", session);
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_BACKEND_URL}/user/${session?.user.id}`,
     {
@@ -28,15 +26,29 @@ export default async function Profile() {
   const user = await response.json();
 
   return (
-    <>
-      <div className="mt-16">{user?.name}</div>
-      <div>{user?.email}</div>
-      <div>{session?.backendTokens.accessToken}</div>
-      <div>{session?.user?.id}</div>
-      <div>{session?.backendTokens.refreshToken}</div>
-      {/* <div>{session?.user?.role}</div> */}
-      {/* <div>{session?.user?.accessToken}</div> */}
-      <SignOutButton />
-    </>
+    <div className="px-4 pb-4 pt-12 w-full">
+      <h2 className="text-2xl font-bold mb-6">Profile</h2>
+      <div className="space-y-4">
+        <div>
+          <span className="block text-sm font-medium">Name:</span>
+          <span className="block text-sm">{user.name}</span>
+        </div>
+        <div>
+          <span className="block text-sm font-medium">Email:</span>
+          <span className="block text-sm">{user.email}</span>
+        </div>
+        <div>
+          <span className="block text-sm font-medium">Role:</span>
+          <span className="block text-sm">{user.role}</span>
+        </div>
+        <div>
+          <span className="block text-sm font-medium">
+            Subscription Status:
+          </span>
+          <span className="block text-sm">Active</span>
+        </div>
+        <SignOutButton />
+      </div>
+    </div>
   );
 }
