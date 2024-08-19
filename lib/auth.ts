@@ -12,7 +12,6 @@ async function refreshToken(token: JWT): Promise<JWT> {
     });
     console.log("refreshToken called");
     const response = await res.json();
-    // console.log("response", response);
     if (!res.ok) {
       throw new Error(response.message);
     }
@@ -22,8 +21,6 @@ async function refreshToken(token: JWT): Promise<JWT> {
     };
   } catch (error: Error | any) {
     console.error(error.message);
-    console.log("token", token);
-    // console.log("RefreshAccessTokenError auth.ts");
     return {
       ...token,
       error: "RefreshAccessTokenError" as const,
@@ -68,7 +65,7 @@ export const authOptions: NextAuthOptions = {
               method: "POST",
               body: JSON.stringify(credentials),
               headers: { "Content-Type": "application/json" },
-            },
+            }
           );
           const user = await res.json();
 
@@ -86,11 +83,11 @@ export const authOptions: NextAuthOptions = {
       },
     }),
   ],
-  // session: {
-  //   strategy: "jwt",
-  //   maxAge: 10, // 10 seconds
-  //   // updateAge: 5, // 5 seconds
-  // },
+  session: {
+    strategy: "jwt",
+    maxAge: 60 * 60 * 24 * 14, // 14 days
+    updateAge: 60 * 15, // 15 minutes // todo test this
+  },
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
@@ -104,7 +101,7 @@ export const authOptions: NextAuthOptions = {
       console.log("curr", new Date(currentTimeInMilliseconds).toLocaleString());
       console.log(
         "exp",
-        new Date(expirationTimeInMilliseconds).toLocaleString(),
+        new Date(expirationTimeInMilliseconds).toLocaleString()
       );
 
       if (currentTimeInMilliseconds < expirationTimeInMilliseconds) {
@@ -124,9 +121,6 @@ export const authOptions: NextAuthOptions = {
           session.error = token.error;
         }
       }
-
-      console.log("session accessToken", session.backendTokens.accessToken);
-      console.log(new Date(Date.now()).toLocaleString());
 
       return session;
     },
