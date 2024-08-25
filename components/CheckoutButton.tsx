@@ -14,7 +14,6 @@ export default function CheckoutButton({
   token,
 }: CheckoutButtonProps) {
   const checkout = async () => {
-    // TODO: json on the server side
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/payment/checkout`,
