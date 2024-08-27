@@ -25,6 +25,8 @@ export default async function Profile() {
   }
   const user = await response.json();
 
+  console.log(user);
+
   return (
     <div className="px-4 pb-4 pt-12 w-full">
       <h2 className="text-2xl font-bold mb-6">Profile</h2>
@@ -45,7 +47,7 @@ export default async function Profile() {
           <span className="block text-sm font-medium">
             Subscription Status:
           </span>
-          <span className="block text-sm">Active</span>
+          <span className="block text-sm">{user.subscription_status}</span>
         </div>
         <SignOutButton />
       </div>

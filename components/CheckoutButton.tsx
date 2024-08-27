@@ -3,7 +3,7 @@
 interface CheckoutButtonProps {
   plan: string;
   email: string;
-  userId: string;
+  userId: number;
   token: string;
 }
 
@@ -25,12 +25,13 @@ export default function CheckoutButton({
           },
           body: JSON.stringify({
             email,
-            plan,
             userId,
+            plan,
           }),
         }
       );
       const body = await response.json();
+      console.log(body);
       window.location.href = body.url;
     } catch (error) {
       console.error(error);

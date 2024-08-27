@@ -13,7 +13,7 @@ export default async function Pricing() {
     redirect("/auth/signout");
   }
 
-  const userId = String(session?.user?.id);
+  const userId = Number(session?.user?.id);
   const email = String(session?.user?.email);
 
   const accessToken = String(session?.backendTokens.accessToken);
