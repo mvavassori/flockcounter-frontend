@@ -1,6 +1,6 @@
 import Link from "next/link";
 import MobileMenu from "./MobileMenu";
-import ButtonHandler from "./ButtonHandler";
+import SignInOrProfileButton from "./SignInOrProfileButton";
 
 const Navbar = async () => {
   return (
@@ -39,7 +39,7 @@ const Navbar = async () => {
         </ul>
       </div>
       <div className="flex justify-end md:w-1/3">
-        <ButtonHandler />
+        <SignInOrProfileButton />
       </div>
     </nav>
   );
