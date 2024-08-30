@@ -41,13 +41,31 @@ export default async function Profile() {
         </div>
         <div>
           <span className="block text-sm font-medium">Role:</span>
-          <span className="block text-sm">{user.role}</span>
+          <span className="block text-sm">
+            {user.role.charAt(0).toUpperCase() +
+              user.role.slice(1).toLowerCase()}
+          </span>
         </div>
         <div>
           <span className="block text-sm font-medium">
             Subscription Status:
           </span>
-          <span className="block text-sm">{user.subscription_status}</span>
+          <span className="block text-sm">
+            {user.subscription_status.charAt(0).toUpperCase() +
+              user.subscription_status.slice(1).toLowerCase()}
+          </span>
+        </div>
+        <div>
+          <span className="block text-sm font-medium">Subscription Plan:</span>
+          {user.subscription_plan.String === "" ? (
+            <span className="block text-sm">No plan available</span>
+          ) : (
+            <span className="block text-sm">
+              {user.subscription_plan.String.charAt(0).toUpperCase() +
+                user.subscription_plan.String.slice(1).toLowerCase()}
+            </span>
+          )}
+          {/* <span className="block text-sm">{user.subscription_plan.String}</span> */}
         </div>
         <SignOutButton />
       </div>
