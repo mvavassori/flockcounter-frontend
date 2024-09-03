@@ -52,6 +52,7 @@ export default async function Pricing() {
               email={email}
               userId={userId}
               token={accessToken}
+              interval="month"
             />
           </div>
         </div>

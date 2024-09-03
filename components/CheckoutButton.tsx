@@ -5,6 +5,7 @@ interface CheckoutButtonProps {
   email: string;
   userId: number;
   token: string;
+  interval?: string;
 }
 
 export default function CheckoutButton({
@@ -12,6 +13,7 @@ export default function CheckoutButton({
   email,
   userId,
   token,
+  interval = "monthly",
 }: CheckoutButtonProps) {
   const checkout = async () => {
     try {
@@ -27,6 +29,7 @@ export default function CheckoutButton({
             email,
             userId,
             plan,
+            interval,
           }),
         }
       );
