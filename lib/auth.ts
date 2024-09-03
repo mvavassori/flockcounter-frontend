@@ -12,6 +12,8 @@ async function refreshToken(token: JWT): Promise<JWT> {
     });
     console.log("refreshToken called");
     const response = await res.json();
+    // let expiresAt = response.expiresAt * 1000;
+    // console.log("expiresAt", new Date(expiresAt).toLocaleString());
     if (!res.ok) {
       throw new Error(response.message);
     }
