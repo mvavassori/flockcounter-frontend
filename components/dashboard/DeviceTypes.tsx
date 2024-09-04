@@ -72,7 +72,6 @@ const DeviceTypes: React.FC<CommonDashboardComponentProps> = (props) => {
           city
         );
         setDeviceTypes(deviceTypesData);
-        console.log(deviceTypesData);
       } catch (err: Error | any) {
         if (err.message === "Unauthorized") {
           // await update();

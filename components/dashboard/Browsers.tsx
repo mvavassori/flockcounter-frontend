@@ -72,7 +72,6 @@ const Browsers: React.FC<CommonDashboardComponentProps> = (props) => {
           city
         );
         setBrowsers(browsersData);
-        console.log(browsersData);
       } catch (err: Error | any) {
         if (err.message === "Unauthorized") {
           // await update();

@@ -29,6 +29,8 @@ async function getTopStats(
     city: city,
   });
 
+  console.log("qqparams", params);
+
   const headers = new Headers();
   headers.append("Authorization", `Bearer ${token}`);
 
@@ -36,7 +38,8 @@ async function getTopStats(
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/dashboard/top-stats/${domain}?${params}`,
       // { headers }
-      { headers, cache: "no-store" } // todo remove this if it doesn't work
+      { headers }
+      // { headers, cache: "no-store" } // todo remove this if it doesn't work
     );
 
     if (!response.ok) {
@@ -52,6 +55,7 @@ async function getTopStats(
       }
     }
     const data = await response.json();
+    console.log("qqtopStatsDataBC", data);
     return data;
   } catch (error) {
     console.error("Network error:", error);
