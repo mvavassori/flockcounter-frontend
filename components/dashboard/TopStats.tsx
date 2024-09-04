@@ -12,11 +12,10 @@ import {
   Title,
   Tooltip,
 } from "chart.js";
-
 import { getTopStats } from "@/service/backendCalls";
 import Spinner from "@/components/Spinner";
-
 import { useRefetch } from "@/context/RefetchContext";
+import { getDateRange } from "@/app/websites/[domain]/page";
 
 interface PerIntervalStats {
   [key: string]: { count: number; period: string }[];
@@ -24,8 +23,7 @@ interface PerIntervalStats {
 
 interface TopStatsProps {
   domain: string;
-  startDate: string;
-  endDate: string;
+  period: string;
   interval: string;
   page: string;
   referrer: string;
@@ -59,8 +57,7 @@ ChartJS.register(
 const TopStats: React.FC<TopStatsProps> = (props) => {
   const {
     domain,
-    startDate,
-    endDate,
+    period,
     interval,
     page,
     referrer,
@@ -85,16 +82,9 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
   const [error, setError] = useState<string | null>(null);
   const [accessToken, setAccessToken] = useState("");
 
-  // const [shouldRefetch, setShouldRefetch] = useState(false);
-  // const [triggerFetch, setTriggerFetch] = useState(false);
-
   useEffect(() => {
     if (session?.backendTokens.accessToken) {
       setAccessToken(session.backendTokens.accessToken);
-      // if (shouldRefetch) {
-      //   setShouldRefetch(false);
-      //   setTriggerFetch(true); // Set triggerFetch to true to refetch data
-      // }
     }
   }, [session?.backendTokens.accessToken, shouldRefetch]);
 
@@ -104,11 +94,12 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
         return;
       }
       setLoading(true);
+      const { startDateString, endDateString } = getDateRange(period);
       try {
         const topStatsData = await getTopStats(
           domain,
-          startDate,
-          endDate,
+          startDateString,
+          endDateString,
           interval,
           accessToken,
           page,
@@ -125,7 +116,6 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
       } catch (err: Error | any) {
         if (err.message === "Unauthorized") {
           await update();
-          // setShouldRefetch(true); // Set shouldRefetch to true to refetch after updating session
           triggerRefetch();
         } else {
           setError(err.message);
@@ -140,8 +130,7 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
     }
   }, [
     domain,
-    startDate,
-    endDate,
+    period,
     interval,
     accessToken,
     page,
@@ -175,7 +164,6 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
           ) {
             const medianTimeSpent = item.medianTimeSpent as string;
             const timeParts = medianTimeSpent.split(" ");
-            console.log(timeParts);
             // check whether the string contains "h" for time longer than 60 minutes "m" for time longer than 60 seconds or "s".
             if (timeParts[0].includes("h")) {
               const hours = parseInt(timeParts[0].replace("h", ""));

@@ -18,7 +18,7 @@ import CloseIcon from "@/components/icons/CloseIcon";
 import Events from "@/components/Events";
 import { RefetchProvider } from "@/context/RefetchContext";
 
-const getDateRange = (period: string) => {
+export const getDateRange = (period: string) => {
   const now = new Date();
   const today = new Date(
     Date.UTC(now.getFullYear(), now.getMonth(), now.getDate())
@@ -140,7 +140,6 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
   const [selectedRegion, setSelectedRegion] = useState(region || "");
   const [selectedCity, setSelectedCity] = useState(city || "");
 
-  // const [accessToken, setAccessToken] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
 
@@ -148,20 +147,9 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
 
   useEffect(() => {
     if (session?.error === "RefreshAccessTokenError") {
-      console.log("RefreshAccessTokenError pages.tsx");
       signOut();
     }
   }, [session, router]); // check if router is required
-
-  // useEffect(() => {
-  //   let accessTokenNumber = Number(session?.backendTokens.expiresAt);
-  //   let myDate = new Date(accessTokenNumber * 1000);
-  //   console.log("1212accessToken", session?.backendTokens.accessToken);
-  //   console.log("1212expiresAt", myDate.toLocaleString());
-  //   if (session?.backendTokens.accessToken) {
-  //     setAccessToken(session.backendTokens.accessToken);
-  //   }
-  // }, [session?.backendTokens]);
 
   // Set the selected filters from the URL params
   useEffect(() => {
@@ -204,7 +192,7 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
 
     // existingParams.delete("interval");
 
-    let newInterval = "day";
+    let newInterval;
 
     switch (selected) {
       case "today":
@@ -312,8 +300,7 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
   // props to pass to the dashboard components who need the same props
   const sharedProps = {
     domain: domain,
-    startDate: startDate,
-    endDate: endDate,
+    period: selectedPeriod,
     page: selectedPage,
     referrer: selectedReferrer,
     device: selectedDevice,
@@ -323,7 +310,6 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
     country: selectedCountry,
     region: selectedRegion,
     city: selectedCity,
-    // accessToken: accessToken,
   };
 
   return (
@@ -398,8 +384,7 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
           <RefetchProvider>
             <TopStats
               domain={domain}
-              startDate={startDate}
-              endDate={endDate}
+              period={selectedPeriod}
               interval={selectedInterval} // here i also need to pass the interval (hour,day,month)
               page={selectedPage}
               referrer={selectedReferrer}
@@ -410,18 +395,17 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
               country={selectedCountry}
               region={selectedRegion}
               city={selectedCity}
-              // accessToken={accessToken}
             />
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 my-12">
-              <Pages {...sharedProps} />
+              {/* <Pages {...sharedProps} />
               <Referrers {...sharedProps} />
               <DeviceTypes {...sharedProps} />
-              <OSes {...sharedProps} />
+              <OSes {...sharedProps} /> */}
               <Browsers {...sharedProps} />
-              <Languages {...sharedProps} />
+              {/* <Languages {...sharedProps} />
               <Countries {...sharedProps} />
               <Regions {...sharedProps} />
-              <Cities {...sharedProps} />
+              <Cities {...sharedProps} /> */}
             </div>
           </RefetchProvider>
         </div>
