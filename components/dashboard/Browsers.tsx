@@ -7,6 +7,7 @@ import { getBrowsers } from "@/service/backendCalls";
 import { CommonDashboardComponentProps } from "@/types/commonTypes";
 import Spinner from "@/components/Spinner";
 import { useRefetch } from "@/context/RefetchContext";
+import { getDateRange } from "@/app/websites/[domain]/page";
 
 interface BrowsersData {
   counts: number[];
@@ -16,8 +17,7 @@ interface BrowsersData {
 const Browsers: React.FC<CommonDashboardComponentProps> = (props) => {
   const {
     domain,
-    startDate,
-    endDate,
+    period,
     page,
     referrer,
     device,
@@ -54,12 +54,13 @@ const Browsers: React.FC<CommonDashboardComponentProps> = (props) => {
       return;
     }
     setLoading(true);
+    const { startDateString, endDateString } = getDateRange(period);
     const fetchBrowsers = async () => {
       try {
         const browsersData = await getBrowsers(
           domain,
-          startDate,
-          endDate,
+          startDateString,
+          endDateString,
           accessToken,
           page,
           referrer,
@@ -88,8 +89,7 @@ const Browsers: React.FC<CommonDashboardComponentProps> = (props) => {
     }
   }, [
     domain,
-    startDate,
-    endDate,
+    period,
     accessToken,
     page,
     referrer,

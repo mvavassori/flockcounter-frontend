@@ -1,7 +1,6 @@
 interface CommonDashboardComponentProps {
   domain: string;
-  startDate: string;
-  endDate: string;
+  period: string;
   page: string;
   referrer: string;
   device: string;

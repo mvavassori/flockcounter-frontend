@@ -7,6 +7,7 @@ import { getDeviceTypes } from "@/service/backendCalls";
 import { CommonDashboardComponentProps } from "@/types/commonTypes";
 import Spinner from "@/components/Spinner";
 import { useRefetch } from "@/context/RefetchContext";
+import { getDateRange } from "@/app/websites/[domain]/page";
 
 interface DeviceTypesData {
   counts: number[];
@@ -16,8 +17,7 @@ interface DeviceTypesData {
 const DeviceTypes: React.FC<CommonDashboardComponentProps> = (props) => {
   const {
     domain,
-    startDate,
-    endDate,
+    period,
     page,
     referrer,
     device,
@@ -54,12 +54,13 @@ const DeviceTypes: React.FC<CommonDashboardComponentProps> = (props) => {
       return;
     }
     setLoading(true);
+    const { startDateString, endDateString } = getDateRange(period);
     const fetchDeviceTypes = async () => {
       try {
         const deviceTypesData = await getDeviceTypes(
           domain,
-          startDate,
-          endDate,
+          startDateString,
+          endDateString,
           accessToken,
           page,
           referrer,
@@ -88,8 +89,7 @@ const DeviceTypes: React.FC<CommonDashboardComponentProps> = (props) => {
     }
   }, [
     domain,
-    startDate,
-    endDate,
+    period,
     accessToken,
     page,
     referrer,

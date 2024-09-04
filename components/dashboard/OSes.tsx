@@ -7,6 +7,7 @@ import { getOSes } from "@/service/backendCalls";
 import { CommonDashboardComponentProps } from "@/types/commonTypes";
 import Spinner from "@/components/Spinner";
 import { useRefetch } from "@/context/RefetchContext";
+import { getDateRange } from "@/app/websites/[domain]/page";
 
 interface OSesData {
   counts: number[];
@@ -16,8 +17,7 @@ interface OSesData {
 const OSes: React.FC<CommonDashboardComponentProps> = (props) => {
   const {
     domain,
-    startDate,
-    endDate,
+    period,
     page,
     referrer,
     device,
@@ -54,12 +54,13 @@ const OSes: React.FC<CommonDashboardComponentProps> = (props) => {
       return;
     }
     setLoading(true);
+    const { startDateString, endDateString } = getDateRange(period);
     const fetchOSes = async () => {
       try {
         const OSesData = await getOSes(
           domain,
-          startDate,
-          endDate,
+          startDateString,
+          endDateString,
           accessToken,
           page,
           referrer,
@@ -88,8 +89,7 @@ const OSes: React.FC<CommonDashboardComponentProps> = (props) => {
     }
   }, [
     domain,
-    startDate,
-    endDate,
+    period,
     accessToken,
     page,
     referrer,

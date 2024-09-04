@@ -397,15 +397,15 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
               city={selectedCity}
             />
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 my-12">
-              {/* <Pages {...sharedProps} />
+              <Pages {...sharedProps} />
               <Referrers {...sharedProps} />
               <DeviceTypes {...sharedProps} />
-              <OSes {...sharedProps} /> */}
+              <OSes {...sharedProps} />
               <Browsers {...sharedProps} />
-              {/* <Languages {...sharedProps} />
+              <Languages {...sharedProps} />
               <Countries {...sharedProps} />
               <Regions {...sharedProps} />
-              <Cities {...sharedProps} /> */}
+              <Cities {...sharedProps} />
             </div>
           </RefetchProvider>
         </div>

@@ -8,8 +8,8 @@ import { CommonDashboardComponentProps } from "@/types/commonTypes";
 import Spinner from "@/components/Spinner";
 import LeftArrow from "@/components/icons/LeftArrow";
 import RightArrow from "@/components/icons/RightArrow";
-
 import { useRefetch } from "@/context/RefetchContext";
+import { getDateRange } from "@/app/websites/[domain]/page";
 
 interface countriesData {
   counts: number[];
@@ -21,8 +21,7 @@ interface countriesData {
 const Countries: React.FC<CommonDashboardComponentProps> = (props) => {
   const {
     domain,
-    startDate,
-    endDate,
+    period,
     page,
     referrer,
     device,
@@ -60,14 +59,15 @@ const Countries: React.FC<CommonDashboardComponentProps> = (props) => {
       return;
     }
     setLoading(true);
+    const { startDateString, endDateString } = getDateRange(period);
     const fetchCountries = async () => {
       let limit = 10;
       let offset = (pageNumber - 1) * limit;
       try {
         const countriesData = await getCountries(
           domain,
-          startDate,
-          endDate,
+          startDateString,
+          endDateString,
           accessToken,
           page,
           referrer,
@@ -99,8 +99,7 @@ const Countries: React.FC<CommonDashboardComponentProps> = (props) => {
     }
   }, [
     domain,
-    startDate,
-    endDate,
+    period,
     accessToken,
     page,
     referrer,

@@ -9,6 +9,7 @@ import Spinner from "@/components/Spinner";
 import { useRefetch } from "@/context/RefetchContext";
 import LeftArrow from "@/components/icons/LeftArrow";
 import RightArrow from "@/components/icons/RightArrow";
+import { getDateRange } from "@/app/websites/[domain]/page";
 
 interface ReferrersData {
   counts: number[];
@@ -19,8 +20,7 @@ interface ReferrersData {
 const Referrers: React.FC<CommonDashboardComponentProps> = (props) => {
   const {
     domain,
-    startDate,
-    endDate,
+    period,
     page,
     referrer,
     device,
@@ -59,14 +59,15 @@ const Referrers: React.FC<CommonDashboardComponentProps> = (props) => {
       return;
     }
     setLoading(true);
+    const { startDateString, endDateString } = getDateRange(period);
     const fetchReferrers = async () => {
       let limit = 10;
       let offset = (pageNumber - 1) * limit;
       try {
         const referrersData = await getReferrers(
           domain,
-          startDate,
-          endDate,
+          startDateString,
+          endDateString,
           accessToken,
           page,
           referrer,
@@ -98,8 +99,7 @@ const Referrers: React.FC<CommonDashboardComponentProps> = (props) => {
     }
   }, [
     domain,
-    startDate,
-    endDate,
+    period,
     accessToken,
     page,
     referrer,
