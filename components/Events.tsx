@@ -43,7 +43,7 @@ const Events: React.FC<EventsProps> = (props) => {
       return;
     }
     setLoading(true);
-    const { startDateString, endDateString } = getDateRange(period);
+    // const { startDateString, endDateString } = getDateRange(period);
     const fetchEvents = async () => {
       try {
         const eventsData = await getEvents(

@@ -1,21 +1,22 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Line } from "react-chartjs-2";
-import { useSession } from "next-auth/react";
 import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
   Tooltip,
-} from "chart.js";
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
+import { useSession } from "next-auth/react";
 import { getTopStats } from "@/service/backendCalls";
 import Spinner from "@/components/Spinner";
 import { useRefetch } from "@/context/RefetchContext";
 import { getDateRange } from "@/app/websites/[domain]/page";
+import CustomTooltip from "@/components/CustomTooltip";
 
 interface PerIntervalStats {
   [key: string]: { count: number; period: string }[];
@@ -45,14 +46,24 @@ interface TopStatsData {
   perIntervalStats: PerIntervalStats;
 }
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip
-);
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  // If the date string includes a day (YYYY-MM-DD), format as "19 Sep"
+  if (dateString.length === 10) {
+    return new Intl.DateTimeFormat("en-GB", {
+      day: "numeric",
+      month: "short",
+    }).format(date);
+  }
+  // If the date string includes only the month (YYYY-MM), format as "Sep 2024"
+  else if (dateString.length === 7) {
+    return new Intl.DateTimeFormat("en-GB", {
+      month: "short",
+      year: "numeric",
+    }).format(date);
+  }
+  return dateString; // Fallback if format doesn't match
+};
 
 const TopStats: React.FC<TopStatsProps> = (props) => {
   const {
@@ -73,7 +84,6 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
   const [selectedMetric, setSelectedMetric] = useState<
     "totalVisits" | "uniqueVisitors" | "medianVisitDuration"
   >("totalVisits");
-
   const { data: session, update } = useSession();
   const { shouldRefetch, triggerRefetch } = useRefetch();
 
@@ -90,9 +100,7 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
 
   useEffect(() => {
     const fetchTopStats = async () => {
-      if (!accessToken) {
-        return;
-      }
+      if (!accessToken) return;
       setLoading(true);
       const { startDateString, endDateString } = getDateRange(period);
       try {
@@ -113,7 +121,7 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
           city
         );
         setTopStats(topStatsData);
-      } catch (err: Error | any) {
+      } catch (err: any) {
         if (err.message === "Unauthorized") {
           await update();
           triggerRefetch();
@@ -145,70 +153,44 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
     shouldRefetch,
   ]);
 
-  const chartData = {
-    labels: topStats?.perIntervalStats?.[selectedMetric]?.map(
-      (item) => item.period
-    ),
-    datasets: [
-      {
-        label:
-          selectedMetric === "totalVisits"
-            ? "Total visits"
-            : selectedMetric === "uniqueVisitors"
-            ? "Unique visitors"
-            : "Median visit duration",
-        data: topStats?.perIntervalStats?.[selectedMetric]?.map((item) => {
-          if (
-            selectedMetric === "medianVisitDuration" &&
-            "medianTimeSpent" in item
-          ) {
-            const medianTimeSpent = item.medianTimeSpent as string;
-            const timeParts = medianTimeSpent.split(" ");
-            // check whether the string contains "h" for time longer than 60 minutes "m" for time longer than 60 seconds or "s".
-            if (timeParts[0].includes("h")) {
-              const hours = parseInt(timeParts[0].replace("h", ""));
-              const minutes = parseInt(timeParts[1].replace("m", ""));
-              const seconds = parseInt(timeParts[2].replace("s", ""));
-              return hours * 60 * 60 + minutes * 60 + seconds;
-            } else if (timeParts[0].includes("m")) {
-              const minutes = parseInt(timeParts[0].replace("m", ""));
-              const seconds = parseInt(timeParts[1].replace("s", ""));
-              return minutes * 60 + seconds;
-            } else {
-              const seconds = parseInt(timeParts[0].replace("s", ""));
-              return seconds;
-            }
+  const getChartData = () => {
+    return (
+      topStats?.perIntervalStats?.[selectedMetric]?.map((item) => {
+        if (
+          selectedMetric === "medianVisitDuration" &&
+          "medianTimeSpent" in item
+        ) {
+          const timeParts = (item.medianTimeSpent as string).split(" ");
+          if (timeParts[0].includes("h")) {
+            const hours = parseInt(timeParts[0].replace("h", ""), 10);
+            const minutes = parseInt(timeParts[1].replace("m", ""), 10);
+            const seconds = parseInt(timeParts[2].replace("s", ""), 10);
+            return {
+              period: formatDate(item.period), // Format the period date
+              value: hours * 60 * 60 + minutes * 60 + seconds,
+            };
+          } else if (timeParts[0].includes("m")) {
+            const minutes = parseInt(timeParts[0].replace("m", ""), 10);
+            const seconds = parseInt(timeParts[1].replace("s", ""), 10);
+            return {
+              period: formatDate(item.period), // Format the period date
+              value: minutes * 60 + seconds,
+            };
           } else {
-            return item.count;
+            const seconds = parseInt(timeParts[0].replace("s", ""), 10);
+            return {
+              period: formatDate(item.period), // Format the period date
+              value: seconds,
+            };
           }
-        }),
-        fill: false,
-        borderColor:
-          selectedMetric === "totalVisits"
-            ? "rgb(75, 192, 192)"
-            : selectedMetric === "uniqueVisitors"
-            ? "rgb(255, 99, 132)"
-            : "rgb(54, 162, 235)",
-        tension: 0.1,
-      },
-    ],
-  };
-
-  const options = {
-    interaction: {
-      intersect: false,
-    },
-    // make y axis start at 0
-    scales: {
-      y: {
-        min: 0,
-      },
-    },
-    plugins: {
-      legend: {
-        display: false,
-      },
-    },
+        } else {
+          return {
+            period: formatDate(item.period), // Format the period date
+            value: item.count,
+          };
+        }
+      }) || []
+    );
   };
 
   const handleMetricChange = (
@@ -217,7 +199,6 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
     setSelectedMetric(metric);
   };
 
-  // skeleton loader
   if (loading) {
     return (
       <div className="w-full mt-8">
@@ -295,7 +276,37 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
         </li>
       </ul>
       <div className="flex justify-center bg-white pb-4">
-        <Line options={options} data={chartData} />
+        <ResponsiveContainer width="100%" height={400}>
+          <LineChart data={getChartData()}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="period" />
+            <YAxis />
+            {/* <Tooltip /> */}
+            <Tooltip
+              content={
+                <CustomTooltip
+                  selectedMetric={selectedMetric}
+                  period={period}
+                  interval={interval}
+                />
+              }
+            />
+            <Legend />
+            <Line
+              type="monotone"
+              dataKey="value"
+              stroke={
+                selectedMetric === "totalVisits"
+                  ? "rgb(75, 192, 192)"
+                  : selectedMetric === "uniqueVisitors"
+                  ? "rgb(255, 99, 132)"
+                  : "rgb(54, 162, 235)"
+              }
+              strokeWidth={2}
+              dot={false}
+            />
+          </LineChart>
+        </ResponsiveContainer>
       </div>
     </div>
   );
