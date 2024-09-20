@@ -9,7 +9,6 @@ export default async function Pricing() {
   const session = await getServerSession(authOptions);
 
   if (session?.error === "RefreshAccessTokenError") {
-    console.log("RefreshAccessTokenError allWebsites.tsx");
     redirect("/auth/signout");
   }
 

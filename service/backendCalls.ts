@@ -29,8 +29,6 @@ async function getTopStats(
     city: city,
   });
 
-  console.log("qqparams", params);
-
   const headers = new Headers();
   headers.append("Authorization", `Bearer ${token}`);
 
@@ -55,7 +53,6 @@ async function getTopStats(
       }
     }
     const data = await response.json();
-    console.log("qqtopStatsDataBC", data);
     return data;
   } catch (error) {
     console.error("Network error:", error);
