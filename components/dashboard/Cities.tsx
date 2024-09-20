@@ -9,7 +9,7 @@ import Spinner from "@/components/Spinner";
 import LeftArrow from "@/components/icons/LeftArrow";
 import RightArrow from "@/components/icons/RightArrow";
 import { useRefetch } from "@/context/RefetchContext";
-import { getDateRange } from "@/app/websites/[domain]/page";
+import { getDateRange } from "@/utils/helper";
 
 interface CitiesData {
   counts: number[];

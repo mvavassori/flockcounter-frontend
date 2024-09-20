@@ -9,7 +9,7 @@ import Spinner from "@/components/Spinner";
 import { useRefetch } from "@/context/RefetchContext";
 import LeftArrow from "@/components/icons/LeftArrow";
 import RightArrow from "@/components/icons/RightArrow";
-import { getDateRange } from "@/app/websites/[domain]/page";
+import { getDateRange } from "@/utils/helper";
 
 interface ReferrersData {
   counts: number[];

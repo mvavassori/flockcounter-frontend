@@ -7,7 +7,7 @@ import { getDeviceTypes } from "@/service/backendCalls";
 import { CommonDashboardComponentProps } from "@/types/commonTypes";
 import Spinner from "@/components/Spinner";
 import { useRefetch } from "@/context/RefetchContext";
-import { getDateRange } from "@/app/websites/[domain]/page";
+import { getDateRange } from "@/utils/helper";
 
 interface DeviceTypesData {
   counts: number[];
