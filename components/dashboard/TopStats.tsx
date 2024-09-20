@@ -14,7 +14,7 @@ import { useSession } from "next-auth/react";
 import { getTopStats } from "@/service/backendCalls";
 import Spinner from "@/components/Spinner";
 import { useRefetch } from "@/context/RefetchContext";
-import { getDateRange, formatXAxisDate } from "@/utils/helper";
+import { getDateRange, formatXAxisDate, getInterval } from "@/utils/helper";
 import CustomTooltip from "@/components/CustomTooltip";
 
 interface PerIntervalStats {
@@ -222,13 +222,13 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
   }
 
   return (
-    <div className="w-full mt-8">
-      <ul className="flex gap-4 bg-white rounded-t-lg p-4">
+    <div className="w-full mt-8 bg-slate-100 rounded-md">
+      <ul className="flex gap-4 rounded-t-lg p-4">
         <li
           onClick={() => handleMetricChange("totalVisits")}
           className={
             selectedMetric === "totalVisits"
-              ? "font-semibold text-lg cursor-pointer underline"
+              ? "font-semibold text-lg cursor-pointer border-b-4 border-blue-500"
               : "font-semibold text-lg cursor-pointer"
           }
         >
@@ -238,7 +238,7 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
           onClick={() => handleMetricChange("uniqueVisitors")}
           className={
             selectedMetric === "uniqueVisitors"
-              ? "font-semibold text-lg cursor-pointer underline"
+              ? "font-semibold text-lg cursor-pointer border-b-4 border-red-500"
               : "font-semibold text-lg cursor-pointer"
           }
         >
@@ -248,18 +248,21 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
           onClick={() => handleMetricChange("medianVisitDuration")}
           className={
             selectedMetric === "medianVisitDuration"
-              ? "font-semibold text-lg cursor-pointer underline"
+              ? "font-semibold text-lg cursor-pointer border-b-4 border-green-500"
               : "font-semibold text-lg cursor-pointer"
           }
         >
           Median visit duration: {topStats?.aggregates?.medianVisitDuration}
         </li>
       </ul>
-      <div className="flex justify-center bg-white pb-4">
+      <div className="pb-4">
         <ResponsiveContainer width="100%" height={400}>
-          <LineChart data={getChartData()}>
+          <LineChart
+            data={getChartData()}
+            margin={{ top: 5, left: 5, right: 65, bottom: 5 }}
+          >
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="period" />
+            <XAxis dataKey="period" interval={getInterval(period, interval)} />
             <YAxis />
             <Tooltip
               content={
@@ -275,12 +278,12 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
               dataKey="value"
               stroke={
                 selectedMetric === "totalVisits"
-                  ? "rgb(75, 192, 192)"
+                  ? "#3b82f6" //blue-500
                   : selectedMetric === "uniqueVisitors"
-                  ? "rgb(255, 99, 132)"
-                  : "rgb(54, 162, 235)"
+                  ? "#ef4444" // red-500
+                  : "#22c55e" // green-500
               }
-              strokeWidth={2}
+              strokeWidth={3}
               dot={false}
             />
           </LineChart>

@@ -167,6 +167,18 @@ export const formatDuration = (totalSeconds: number) => {
   }
 };
 
+export const getInterval = (period: string, interval: string) => {
+  if (interval === "hour" || period === "month" || period === "last-month") {
+    return 2;
+  } else if (interval === "day" && period === "week") {
+    return 0;
+  } else if (interval === "month" && period === "last-5-years") {
+    return 6;
+  } else {
+    return 1;
+  }
+};
+
 function parseTooltipDate(dateString: string, interval: string): Date | null {
   const currentYear = new Date().getFullYear();
 
