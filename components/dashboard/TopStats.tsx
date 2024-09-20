@@ -15,7 +15,7 @@ import { useSession } from "next-auth/react";
 import { getTopStats } from "@/service/backendCalls";
 import Spinner from "@/components/Spinner";
 import { useRefetch } from "@/context/RefetchContext";
-import { getDateRange } from "@/app/websites/[domain]/page";
+import { getDateRange, formatXAxisDate } from "@/utils/helper";
 import CustomTooltip from "@/components/CustomTooltip";
 
 interface PerIntervalStats {
@@ -45,25 +45,6 @@ interface TopStatsData {
   };
   perIntervalStats: PerIntervalStats;
 }
-
-const formatDate = (dateString: string) => {
-  const date = new Date(dateString);
-  // If the date string includes a day (YYYY-MM-DD), format as "19 Sep"
-  if (dateString.length === 10) {
-    return new Intl.DateTimeFormat("en-GB", {
-      day: "numeric",
-      month: "short",
-    }).format(date);
-  }
-  // If the date string includes only the month (YYYY-MM), format as "Sep 2024"
-  else if (dateString.length === 7) {
-    return new Intl.DateTimeFormat("en-GB", {
-      month: "short",
-      year: "numeric",
-    }).format(date);
-  }
-  return dateString; // Fallback if format doesn't match
-};
 
 const TopStats: React.FC<TopStatsProps> = (props) => {
   const {
@@ -166,26 +147,26 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
             const minutes = parseInt(timeParts[1].replace("m", ""), 10);
             const seconds = parseInt(timeParts[2].replace("s", ""), 10);
             return {
-              period: formatDate(item.period), // Format the period date
+              period: formatXAxisDate(item.period), // Format the period date
               value: hours * 60 * 60 + minutes * 60 + seconds,
             };
           } else if (timeParts[0].includes("m")) {
             const minutes = parseInt(timeParts[0].replace("m", ""), 10);
             const seconds = parseInt(timeParts[1].replace("s", ""), 10);
             return {
-              period: formatDate(item.period), // Format the period date
+              period: formatXAxisDate(item.period), // Format the period date
               value: minutes * 60 + seconds,
             };
           } else {
             const seconds = parseInt(timeParts[0].replace("s", ""), 10);
             return {
-              period: formatDate(item.period), // Format the period date
+              period: formatXAxisDate(item.period), // Format the period date
               value: seconds,
             };
           }
         } else {
           return {
-            period: formatDate(item.period), // Format the period date
+            period: formatXAxisDate(item.period), // Format the period date
             value: item.count,
           };
         }
