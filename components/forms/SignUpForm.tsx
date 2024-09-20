@@ -12,7 +12,6 @@ const SignUp: React.FC = () => {
     // Here you can add your sign up logic.
     // You might want to validate the form data and send it to your backend.
     try {
-      // todo change the url
       const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/user`, {
         method: "POST",
         headers: {
