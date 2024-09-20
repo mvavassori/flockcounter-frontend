@@ -8,7 +8,6 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   ResponsiveContainer,
 } from "recharts";
 import { useSession } from "next-auth/react";
@@ -262,7 +261,6 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="period" />
             <YAxis />
-            {/* <Tooltip /> */}
             <Tooltip
               content={
                 <CustomTooltip
@@ -272,7 +270,6 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
                 />
               }
             />
-            <Legend />
             <Line
               type="monotone"
               dataKey="value"
