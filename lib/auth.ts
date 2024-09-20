@@ -4,12 +4,15 @@ import { JWT } from "next-auth/jwt";
 
 async function refreshToken(token: JWT): Promise<JWT> {
   try {
-    const res = await fetch("http://localhost:8080/api/user/refresh-token", {
-      method: "POST",
-      headers: {
-        authorization: `Refresh ${token.backendTokens.refreshToken}`,
-      },
-    });
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/user/refresh-token`,
+      {
+        method: "POST",
+        headers: {
+          authorization: `Refresh ${token.backendTokens.refreshToken}`,
+        },
+      }
+    );
     console.log("refreshToken called");
     const response = await res.json();
     // let expiresAt = response.expiresAt * 1000;

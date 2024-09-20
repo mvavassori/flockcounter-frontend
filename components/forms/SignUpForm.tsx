@@ -13,7 +13,7 @@ const SignUp: React.FC = () => {
     // You might want to validate the form data and send it to your backend.
     try {
       // todo change the url
-      const res = await fetch("http://localhost:8080/api/user", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/user`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
