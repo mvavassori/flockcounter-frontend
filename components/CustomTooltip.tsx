@@ -24,7 +24,7 @@ export default function CustomTooltip({
     let labelValue = "";
     if (payload[0]?.name === "value") {
       if (selectedMetric === "totalVisits") {
-        labelValue = `visitors: ${value}`;
+        labelValue = `visits: ${value}`;
       } else if (selectedMetric === "uniqueVisitors") {
         labelValue = `unique visitors: ${value}`;
       } else if (selectedMetric === "medianVisitDuration") {

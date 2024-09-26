@@ -14,7 +14,13 @@ import { useSession } from "next-auth/react";
 import { getTopStats } from "@/service/backendCalls";
 import Spinner from "@/components/Spinner";
 import { useRefetch } from "@/context/RefetchContext";
-import { getDateRange, formatXAxisDate, getInterval } from "@/utils/helper";
+import {
+  getDateRange,
+  formatXAxisDate,
+  getInterval,
+  convertDurationToSeconds,
+  formatTooltipDate,
+} from "@/utils/helper";
 import CustomTooltip from "@/components/CustomTooltip";
 
 interface PerIntervalStats {
@@ -83,6 +89,8 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
       if (!accessToken) return;
       setLoading(true);
       const { startDateString, endDateString } = getDateRange(period);
+      console.log("ftstartDateString", startDateString);
+      console.log("ftendDateString", endDateString);
       try {
         const topStatsData = await getTopStats(
           domain,
@@ -136,39 +144,15 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
   const getChartData = () => {
     return (
       topStats?.perIntervalStats?.[selectedMetric]?.map((item) => {
-        if (
-          selectedMetric === "medianVisitDuration" &&
-          "medianTimeSpent" in item
-        ) {
-          const timeParts = (item.medianTimeSpent as string).split(" ");
-          if (timeParts[0].includes("h")) {
-            const hours = parseInt(timeParts[0].replace("h", ""), 10);
-            const minutes = parseInt(timeParts[1].replace("m", ""), 10);
-            const seconds = parseInt(timeParts[2].replace("s", ""), 10);
-            return {
-              period: formatXAxisDate(item.period), // Format the period date
-              value: hours * 60 * 60 + minutes * 60 + seconds,
-            };
-          } else if (timeParts[0].includes("m")) {
-            const minutes = parseInt(timeParts[0].replace("m", ""), 10);
-            const seconds = parseInt(timeParts[1].replace("s", ""), 10);
-            return {
-              period: formatXAxisDate(item.period), // Format the period date
-              value: minutes * 60 + seconds,
-            };
-          } else {
-            const seconds = parseInt(timeParts[0].replace("s", ""), 10);
-            return {
-              period: formatXAxisDate(item.period), // Format the period date
-              value: seconds,
-            };
-          }
-        } else {
-          return {
-            period: formatXAxisDate(item.period), // Format the period date
-            value: item.count,
-          };
-        }
+        const localDate = new Date(item.period);
+        console.log("gcdlocalDate", localDate.toISOString());
+        return {
+          period: localDate.toISOString(), // Store as ISO string for consistent parsing
+          value:
+            selectedMetric === "medianVisitDuration"
+              ? convertDurationToSeconds(item.period)
+              : item.count,
+        };
       }) || []
     );
   };
@@ -262,7 +246,13 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
             margin={{ top: 5, left: 5, right: 65, bottom: 5 }}
           >
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="period" interval={getInterval(period, interval)} />
+            <XAxis
+              dataKey="period"
+              tickFormatter={(timestamp) =>
+                formatXAxisDate(timestamp, interval)
+              }
+              interval={getInterval(period, interval)}
+            />
             <YAxis />
             <Tooltip
               content={
@@ -272,16 +262,19 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
                   interval={interval}
                 />
               }
+              labelFormatter={(label) =>
+                formatTooltipDate(label, period, interval)
+              }
             />
             <Line
               type="monotone"
               dataKey="value"
               stroke={
                 selectedMetric === "totalVisits"
-                  ? "#3b82f6" //blue-500
+                  ? "#3b82f6"
                   : selectedMetric === "uniqueVisitors"
-                  ? "#ef4444" // red-500
-                  : "#22c55e" // green-500
+                  ? "#ef4444"
+                  : "#22c55e"
               }
               strokeWidth={3}
               dot={false}

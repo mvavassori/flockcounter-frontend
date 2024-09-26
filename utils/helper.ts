@@ -1,123 +1,119 @@
 export const getDateRange = (period: string) => {
+  // Get the current time in UTC
   const now = new Date();
-  const today = new Date(
-    Date.UTC(now.getFullYear(), now.getMonth(), now.getDate())
-  );
-  let startDate;
-  let endDate = now;
+
+  // Start of today in UTC (midnight)
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+  let startDate: Date;
+  let endDate: Date = now;
 
   switch (period) {
     case "today":
-      startDate = today;
-      endDate = new Date(
-        Date.UTC(
-          today.getFullYear(),
-          today.getMonth(),
-          today.getDate(),
-          23,
-          59,
-          59,
-          999
-        )
-      );
+      startDate = today; // Start of today (midnight)
+      endDate = new Date(today); // End of today at 23:59:59.999
+      endDate.setHours(23, 59, 59, 999);
       break;
-    case "yesterday":
-      startDate = new Date(
-        Date.UTC(today.getFullYear(), today.getMonth(), today.getDate() - 1)
-      );
-      endDate = new Date(startDate.getTime() + 24 * 60 * 60 * 1000 - 1);
-      break;
-    case "week":
-      startDate = new Date(
-        Date.UTC(today.getFullYear(), today.getMonth(), today.getDate() - 7)
-      );
-      break;
-    case "month":
-      startDate = new Date(
-        Date.UTC(today.getFullYear(), today.getMonth(), today.getDate() - 30)
-      );
-      break;
-    case "month-to-date":
-      startDate = new Date(Date.UTC(today.getFullYear(), today.getMonth(), 1));
-      break;
-    case "last-month":
-      startDate = new Date(
-        Date.UTC(today.getFullYear(), today.getMonth() - 1, 1)
-      );
-      endDate = new Date(
-        Date.UTC(today.getFullYear(), today.getMonth(), 0, 23, 59, 59, 999)
-      );
-      break;
-    case "year-to-date":
-      startDate = new Date(Date.UTC(today.getFullYear(), 0, 1));
-      break;
-    case "last-12-months":
-      startDate = new Date(
-        Date.UTC(now.getFullYear() - 1, now.getMonth(), now.getDate())
-      );
-      break;
-    case "last-5-years":
-      startDate = new Date(
-        Date.UTC(now.getFullYear() - 5, now.getMonth(), now.getDate())
-      );
-      break;
-    default:
-      startDate = new Date(
-        Date.UTC(today.getFullYear(), today.getMonth(), today.getDate() - 7)
-      ); // Last 7 Days
-  }
 
-  // Adjust endDate to the end of the day if needed
-  if (period !== "today" && period !== "yesterday" && period !== "last-month") {
-    endDate = new Date(
-      Date.UTC(
-        today.getFullYear(),
-        today.getMonth(),
-        today.getDate(),
-        23,
-        59,
-        59,
-        999
-      )
-    );
+    case "yesterday":
+      startDate = new Date(today);
+      startDate.setDate(today.getDate() - 1); // Start of yesterday
+      endDate = new Date(startDate); // End of yesterday at 23:59:59.999
+      endDate.setHours(23, 59, 59, 999);
+      break;
+
+    case "week":
+      // Start of the week, including today
+      startDate = new Date(today);
+      startDate.setDate(today.getDate() - 6); // 6 days back to include today
+      break;
+
+    case "month":
+      startDate = new Date(today);
+      startDate.setDate(today.getDate() - 30);
+      break;
+
+    case "month-to-date":
+      // Start of this month (UTC)
+      startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+      break;
+
+    case "last-month":
+      // Start of the previous month (UTC)
+      startDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+      // End of the previous month (last day of the previous month)
+      endDate = new Date(now.getFullYear(), now.getMonth(), 0, 23, 59, 59, 999);
+      break;
+
+    case "year-to-date":
+      // Start of this year (UTC)
+      startDate = new Date(now.getFullYear(), 0, 1);
+      break;
+
+    case "last-12-months":
+      // 12 months ago from today (UTC)
+      startDate = new Date(
+        now.getFullYear() - 1,
+        now.getMonth(),
+        now.getDate()
+      );
+      break;
+
+    case "last-5-years":
+      // 5 years ago from today (UTC)
+      startDate = new Date(
+        now.getFullYear() - 5,
+        now.getMonth(),
+        now.getDate()
+      );
+      break;
+
+    default:
+      // Last 7 days by default
+      startDate = new Date(today);
+      startDate.setDate(today.getDate() - 7);
   }
 
   return {
-    startDateString: startDate.toISOString(), // UTC time string
-    endDateString: endDate.toISOString(), // UTC time string
+    startDateString: startDate.toISOString(), // Convert to UTC string for database or API usage
+    endDateString: endDate.toISOString(), // Convert to UTC string
   };
 };
 
-export const formatXAxisDate = (dateString: string) => {
-  const date = new Date(dateString);
-  // If the date string includes a day (YYYY-MM-DD), format as "19 Sep"
-  if (dateString.length === 10) {
-    return new Intl.DateTimeFormat("en-GB", {
-      day: "numeric",
-      month: "short",
-    }).format(date);
+export const formatXAxisDate = (timestamp: string, interval: string) => {
+  const date = new Date(timestamp);
+  const utcDate = new Date(date.getTime() + date.getTimezoneOffset() * 60000);
+  switch (interval) {
+    case "hour":
+      return date.toLocaleString("en-US", {
+        hour: "numeric",
+        hour12: true,
+        // timeZone: "UTC",
+      });
+    case "day":
+      return utcDate.toLocaleString("en-US", {
+        day: "numeric",
+        month: "short",
+        timeZone: "UTC",
+      });
+    case "month":
+      return utcDate.toLocaleString("en-US", {
+        month: "short",
+        year: "numeric",
+        timeZone: "UTC",
+      });
+    default:
+      return utcDate.toLocaleString("en-US", { timeZone: "UTC" });
   }
-  // If the date string includes only the month (YYYY-MM), format as "Sep 2024"
-  else if (dateString.length === 7) {
-    return new Intl.DateTimeFormat("en-GB", {
-      month: "short",
-      year: "numeric",
-    }).format(date);
-  }
-  return dateString; // Fallback if format doesn't match
 };
 
 export const formatTooltipDate = (
-  dateString: string,
+  timestamp: string,
   period: string,
   interval: string
-): string => {
-  const date = parseTooltipDate(dateString, interval);
-
-  if (!date) {
-    throw new Error("Invalid date string or format");
-  }
-
+) => {
+  const date = new Date(timestamp);
+  const utcDate = new Date(date.getTime() + date.getTimezoneOffset() * 60000);
   switch (interval) {
     case "hour":
       if (period === "today" || period === "yesterday") {
@@ -132,7 +128,7 @@ export const formatTooltipDate = (
       break;
     case "day":
       if (["week", "month", "month-to-date", "last-month"].includes(period)) {
-        return date.toLocaleString("en-US", {
+        return utcDate.toLocaleString("en-US", {
           weekday: "short",
           day: "numeric",
           month: "short",
@@ -141,15 +137,25 @@ export const formatTooltipDate = (
       break;
     case "month":
       if (["year-to-date", "last-12-months", "last-5-years"].includes(period)) {
-        return date.toLocaleString("en-US", {
+        return utcDate.toLocaleString("en-US", {
           month: "short",
           year: "numeric",
         });
       }
       break;
   }
+  return date.toLocaleString();
+};
 
-  throw new Error("Invalid combination of period and interval");
+export const convertDurationToSeconds = (durationString: string) => {
+  const parts = durationString.split(" ");
+  let seconds = 0;
+  parts.forEach((part) => {
+    if (part.includes("h")) seconds += parseInt(part) * 3600;
+    else if (part.includes("m")) seconds += parseInt(part) * 60;
+    else if (part.includes("s")) seconds += parseInt(part);
+  });
+  return seconds;
 };
 
 // Helper function to format duration in seconds to hh:mm:ss or mm:ss
@@ -168,17 +174,18 @@ export const formatDuration = (totalSeconds: number) => {
 };
 
 export const getInterval = (period: string, interval: string) => {
-  if (interval === "hour" || period === "month" || period === "last-month") {
-    return 2;
-  } else if (interval === "day" && period === "week") {
+  if (interval === "day" && period === "week") {
     return 0;
+  } else if (interval === "day" && period !== "week") {
+    return 3;
   } else if (interval === "month" && period === "last-5-years") {
-    return 6;
+    return 8;
   } else {
-    return 1;
+    return 2;
   }
 };
 
+// todo: non serve più a un cazzo, da cambaire. Il datestring è dicentato UTC date.
 function parseTooltipDate(dateString: string, interval: string): Date | null {
   const currentYear = new Date().getFullYear();
 
