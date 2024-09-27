@@ -24,7 +24,7 @@ import {
 import CustomTooltip from "@/components/CustomTooltip";
 
 interface PerIntervalStats {
-  [key: string]: { count: number; period: string }[];
+  [key: string]: { count?: number; medianTimeSpent?: string; period: string }[];
 }
 
 interface TopStatsProps {
@@ -144,14 +144,21 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
   const getChartData = () => {
     return (
       topStats?.perIntervalStats?.[selectedMetric]?.map((item) => {
-        const localDate = new Date(item.period);
-        console.log("gcdlocalDate", localDate.toISOString());
+        const date = new Date(item.period);
+        const userTimezoneOffset = date.getTimezoneOffset() * 60000;
+
+        // Adjust date based on the timezone offset
+        const adjustedDate =
+          userTimezoneOffset < 0
+            ? new Date(date.getTime() - userTimezoneOffset) // Timezone ahead of UTC (negative offset)
+            : new Date(date.getTime() + userTimezoneOffset); // Timezone behind UTC or no difference (positive offset or 0)
+
         return {
-          period: localDate.toISOString(), // Store as ISO string for consistent parsing
+          period: adjustedDate.toISOString(), // Convert to ISO string format
           value:
             selectedMetric === "medianVisitDuration"
-              ? convertDurationToSeconds(item.period)
-              : item.count,
+              ? convertDurationToSeconds(item.medianTimeSpent ?? "0s") // Default to 0s if undefined
+              : item.count ?? 0, // Default to 0 if count is undefined
         };
       }) || []
     );
