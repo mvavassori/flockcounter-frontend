@@ -89,8 +89,6 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
       if (!accessToken) return;
       setLoading(true);
       const { startDateString, endDateString } = getDateRange(period);
-      console.log("ftstartDateString", startDateString);
-      console.log("ftendDateString", endDateString);
       try {
         const topStatsData = await getTopStats(
           domain,
