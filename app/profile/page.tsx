@@ -1,6 +1,7 @@
 import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
 import SignOutButton from "@/components/SignOutButton";
+import Link from "next/link";
 
 export default async function Profile() {
   const session = await getServerSession(authOptions);
@@ -73,17 +74,15 @@ export default async function Profile() {
             </span>
           )}
         </div>
-        <div>
-          {/* <button
-            className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
-            onClick={() => {
-              window.location.href = `${process.env.NEXT_PUBLIC_BACKEND_URL}/stripe/customer-portal?session_id=${session?.user.id}`;
-            }}
+        <div className="flex justify-between">
+          <Link
+            className="px-4 py-2 bg-blue-500 text-white rounded"
+            href={"https://billing.stripe.com/p/login/test_eVa17b0wXb3Y0BW3cc"} // todo change to prod link
           >
             Manage Subscription
-          </button> */}
+          </Link>
+          <SignOutButton />
         </div>
-        <SignOutButton />
       </div>
     </div>
   );

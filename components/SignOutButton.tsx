@@ -11,7 +11,7 @@ export default function SignOutButton() {
           callbackUrl: `${window.location.origin}/api/auth/signin`,
         })
       }
-      className=" text-red-500 rounded-md font-bold hover:text-red-600 hover:underline"
+      className="px-4 py-2 bg-red-500 text-white rounded"
     >
       Sign Out
     </button>
