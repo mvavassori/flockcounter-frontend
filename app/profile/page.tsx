@@ -2,6 +2,7 @@ import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
 import SignOutButton from "@/components/SignOutButton";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 export default async function Profile() {
   const session = await getServerSession(authOptions);
@@ -16,13 +17,8 @@ export default async function Profile() {
     }
   );
 
-  if (response.status !== 200) {
-    return (
-      <>
-        <p>There was some error fetching the data</p>
-        <SignOutButton />
-      </>
-    );
+  if (session?.error === "RefreshAccessTokenError") {
+    redirect("/auth/signout");
   }
   const data = await response.json();
 
