@@ -73,7 +73,7 @@ export default async function Profile() {
         <div className="flex justify-between">
           <Link
             className="px-4 py-2 bg-blue-500 text-white rounded"
-            href={"https://billing.stripe.com/p/login/test_eVa17b0wXb3Y0BW3cc"} // todo change to prod link
+            href={`https://billing.stripe.com/p/login/test_eVa17b0wXb3Y0BW3cc?prefilled_email=${session?.user.email}`} // todo change to prod link
           >
             Manage Subscription
           </Link>
