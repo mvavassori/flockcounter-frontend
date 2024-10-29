@@ -49,15 +49,20 @@ export default async function Profile() {
             {data.user.subscription_status.charAt(0).toUpperCase() +
               data.user.subscription_status.slice(1).toLowerCase()}{" "}
           </span>
-          <span className="text-xs text-gray-700">
-            (Renews on:{" "}
-            {new Date(data.subscriptionExpiryDate).toLocaleDateString("en-US", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })}
-            )
-          </span>
+          {data.subscriptionExpiryDate && (
+            <span className="text-xs text-gray-700">
+              (Renews on:{" "}
+              {new Date(data.subscriptionExpiryDate).toLocaleDateString(
+                "en-US",
+                {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                }
+              )}
+              )
+            </span>
+          )}
         </div>
         <div>
           <span className="block text-sm font-medium">Subscription Plan:</span>
