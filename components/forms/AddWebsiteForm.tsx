@@ -1,8 +1,11 @@
 "use client";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function AddWebsiteForm() {
+  const router = useRouter();
+
   const { data: session } = useSession({ required: true });
   const [domain, setDomain] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -33,16 +36,18 @@ export default function AddWebsiteForm() {
         }
       );
 
-      if (response.status === 201) {
-        console.log("Website added successfully");
-        // Optionally, clear form or update state here
-      } else {
-        // Handle errors as before
-        const backendError = await response.text();
-        throw new Error(backendError || "Failed to add website.");
+      const result = await response.json();
+
+      if (!response.ok) {
+        // Handle backend error message
+        throw new Error(result.message || "Failed to add website.");
       }
+
+      // On success, use the returned domain
+      console.log("Website added successfully:", result);
+      router.push(`/install?domain=${result.domain}`);
     } catch (err: Error | any) {
-      console.error(err);
+      console.error(err.message);
       setError(err.message); // Display error message to user
     } finally {
       setIsLoading(false); // Hide loading state
@@ -71,7 +76,7 @@ export default function AddWebsiteForm() {
         >
           {isLoading ? "Adding..." : "Add Website"}
         </button>
-        {error && <p className="text-red-500">{error}</p>}
+        {error && <p className="text-red-500">Error: {error}</p>}
       </div>
     </form>
   );
