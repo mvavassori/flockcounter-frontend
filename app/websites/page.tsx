@@ -36,7 +36,6 @@ async function getUserWebsites(userId: number, token: string) {
     const data = await response.json();
     return data;
   } catch (error) {
-    // console.error("Network error:", error);
     throw error;
   }
 }
@@ -44,7 +43,6 @@ async function getUserWebsites(userId: number, token: string) {
 export default async function AllWebsites() {
   const session = await getServerSession(authOptions);
   if (session?.error === "RefreshAccessTokenError") {
-    console.log("RefreshAccessTokenError allWebsites.tsx");
     redirect("/auth/signout");
   }
 
@@ -62,6 +60,7 @@ export default async function AllWebsites() {
       error = data;
     }
   } catch (err: Error | any) {
+    console.error(err.message);
     error = err.message;
   }
 
@@ -76,17 +75,36 @@ export default async function AllWebsites() {
 
   return (
     <div className="w-full px-4 pb-4 pt-12">
-      <h1 className="text-2xl font-bold mb-4">Your Websites</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {websites !== null &&
-          websites?.map((website: Website) => (
-            <Link key={website.id} href={`/websites/${website.domain}`}>
-              <div className="bg-white shadow-md rounded p-4 border-2 border-black hover:border-blue-500">
-                <h2 className="text-lg font-bold">{website.domain}</h2>
-              </div>
+      {websites.length !== 0 ? (
+        <>
+          <div className="flex justify-between">
+            <h1 className="text-2xl font-bold mb-4">Your Websites</h1>
+            <Link href={"/websites/add"}>
+              <button className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded font-semibold">
+                Add New Website
+              </button>
             </Link>
-          ))}
-      </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {websites !== null &&
+              websites?.map((website: Website) => (
+                <Link key={website.id} href={`/websites/${website.domain}`}>
+                  <div className="bg-white shadow-md rounded p-4 border-2 border-black hover:border-blue-500">
+                    <h2 className="text-lg font-bold">{website.domain}</h2>
+                  </div>
+                </Link>
+              ))}
+          </div>
+        </>
+      ) : (
+        <div className="flex justify-center align-middle">
+          <Link href={"/websites/add"}>
+            <button className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded font-semibold">
+              Add New Website
+            </button>
+          </Link>
+        </div>
+      )}
     </div>
   );
 }
