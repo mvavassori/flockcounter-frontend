@@ -194,13 +194,13 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
       <div className="w-full mt-8">
         <ul className="flex gap-4 bg-white rounded-t-lg p-4">
           <li className="font-semibold text-gray-600 text-lg flex items-baseline gap-2">
-            Total visits: <Spinner />
+            Total visits:
           </li>
           <li className="font-semibold text-gray-600 text-lg flex items-baseline gap-2">
-            Unique visitors: <Spinner />
+            Unique visitors:
           </li>
           <li className="font-semibold text-gray-600 text-lg flex items-baseline gap-2">
-            Median visit duration: <Spinner />
+            Median visit duration:
           </li>
         </ul>
         <div className="flex justify-center items-center pb-4 h-[512px]">
