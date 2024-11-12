@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import SignOutButton from "@/components/SignOutButton";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import SettingsIcon from "@/components/icons/SettingsIcon";
 
 interface Website {
   id: number;
@@ -79,7 +80,7 @@ export default async function AllWebsites() {
         <>
           <div className="flex justify-between items-baseline">
             <h1 className="text-2xl font-bold mb-4">Your Websites</h1>
-            <Link href={"/websites/add"}>
+            <Link href="/websites/add">
               <button className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded font-semibold">
                 Add New Website
               </button>
@@ -89,7 +90,16 @@ export default async function AllWebsites() {
             {websites !== null &&
               websites?.map((website: Website) => (
                 <Link key={website.id} href={`/websites/${website.domain}`}>
-                  <div className="bg-white shadow-md rounded p-4 border-2 border-black hover:border-blue-500">
+                  <div className="relative bg-white shadow-md rounded p-4 border-2 border-gray-500 hover:border-black hover:shadow-lg">
+                    {/*Used the object to avoid hydration errors because of nested links*/}
+                    <object>
+                      <Link
+                        href={`/websites/${website.domain}/settings`}
+                        className="absolute top-2 right-2 text-gray-500 hover:text-black"
+                      >
+                        <SettingsIcon />
+                      </Link>
+                    </object>
                     <h2 className="text-lg font-bold">{website.domain}</h2>
                   </div>
                 </Link>
@@ -98,7 +108,7 @@ export default async function AllWebsites() {
         </>
       ) : (
         <div className="flex justify-center align-middle">
-          <Link href={"/websites/add"}>
+          <Link href="/websites/add">
             <button className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded font-semibold">
               Add New Website
             </button>
