@@ -44,6 +44,8 @@ export default function DeleteWebsiteButton({
       alert(`Website ${domain} deleted successfully.`);
       // Redirect to the /websites page after successful deletion
       router.push("/websites");
+      // refresh to avoid cached websites annoyances
+      router.refresh();
     } catch (err: Error | any) {
       setError(
         err instanceof Error ? err.message : "An unexpected error occurred."
