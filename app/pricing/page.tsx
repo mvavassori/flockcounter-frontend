@@ -105,7 +105,7 @@ export default async function Pricing() {
           <div className="flex flex-col gap-y-3 mb-6">
             <p className="text-sm flex items-center gap-x-2">
               <TickIcon />
-              <span className="font-bold">Unlimited</span> websites
+              <span className="font-bold">10</span> websites
             </p>
             <p className="text-sm flex items-center gap-x-2">
               <TickIcon />
