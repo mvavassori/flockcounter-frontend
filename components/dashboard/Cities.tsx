@@ -17,7 +17,6 @@ interface CitiesData {
   totalCount: number;
 }
 
-// todo: add pagination
 const Cities: React.FC<CommonDashboardComponentProps> = (props) => {
   const {
     domain,
@@ -33,7 +32,7 @@ const Cities: React.FC<CommonDashboardComponentProps> = (props) => {
     city,
   } = props;
 
-  const { data: session, update } = useSession();
+  const { data: session } = useSession();
 
   const { shouldRefetch, triggerRefetch } = useRefetch();
 

@@ -32,7 +32,7 @@ const Pages: React.FC<CommonDashboardComponentProps> = (props) => {
     city,
   } = props;
 
-  const { data: session, update } = useSession();
+  const { data: session } = useSession();
 
   const { shouldRefetch, triggerRefetch } = useRefetch();
 

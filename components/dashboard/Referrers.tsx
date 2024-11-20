@@ -33,7 +33,7 @@ const Referrers: React.FC<CommonDashboardComponentProps> = (props) => {
     // accessToken,
   } = props;
 
-  const { data: session, update } = useSession();
+  const { data: session } = useSession();
 
   const { shouldRefetch, triggerRefetch } = useRefetch();
 

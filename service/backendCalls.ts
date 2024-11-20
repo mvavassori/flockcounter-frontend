@@ -35,9 +35,7 @@ async function getTopStats(
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/dashboard/top-stats/${domain}?${params}`,
-      // { headers }
       { headers }
-      // { headers, cache: "no-store" } // todo remove this if it doesn't work
     );
 
     if (!response.ok) {
