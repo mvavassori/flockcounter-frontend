@@ -6,18 +6,54 @@ import { signIn } from "next-auth/react";
 export default function SignInForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const validateForm = () => {
+    if (!email) {
+      return "Email is required.";
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return "Invalid email format.";
+    }
+    if (!password) {
+      return "Password is required.";
+    }
+    if (password.length < 6) {
+      // todo change this to 8
+      return "Password must be at least 8 characters long.";
+    }
+    return null; // No errors
+  };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // Handle your login logic here
+
+    // Clear previous errors
+    setError("");
+
+    // Validate form data
+    const validationError = validateForm();
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
+
     try {
-      await signIn("credentials", {
+      const result = await signIn("credentials", {
         email,
         password,
-        callbackUrl: "/",
+        callbackUrl: "/profile",
+        redirect: false, // Disable automatic redirection for error handling
       });
+      if (!result?.ok) {
+        setError("Invalid email or password.");
+      } else {
+        window.location.href = result.url || "/profile";
+      }
     } catch (error) {
       console.error("Sign in error:", error);
+      setError("An unexpected error occurred. Please try again.");
     }
   };
 
@@ -58,6 +94,9 @@ export default function SignInForm() {
           />
         </div>
       </div>
+
+      {/* Error Message */}
+      {error && <div className="text-red-500 text-sm text-center">{error}</div>}
 
       <div>
         <button

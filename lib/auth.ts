@@ -13,7 +13,6 @@ async function refreshToken(token: JWT): Promise<JWT> {
         },
       }
     );
-    console.log("refreshToken called");
     const response = await res.json();
     // let expiresAt = response.expiresAt * 1000;
     // console.log("expiresAt", new Date(expiresAt).toLocaleString());
@@ -95,25 +94,22 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        console.log("there's a user");
         return { ...token, ...user };
       }
 
       const currentTimeInMilliseconds = Date.now();
       const expirationTimeInMilliseconds = token.backendTokens.expiresAt * 1000;
 
-      console.log("curr", new Date(currentTimeInMilliseconds).toLocaleString());
-      console.log(
-        "exp",
-        new Date(expirationTimeInMilliseconds).toLocaleString()
-      );
+      // console.log("curr", new Date(currentTimeInMilliseconds).toLocaleString());
+      // console.log(
+      //   "exp",
+      //   new Date(expirationTimeInMilliseconds).toLocaleString()
+      // );
 
       if (currentTimeInMilliseconds < expirationTimeInMilliseconds) {
-        console.log("token not expired");
         return token; // return previous token
       }
 
-      console.log("token expired");
       return await refreshToken(token);
     },
 
