@@ -66,12 +66,12 @@ export default async function Profile() {
         </div>
         <div>
           <span className="block text-sm font-medium">Subscription Plan:</span>
-          {data.user.subscription_plan.String === "" ? (
+          {data.user.subscription_plan === "" ? (
             <span className="block text-sm">No plan available</span>
           ) : (
             <span className="block text-sm">
-              {data.user.subscription_plan.String.charAt(0).toUpperCase() +
-                data.user.subscription_plan.String.slice(1).toLowerCase()}
+              {data.user.subscription_plan.charAt(0).toUpperCase() +
+                data.user.subscription_plan.slice(1).toLowerCase()}
             </span>
           )}
         </div>
