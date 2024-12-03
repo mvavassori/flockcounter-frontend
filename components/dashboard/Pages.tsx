@@ -30,6 +30,11 @@ const Pages: React.FC<CommonDashboardComponentProps> = (props) => {
     country,
     region,
     city,
+    utmSource,
+    utmMedium,
+    utmCampaign,
+    utmTerm,
+    utmContent,
   } = props;
 
   const { data: session } = useSession();
@@ -77,6 +82,11 @@ const Pages: React.FC<CommonDashboardComponentProps> = (props) => {
           country,
           region,
           city,
+          utmSource,
+          utmMedium,
+          utmCampaign,
+          utmTerm,
+          utmContent,
           limit,
           offset
         );
@@ -110,6 +120,11 @@ const Pages: React.FC<CommonDashboardComponentProps> = (props) => {
     country,
     region,
     city,
+    utmSource,
+    utmMedium,
+    utmCampaign,
+    utmTerm,
+    utmContent,
     pageNumber,
     shouldRefetch,
   ]);

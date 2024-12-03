@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
-import { getReferrers } from "@/service/backendCalls";
+import { getReferrers, getUtmParameters } from "@/service/backendCalls";
 import { CommonDashboardComponentProps } from "@/types/commonTypes";
 import Spinner from "@/components/Spinner";
 import { useRefetch } from "@/context/RefetchContext";
@@ -30,7 +30,11 @@ const Referrers: React.FC<CommonDashboardComponentProps> = (props) => {
     country,
     region,
     city,
-    // accessToken,
+    utmSource,
+    utmMedium,
+    utmCampaign,
+    utmTerm,
+    utmContent,
   } = props;
 
   const { data: session } = useSession();
@@ -78,6 +82,11 @@ const Referrers: React.FC<CommonDashboardComponentProps> = (props) => {
           country,
           region,
           city,
+          utmSource,
+          utmMedium,
+          utmCampaign,
+          utmTerm,
+          utmContent,
           limit,
           offset
         );
@@ -110,6 +119,11 @@ const Referrers: React.FC<CommonDashboardComponentProps> = (props) => {
     country,
     region,
     city,
+    utmSource,
+    utmMedium,
+    utmCampaign,
+    utmTerm,
+    utmContent,
     pageNumber,
     shouldRefetch,
   ]);

@@ -40,6 +40,11 @@ interface TopStatsProps {
   country: string;
   region: string;
   city: string;
+  utmSource: string;
+  utmMedium: string;
+  utmCampaign: string;
+  utmTerm: string;
+  utmContent: string;
 }
 
 interface TopStatsData {
@@ -65,6 +70,11 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
     country,
     region,
     city,
+    utmSource,
+    utmMedium,
+    utmCampaign,
+    utmTerm,
+    utmContent,
   } = props;
 
   const [selectedMetric, setSelectedMetric] = useState<
@@ -104,12 +114,17 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
           language,
           country,
           region,
-          city
+          city,
+          utmSource,
+          utmMedium,
+          utmCampaign,
+          utmTerm,
+          utmContent
         );
         setTopStats(topStatsData);
       } catch (err: any) {
         if (err.message === "Unauthorized") {
-          await update();
+          // await update();
           triggerRefetch();
         } else {
           setError(err.message);
@@ -136,6 +151,11 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
     country,
     region,
     city,
+    utmSource,
+    utmMedium,
+    utmCampaign,
+    utmTerm,
+    utmContent,
     shouldRefetch,
   ]);
 

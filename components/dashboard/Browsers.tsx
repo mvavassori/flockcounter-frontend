@@ -27,6 +27,11 @@ const Browsers: React.FC<CommonDashboardComponentProps> = (props) => {
     country,
     region,
     city,
+    utmSource,
+    utmMedium,
+    utmCampaign,
+    utmTerm,
+    utmContent,
   } = props;
 
   const { data: session } = useSession();
@@ -70,7 +75,12 @@ const Browsers: React.FC<CommonDashboardComponentProps> = (props) => {
           language,
           country,
           region,
-          city
+          city,
+          utmSource,
+          utmMedium,
+          utmCampaign,
+          utmTerm,
+          utmContent
         );
         setBrowsers(browsersData);
       } catch (err: Error | any) {
@@ -100,6 +110,11 @@ const Browsers: React.FC<CommonDashboardComponentProps> = (props) => {
     country,
     region,
     city,
+    utmSource,
+    utmMedium,
+    utmCampaign,
+    utmTerm,
+    utmContent,
     shouldRefetch,
   ]);
 

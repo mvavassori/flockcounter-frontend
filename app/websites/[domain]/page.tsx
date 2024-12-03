@@ -18,6 +18,7 @@ import CloseIcon from "@/components/icons/CloseIcon";
 import Events from "@/components/Events";
 import { RefetchProvider } from "@/context/RefetchContext";
 import { getDateRange } from "@/utils/helper";
+import UTMParameters from "@/components/dashboard/GetUtmParameters";
 
 export default function Dashboard({ params }: { params: { domain: string } }) {
   const { domain } = params;
@@ -38,6 +39,11 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
   let region = searchParams.get("region");
   let city = searchParams.get("city");
   let interval = searchParams.get("interval");
+  let utmSource = searchParams.get("utmSource");
+  let utmMedium = searchParams.get("utmMedium");
+  let utmCampaign = searchParams.get("utmCampaign");
+  let utmTerm = searchParams.get("utmTerm");
+  let utmContent = searchParams.get("utmContent");
 
   const [selectedPeriod, setSelectedPeriod] = useState(period || "week");
   const [selectedInterval, setSelectedInterval] = useState(interval || "day");
@@ -50,6 +56,15 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
   const [selectedCountry, setSelectedCountry] = useState(country || "");
   const [selectedRegion, setSelectedRegion] = useState(region || "");
   const [selectedCity, setSelectedCity] = useState(city || "");
+  const [selectedUtmSource, setSelectedUtmSource] = useState(utmSource || "");
+  const [selectedUtmMedium, setSelectedUtmMedium] = useState(utmMedium || "");
+  const [selectedUtmCampaign, setSelectedUtmCampaign] = useState(
+    utmCampaign || ""
+  );
+  const [selectedUtmTerm, setSelectedUtmTerm] = useState(utmTerm || "");
+  const [selectedUtmContent, setSelectedUtmContent] = useState(
+    utmContent || ""
+  );
 
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -74,6 +89,11 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
     setSelectedRegion(region || "");
     setSelectedCity(city || "");
     setSelectedInterval(interval || "day");
+    setSelectedUtmSource(utmSource || "");
+    setSelectedUtmMedium(utmMedium || "");
+    setSelectedUtmCampaign(utmCampaign || "");
+    setSelectedUtmTerm(utmTerm || "");
+    setSelectedUtmContent(utmContent || "");
   }, [
     pathname,
     page,
@@ -86,6 +106,11 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
     region,
     city,
     interval,
+    utmSource,
+    utmMedium,
+    utmCampaign,
+    utmTerm,
+    utmContent,
   ]);
 
   useEffect(() => {
@@ -191,6 +216,21 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
       case "period":
         setSelectedPeriod("week");
         break;
+      case "utmSource":
+        setSelectedUtmSource("");
+        break;
+      case "utmMedium":
+        setSelectedUtmMedium("");
+        break;
+      case "utmCampaign":
+        setSelectedUtmCampaign("");
+        break;
+      case "utmTerm":
+        setSelectedUtmTerm("");
+        break;
+      case "utmContent":
+        setSelectedUtmContent("");
+        break;
       default:
         break;
     }
@@ -206,6 +246,11 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
     { label: "City", value: selectedCity, key: "city" },
     { label: "Referrer", value: selectedReferrer, key: "referrer" },
     { label: "Page", value: selectedPage, key: "page" },
+    { label: "UTM Source", value: selectedUtmSource, key: "utmSource" },
+    { label: "UTM Medium", value: selectedUtmMedium, key: "utmMedium" },
+    { label: "UTM Campaign", value: selectedUtmCampaign, key: "utmCampaign" },
+    { label: "UTM Term", value: selectedUtmTerm, key: "utmTerm" },
+    { label: "UTM Content", value: selectedUtmContent, key: "utmContent" },
   ];
 
   // props to pass to the dashboard components who need the same props
@@ -221,6 +266,11 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
     country: selectedCountry,
     region: selectedRegion,
     city: selectedCity,
+    utmSource: selectedUtmSource,
+    utmMedium: selectedUtmMedium,
+    utmCampaign: selectedUtmCampaign,
+    utmTerm: selectedUtmTerm,
+    utmContent: selectedUtmContent,
   };
 
   return (
@@ -306,10 +356,16 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
               country={selectedCountry}
               region={selectedRegion}
               city={selectedCity}
+              utmSource={selectedUtmSource}
+              utmMedium={selectedUtmMedium}
+              utmCampaign={selectedUtmCampaign}
+              utmTerm={selectedUtmTerm}
+              utmContent={selectedUtmContent}
             />
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 my-12">
-              <Pages {...sharedProps} />
               <Referrers {...sharedProps} />
+              <UTMParameters {...sharedProps} />
+              <Pages {...sharedProps} />
               <DeviceTypes {...sharedProps} />
               <OSes {...sharedProps} />
               <Browsers {...sharedProps} />
