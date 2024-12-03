@@ -10,6 +10,11 @@ interface CommonDashboardComponentProps {
   country: string;
   region: string;
   city: string;
+  utmSource: string;
+  utmMedium: string;
+  utmCampaign: string;
+  utmTerm: string;
+  utmContent: string;
   // accessToken: string;
 }
 

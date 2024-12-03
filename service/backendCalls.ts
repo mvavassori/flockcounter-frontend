@@ -12,7 +12,12 @@ async function getTopStats(
   language: string,
   country: string,
   region: string,
-  city: string
+  city: string,
+  utmSource: string,
+  utmMedium: string,
+  utmCampaign: string,
+  utmTerm: string,
+  utmContent: string
 ) {
   const params = new URLSearchParams({
     startDate: startDate,
@@ -27,6 +32,11 @@ async function getTopStats(
     country: country,
     region: region,
     city: city,
+    utm_source: utmSource,
+    utm_medium: utmMedium,
+    utm_campaign: utmCampaign,
+    utm_term: utmTerm,
+    utm_content: utmContent,
   });
 
   const headers = new Headers();
@@ -72,6 +82,11 @@ async function getPages(
   country: string,
   region: string,
   city: string,
+  utmSource: string,
+  utmMedium: string,
+  utmCampaign: string,
+  utmTerm: string,
+  utmContent: string,
   limit: number,
   offset: number
 ) {
@@ -87,6 +102,11 @@ async function getPages(
     country: country,
     region: region,
     city: city,
+    utm_source: utmSource,
+    utm_medium: utmMedium,
+    utm_campaign: utmCampaign,
+    utm_term: utmTerm,
+    utm_content: utmContent,
     limit: String(limit),
     offset: String(offset),
   });
@@ -132,6 +152,11 @@ async function getReferrers(
   country: string,
   region: string,
   city: string,
+  utmSource: string,
+  utmMedium: string,
+  utmCampaign: string,
+  utmTerm: string,
+  utmContent: string,
   limit: number,
   offset: number
 ) {
@@ -147,6 +172,11 @@ async function getReferrers(
     country: country,
     region: region,
     city: city,
+    utm_source: utmSource,
+    utm_medium: utmMedium,
+    utm_campaign: utmCampaign,
+    utm_term: utmTerm,
+    utm_content: utmContent,
     limit: String(limit),
     offset: String(offset),
   });
@@ -191,7 +221,12 @@ async function getDeviceTypes(
   language: string,
   country: string,
   region: string,
-  city: string
+  city: string,
+  utmSource: string,
+  utmMedium: string,
+  utmCampaign: string,
+  utmTerm: string,
+  utmContent: string
 ) {
   const params = new URLSearchParams({
     startDate: startDate,
@@ -205,6 +240,11 @@ async function getDeviceTypes(
     country: country,
     region: region,
     city: city,
+    utm_source: utmSource,
+    utm_medium: utmMedium,
+    utm_campaign: utmCampaign,
+    utm_term: utmTerm,
+    utm_content: utmContent,
   });
 
   const headers = new Headers();
@@ -247,7 +287,12 @@ async function getOSes(
   language: string,
   country: string,
   region: string,
-  city: string
+  city: string,
+  utmSource: string,
+  utmMedium: string,
+  utmCampaign: string,
+  utmTerm: string,
+  utmContent: string
 ) {
   const params = new URLSearchParams({
     startDate: startDate,
@@ -261,6 +306,11 @@ async function getOSes(
     country: country,
     region: region,
     city: city,
+    utm_source: utmSource,
+    utm_medium: utmMedium,
+    utm_campaign: utmCampaign,
+    utm_term: utmTerm,
+    utm_content: utmContent,
   });
 
   const headers = new Headers();
@@ -303,7 +353,12 @@ async function getBrowsers(
   language: string,
   country: string,
   region: string,
-  city: string
+  city: string,
+  utmSource: string,
+  utmMedium: string,
+  utmCampaign: string,
+  utmTerm: string,
+  utmContent: string
 ) {
   const params = new URLSearchParams({
     startDate: startDate,
@@ -317,6 +372,11 @@ async function getBrowsers(
     country: country,
     region: region,
     city: city,
+    utm_source: utmSource,
+    utm_medium: utmMedium,
+    utm_campaign: utmCampaign,
+    utm_term: utmTerm,
+    utm_content: utmContent,
   });
 
   const headers = new Headers();
@@ -360,6 +420,11 @@ async function getLanguages(
   country: string,
   region: string,
   city: string,
+  utmSource: string,
+  utmMedium: string,
+  utmCampaign: string,
+  utmTerm: string,
+  utmContent: string,
   limit: number,
   offset: number
 ) {
@@ -375,6 +440,11 @@ async function getLanguages(
     country: country,
     region: region,
     city: city,
+    utm_source: utmSource,
+    utm_medium: utmMedium,
+    utm_campaign: utmCampaign,
+    utm_term: utmTerm,
+    utm_content: utmContent,
     limit: String(limit),
     offset: String(offset),
   });
@@ -420,6 +490,11 @@ async function getCountries(
   country: string,
   region: string,
   city: string,
+  utmSource: string,
+  utmMedium: string,
+  utmCampaign: string,
+  utmTerm: string,
+  utmContent: string,
   limit: number,
   offset: number
 ) {
@@ -435,6 +510,11 @@ async function getCountries(
     country: country,
     region: region,
     city: city,
+    utm_source: utmSource,
+    utm_medium: utmMedium,
+    utm_campaign: utmCampaign,
+    utm_term: utmTerm,
+    utm_content: utmContent,
     limit: String(limit),
     offset: String(offset),
   });
@@ -480,6 +560,11 @@ async function getRegions(
   country: string,
   region: string,
   city: string,
+  utmSource: string,
+  utmMedium: string,
+  utmCampaign: string,
+  utmTerm: string,
+  utmContent: string,
   limit: number,
   offset: number
 ) {
@@ -495,6 +580,11 @@ async function getRegions(
     country: country,
     region: region,
     city: city,
+    utm_source: utmSource,
+    utm_medium: utmMedium,
+    utm_campaign: utmCampaign,
+    utm_term: utmTerm,
+    utm_content: utmContent,
     limit: String(limit),
     offset: String(offset),
   });
@@ -540,6 +630,11 @@ async function getCities(
   country: string,
   region: string,
   city: string,
+  utmSource: string,
+  utmMedium: string,
+  utmCampaign: string,
+  utmTerm: string,
+  utmContent: string,
   limit: number,
   offset: number
 ) {
@@ -555,10 +650,14 @@ async function getCities(
     country: country,
     region: region,
     city: city,
+    utm_source: utmSource,
+    utm_medium: utmMedium,
+    utm_campaign: utmCampaign,
+    utm_term: utmTerm,
+    utm_content: utmContent,
     limit: String(limit),
     offset: String(offset),
   });
-
   const headers = new Headers();
   headers.append("Authorization", `Bearer ${token}`);
 
