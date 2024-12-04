@@ -272,7 +272,7 @@ const ReferrersAndUtm: React.FC<CommonDashboardComponentProps> = (props) => {
       {data && (
         <ul>
           {"utm_values" in data
-            ? data.utm_values.map((value, index) => (
+            ? data.utm_values?.map((value, index) => (
                 <li
                   key={index}
                   className="flex items-center justify-between cursor-pointer hover:underline"
