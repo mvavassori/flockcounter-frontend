@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
-import { getUtmParameters } from "@/service/backendCalls";
+import { getReferrers, getUtmParameters } from "@/service/backendCalls";
 import { CommonDashboardComponentProps } from "@/types/commonTypes";
 import Spinner from "@/components/Spinner";
 import { useRefetch } from "@/context/RefetchContext";
@@ -11,13 +11,21 @@ import LeftArrow from "@/components/icons/LeftArrow";
 import RightArrow from "@/components/icons/RightArrow";
 import { getDateRange } from "@/utils/helper";
 
-interface UTMParametersData {
+interface UtmParametersData {
   counts: number[];
   utm_values: string[];
   totalCount: number;
 }
 
-const UTMParameters: React.FC<CommonDashboardComponentProps> = (props) => {
+interface ReferrersData {
+  counts: number[];
+  referrers: string[];
+  totalCount: number;
+}
+
+type Data = UtmParametersData | ReferrersData;
+
+const ReferrersAndUtm: React.FC<CommonDashboardComponentProps> = (props) => {
   const {
     domain,
     period,
@@ -45,11 +53,8 @@ const UTMParameters: React.FC<CommonDashboardComponentProps> = (props) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const [selectedUtmParameter, setSelectedUtmParameter] =
-    useState("utm_sources");
-  const [utmParameters, setUtmParameters] = useState<UTMParametersData | null>(
-    null
-  );
+  const [selectedOption, setSelectedOption] = useState("referrers");
+  const [data, setData] = useState<Data | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [accessToken, setAccessToken] = useState("");
@@ -68,36 +73,65 @@ const UTMParameters: React.FC<CommonDashboardComponentProps> = (props) => {
     }
     setLoading(true);
     const { startDateString, endDateString } = getDateRange(period);
-    const fetchUtmParameters = async () => {
-      let limit = 10;
-      let offset = (pageNumber - 1) * limit;
+
+    const fetchData = async () => {
+      const limit = 10;
+      const offset = (pageNumber - 1) * limit;
       try {
-        const UtmParametersData = await getUtmParameters(
-          selectedUtmParameter,
-          domain,
-          startDateString,
-          endDateString,
-          accessToken,
-          page,
-          referrer,
-          device,
-          os,
-          browser,
-          language,
-          country,
-          region,
-          city,
-          utmSource,
-          utmMedium,
-          utmCampaign,
-          utmTerm,
-          utmContent,
-          limit,
-          offset
-        );
-        setUtmParameters(UtmParametersData);
-        setTotalPages(Math.ceil(UtmParametersData.totalCount / limit));
-      } catch (err: Error | any) {
+        let responseData: Data;
+
+        if (selectedOption === "referrers") {
+          responseData = await getReferrers(
+            domain,
+            startDateString,
+            endDateString,
+            accessToken,
+            page,
+            referrer,
+            device,
+            os,
+            browser,
+            language,
+            country,
+            region,
+            city,
+            utmSource,
+            utmMedium,
+            utmCampaign,
+            utmTerm,
+            utmContent,
+            limit,
+            offset
+          );
+        } else {
+          responseData = await getUtmParameters(
+            selectedOption,
+            domain,
+            startDateString,
+            endDateString,
+            accessToken,
+            page,
+            referrer,
+            device,
+            os,
+            browser,
+            language,
+            country,
+            region,
+            city,
+            utmSource,
+            utmMedium,
+            utmCampaign,
+            utmTerm,
+            utmContent,
+            limit,
+            offset
+          );
+        }
+
+        setData(responseData);
+        setTotalPages(Math.ceil(responseData.totalCount / limit));
+      } catch (err: any) {
         if (err.message === "Unauthorized") {
           await update();
           triggerRefetch();
@@ -109,7 +143,7 @@ const UTMParameters: React.FC<CommonDashboardComponentProps> = (props) => {
       }
     };
     if (accessToken || shouldRefetch) {
-      fetchUtmParameters();
+      fetchData();
     }
   }, [
     domain,
@@ -130,25 +164,36 @@ const UTMParameters: React.FC<CommonDashboardComponentProps> = (props) => {
     utmTerm,
     utmContent,
     pageNumber,
+    selectedOption,
     shouldRefetch,
-    selectedUtmParameter,
   ]);
 
-  const handleSelectedUtmValueChange = (
-    utm_value: string,
-    selectedUtmParameter: string
+  const handleSelectedOptionChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
   ) => {
+    setSelectedOption(event.target.value);
+    setPageNumber(1); // Reset pagination on option change
+  };
+
+  const handleValueClick = (value: string) => {
     const existingSearchParams = searchParams.toString();
     const newSearchParams = new URLSearchParams(existingSearchParams);
-    // To avoid triggering a new visit with utm parameters on filtering e.g. if the user adds utm_source=somesource on filtering to the url, the visit will be registered from the utm_source
-    const mapping: { [key: string]: string } = {
-      utm_sources: "utmSource",
-      utm_mediums: "utmMedium",
-      utm_campaigns: "utmCampaign",
-      utm_terms: "utmTerm",
-      utm_contents: "utmContent",
-    };
-    newSearchParams.set(mapping[selectedUtmParameter], utm_value);
+
+    if (selectedOption === "referrers") {
+      newSearchParams.set("referrer", value);
+    } else {
+      const mapping: { [key: string]: string } = {
+        utm_sources: "utmSource",
+        utm_mediums: "utmMedium",
+        utm_campaigns: "utmCampaign",
+        utm_terms: "utmTerm",
+        utm_contents: "utmContent",
+      };
+      newSearchParams.set(mapping[selectedOption], value);
+    }
+
+    setPageNumber(1);
+
     router.replace(`${pathname}?${newSearchParams.toString()}`, {
       scroll: false,
     });
@@ -166,18 +211,10 @@ const UTMParameters: React.FC<CommonDashboardComponentProps> = (props) => {
     }
   };
 
-  const handleSelectedUtmParameterChange = (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    const selected = event.target.value;
-    console.log(selected);
-    setSelectedUtmParameter(selected);
-  };
-
   if (loading) {
     return (
       <div className="flex-grow w-min-100 bg-slate-200 rounded-lg p-4 max-w-sm">
-        <h2 className="font-semibold mb-2 text-lg">UTM Sources</h2>
+        <h2 className="font-semibold mb-2 text-lg">Referrers</h2>
         <div className="flex justify-center items-center pb-4">
           <Spinner />
         </div>
@@ -188,7 +225,7 @@ const UTMParameters: React.FC<CommonDashboardComponentProps> = (props) => {
   if (error) {
     return (
       <div className="flex-grow w-min-100 bg-slate-200 rounded-lg p-4 max-w-sm">
-        <h2 className="font-semibold mb-2 text-lg">UTM Sources</h2>
+        <h2 className="font-semibold mb-2 text-lg">Referrers</h2>
         <div className="flex justify-center items-center pb-4 h-[200px]">
           Error: {error}
         </div>
@@ -199,13 +236,16 @@ const UTMParameters: React.FC<CommonDashboardComponentProps> = (props) => {
   return (
     <div className="flex-grow w-min-200 bg-slate-200 rounded-lg p-4 w-full">
       <select
-        value={selectedUtmParameter}
-        onChange={handleSelectedUtmParameterChange}
+        value={selectedOption}
+        onChange={handleSelectedOptionChange}
         className="font-semibold text-lg mb-2 rounded-md flex-grow-0 bg-slate-200 border-2 outline-none cursor-pointer border-slate-200"
         style={{
           marginLeft: "-0.5rem", // adjust the overall left margin of the standard browser select
         }}
       >
+        <option className="bg-slate-200 hover:bg-slate-300" value="referrers">
+          Referrers
+        </option>
         <option className="bg-slate-200 hover:bg-slate-300" value="utm_sources">
           UTM Sources
         </option>
@@ -229,31 +269,41 @@ const UTMParameters: React.FC<CommonDashboardComponentProps> = (props) => {
         </option>
       </select>
 
-      {utmParameters && utmParameters.utm_values && (
+      {data && (
         <ul>
-          {utmParameters.utm_values.map((utm_value, index) => (
-            <li
-              key={index}
-              className="flex items-center justify-between cursor-pointer hover:underline"
-              onClick={() =>
-                handleSelectedUtmValueChange(utm_value, selectedUtmParameter)
-              }
-            >
-              <span
-                className="font-semibold text-gray-800 truncate"
-                title={utm_value}
-              >
-                {utm_value}
-              </span>
-              <span className="ml-2 text-blue-500 font-bold">
-                {utmParameters.counts[index]}
-              </span>
-            </li>
-          ))}
+          {"utm_values" in data
+            ? data.utm_values.map((value, index) => (
+                <li
+                  key={index}
+                  className="flex items-center justify-between cursor-pointer hover:underline"
+                  onClick={() => handleValueClick(value)}
+                >
+                  <span className="font-semibold text-gray-800 truncate">
+                    {value}
+                  </span>
+                  <span className="ml-2 text-blue-500 font-bold">
+                    {data.counts[index]}
+                  </span>
+                </li>
+              ))
+            : data.referrers?.map((value, index) => (
+                <li
+                  key={index}
+                  className="flex items-center justify-between cursor-pointer hover:underline"
+                  onClick={() => handleValueClick(value)}
+                >
+                  <span className="font-semibold text-gray-800 truncate">
+                    {value}
+                  </span>
+                  <span className="ml-2 text-blue-500 font-bold">
+                    {data.counts[index]}
+                  </span>
+                </li>
+              ))}
         </ul>
       )}
       {/* Pagination */}
-      {utmParameters && utmParameters.totalCount > 10 && (
+      {data && data.totalCount > 10 && (
         <div className="flex justify-left items-center gap-2 mt-4">
           <button
             onClick={handlePrevPage}
@@ -282,4 +332,4 @@ const UTMParameters: React.FC<CommonDashboardComponentProps> = (props) => {
   );
 };
 
-export default UTMParameters;
+export default ReferrersAndUtm;

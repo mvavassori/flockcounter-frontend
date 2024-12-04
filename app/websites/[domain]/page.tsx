@@ -4,9 +4,10 @@ import { useEffect, useState } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 
+import { RefetchProvider } from "@/context/RefetchContext";
+import { getDateRange } from "@/utils/helper";
 import TopStats from "@/components/dashboard/TopStats";
 import Pages from "@/components/dashboard/Pages";
-import Referrers from "@/components/dashboard/Referrers";
 import DeviceTypes from "@/components/dashboard/DeviceTypes";
 import OSes from "@/components/dashboard/OSes";
 import Browsers from "@/components/dashboard/Browsers";
@@ -14,11 +15,9 @@ import Languages from "@/components/dashboard/Languages";
 import Countries from "@/components/dashboard/Countries";
 import Regions from "@/components/dashboard/Regions";
 import Cities from "@/components/dashboard/Cities";
-import CloseIcon from "@/components/icons/CloseIcon";
+import ReferrersAndUtm from "@/components/dashboard/ReferrersAndUtm";
 import Events from "@/components/Events";
-import { RefetchProvider } from "@/context/RefetchContext";
-import { getDateRange } from "@/utils/helper";
-import UTMParameters from "@/components/dashboard/GetUtmParameters";
+import CloseIcon from "@/components/icons/CloseIcon";
 
 export default function Dashboard({ params }: { params: { domain: string } }) {
   const { domain } = params;
@@ -363,8 +362,7 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
               utmContent={selectedUtmContent}
             />
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 my-12">
-              <Referrers {...sharedProps} />
-              <UTMParameters {...sharedProps} />
+              <ReferrersAndUtm {...sharedProps} />
               <Pages {...sharedProps} />
               <DeviceTypes {...sharedProps} />
               <OSes {...sharedProps} />

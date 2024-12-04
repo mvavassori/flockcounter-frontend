@@ -1,3 +1,4 @@
+// old component, just for reference
 "use client";
 
 import { useState, useEffect } from "react";
