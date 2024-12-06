@@ -756,6 +756,34 @@ async function getUtmParameters(
   }
 }
 
+async function getLivePageViews(domain: string, token: string) {
+  const headers = new Headers();
+  headers.append("Authorization", `Bearer ${token}`);
+
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/dashboard/live-pageviews/${domain}`,
+      { headers }
+    );
+    if (!response.ok) {
+      const text = await response.text();
+      console.error(`HTTP error! status: ${response.status}, body: ${text}`);
+      if (response.status === 401) {
+        throw new Error("Unauthorized");
+      } else if (response.status === 404) {
+        throw new Error("Invalid domain");
+      } else {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+    }
+    const data = await response.json();
+    return data.count;
+  } catch (error) {
+    console.error("Network error:", error);
+    throw error; // Re-throw the error to be caught in the useEffect
+  }
+}
+
 async function getEvents(
   domain: string,
   startDate: string,
@@ -807,5 +835,6 @@ export {
   getRegions,
   getCities,
   getUtmParameters,
+  getLivePageViews,
   getEvents,
 };

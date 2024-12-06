@@ -11,7 +11,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { useSession } from "next-auth/react";
-import { getTopStats } from "@/service/backendCalls";
+import { getTopStats, getLivePageViews } from "@/service/backendCalls";
 import Spinner from "@/components/Spinner";
 import { useRefetch } from "@/context/RefetchContext";
 import {
@@ -87,6 +87,7 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [accessToken, setAccessToken] = useState("");
+  const [livePageviews, setLivePageviews] = useState(0);
 
   useEffect(() => {
     if (session?.backendTokens.accessToken) {
@@ -159,6 +160,35 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
     shouldRefetch,
   ]);
 
+  useEffect(() => {
+    let intervalId;
+
+    // Function to fetch live pageviews
+    const fetchLivePageviews = async () => {
+      if (!accessToken) return;
+      try {
+        const livePageviewsData = await getLivePageViews(domain, accessToken);
+        setLivePageviews(livePageviewsData); // Update state with the live pageviews count
+      } catch (err: any) {
+        if (err.message === "Unauthorized") {
+          triggerRefetch();
+        }
+        console.error("Error fetching live pageviews:", err);
+      }
+    };
+
+    // Call the function immediately on component mount
+    if (accessToken || shouldRefetch) {
+      fetchLivePageviews();
+    }
+
+    // Set up the interval to call the function every 30 seconds
+    intervalId = setInterval(fetchLivePageviews, 30000);
+
+    // Cleanup the interval when the component unmounts
+    return () => clearInterval(intervalId);
+  }, [domain, shouldRefetch, accessToken]); // Dependency array: re-run effect if domain changes
+
   const getChartData = () => {
     return (
       topStats?.perIntervalStats?.[selectedMetric]?.map((item) => {
@@ -187,6 +217,10 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
   ) => {
     setSelectedMetric(metric);
   };
+
+  // Dynamically set color classes based on livePageviews
+  const dotColor = livePageviews > 0 ? "bg-green-500" : "bg-red-500";
+  const pingColor = livePageviews > 0 ? "bg-green-400" : "bg-red-400";
 
   if (loading) {
     return (
@@ -232,38 +266,59 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
 
   return (
     <div className="w-full mt-8 bg-slate-100 rounded-md">
-      <ul className="flex gap-4 rounded-t-lg p-4">
-        <li
-          onClick={() => handleMetricChange("totalVisits")}
-          className={
-            selectedMetric === "totalVisits"
-              ? "font-semibold text-lg cursor-pointer border-b-4 border-blue-500"
-              : "font-semibold text-lg cursor-pointer"
-          }
-        >
-          Total visits: {topStats?.aggregates?.totalVisits}
-        </li>
-        <li
-          onClick={() => handleMetricChange("uniqueVisitors")}
-          className={
-            selectedMetric === "uniqueVisitors"
-              ? "font-semibold text-lg cursor-pointer border-b-4 border-red-500"
-              : "font-semibold text-lg cursor-pointer"
-          }
-        >
-          Unique visitors: {topStats?.aggregates?.uniqueVisitors}
-        </li>
-        <li
-          onClick={() => handleMetricChange("medianVisitDuration")}
-          className={
-            selectedMetric === "medianVisitDuration"
-              ? "font-semibold text-lg cursor-pointer border-b-4 border-green-500"
-              : "font-semibold text-lg cursor-pointer"
-          }
-        >
-          Median visit duration: {topStats?.aggregates?.medianVisitDuration}
-        </li>
-      </ul>
+      <div className="flex justify-between">
+        <ul className="flex gap-4 rounded-t-lg p-4">
+          <li
+            onClick={() => handleMetricChange("totalVisits")}
+            className={
+              selectedMetric === "totalVisits"
+                ? "font-semibold text-lg cursor-pointer border-b-4 border-blue-500"
+                : "font-semibold text-lg cursor-pointer"
+            }
+          >
+            Total visits: {topStats?.aggregates?.totalVisits}
+          </li>
+          <li
+            onClick={() => handleMetricChange("uniqueVisitors")}
+            className={
+              selectedMetric === "uniqueVisitors"
+                ? "font-semibold text-lg cursor-pointer border-b-4 border-red-500"
+                : "font-semibold text-lg cursor-pointer"
+            }
+          >
+            Unique visitors: {topStats?.aggregates?.uniqueVisitors}
+          </li>
+          <li
+            onClick={() => handleMetricChange("medianVisitDuration")}
+            className={
+              selectedMetric === "medianVisitDuration"
+                ? "font-semibold text-lg cursor-pointer border-b-4 border-green-500"
+                : "font-semibold text-lg cursor-pointer"
+            }
+          >
+            Median visit duration: {topStats?.aggregates?.medianVisitDuration}
+          </li>
+        </ul>
+        <div className="flex items-center p-4">
+          {/* Pulsating Dot */}
+          <span className="relative flex h-3 w-3">
+            <span
+              className={`animate-ping absolute inline-flex h-full w-full rounded-full ${
+                livePageviews > 0 ? "bg-green-400" : "bg-red-400"
+              } opacity-75`}
+            ></span>
+            <span
+              className={`relative inline-flex rounded-full h-3 w-3 ${
+                livePageviews > 0 ? "bg-green-500" : "bg-red-500"
+              }`}
+            ></span>
+          </span>
+          {/* Live Pageviews Count */}
+          <p className="ml-2 font-semibold text-sm">
+            Live pageviews: {livePageviews}
+          </p>
+        </div>
+      </div>
       <div className="pb-4">
         <ResponsiveContainer width="100%" height={400}>
           <LineChart
