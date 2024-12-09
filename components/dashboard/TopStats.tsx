@@ -266,8 +266,8 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
 
   return (
     <div className="w-full mt-8 bg-slate-100 rounded-md">
-      <div className="flex justify-between">
-        <ul className="flex gap-4 rounded-t-lg p-4">
+      <div className="flex justify-between items-center">
+        <ul className="flex items-center gap-4 rounded-t-lg p-4 my-0">
           <li
             onClick={() => handleMetricChange("totalVisits")}
             className={
