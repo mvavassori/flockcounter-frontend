@@ -81,7 +81,7 @@ const Events: React.FC<EventsProps> = (props) => {
   return (
     <div className="flex-grow w-min-200 bg-slate-200 rounded-lg p-4">
       <h2 className="font-semibold text-lg mb-2">Events</h2>
-      {events && events.eventNames && (
+      {events && events.eventNames && events.eventNames.length > 0 ? (
         <ul>
           {events.eventNames.map((event: string, index: number) => (
             <li key={index} className="flex items-center justify-between">
@@ -92,6 +92,8 @@ const Events: React.FC<EventsProps> = (props) => {
             </li>
           ))}
         </ul>
+      ) : (
+        <p className="text-gray-600">No events found for this period.</p>
       )}
     </div>
   );

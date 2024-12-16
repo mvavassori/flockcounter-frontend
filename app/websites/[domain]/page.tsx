@@ -68,8 +68,6 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
 
-  const [currentView, setCurrentView] = useState("dashboard");
-
   useEffect(() => {
     if (session?.error === "RefreshAccessTokenError") {
       signOut();
@@ -274,30 +272,8 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
 
   return (
     <div className="w-full px-4 pb-4 pt-12">
-      <h1 className="text-3xl font-semibold">{domain}</h1>
-      <div className="flex justify-between items-end mt-6 mb-4 align-baseline">
-        <div className="flex gap-4">
-          <button
-            className={
-              currentView === "dashboard"
-                ? "border-b-4 border-blue-500 font-semibold px-2 py-1"
-                : "border-b-4 border-transparent font-semibold text-gray-500 hover:text-gray-600 hover:border-gray-600 px-2 py-1"
-            }
-            onClick={() => setCurrentView("dashboard")}
-          >
-            Dashboard
-          </button>
-          <button
-            className={
-              currentView === "events"
-                ? "border-b-4 border-blue-500 font-semibold px-2 py-1"
-                : "border-b-4 border-transparent font-semibold text-gray-500 hover:text-gray-600 hover:border-gray-600 px-2 py-1"
-            }
-            onClick={() => setCurrentView("events")}
-          >
-            Events
-          </button>
-        </div>
+      <div className="flex justify-between">
+        <h1 className="text-3xl font-semibold">{domain}</h1>
         <select
           value={selectedPeriod}
           onChange={handlePeriodChange}
@@ -316,72 +292,64 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
       </div>
 
       {/* dashboard components*/}
-      {currentView === "dashboard" && (
-        <div>
-          <div className="flex gap-2 flex-wrap">
-            {filters.map(
-              (filter) =>
-                filter.value && (
-                  <div
-                    key={filter.key}
-                    className="text-sm bg-slate-100 p-2 rounded flex items-center"
+      <div>
+        <div className="flex gap-2 flex-wrap">
+          {filters.map(
+            (filter) =>
+              filter.value && (
+                <div
+                  key={filter.key}
+                  className="text-sm bg-slate-100 p-2 rounded flex items-center"
+                >
+                  <span>
+                    {filter.label}: {filter.value}
+                  </span>
+                  <span
+                    className="ml-2 cursor-pointer hover:text-red-500"
+                    onClick={() => clearFilter(filter.key)}
+                    title={`Clear filter: ${filter.value}`}
                   >
-                    <span>
-                      {filter.label}: {filter.value}
-                    </span>
-                    <span
-                      className="ml-2 cursor-pointer hover:text-red-500"
-                      onClick={() => clearFilter(filter.key)}
-                      title={`Clear filter: ${filter.value}`}
-                    >
-                      <CloseIcon width={16} height={16} />
-                    </span>
-                  </div>
-                )
-            )}
+                    <CloseIcon width={16} height={16} />
+                  </span>
+                </div>
+              )
+          )}
+        </div>
+
+        <RefetchProvider>
+          <TopStats
+            domain={domain}
+            period={selectedPeriod}
+            interval={selectedInterval} // here i also need to pass the interval (hour,day,month)
+            page={selectedPage}
+            referrer={selectedReferrer}
+            device={selectedDevice}
+            os={selectedOs}
+            browser={selectedBrowser}
+            language={selectedLanguage}
+            country={selectedCountry}
+            region={selectedRegion}
+            city={selectedCity}
+            utmSource={selectedUtmSource}
+            utmMedium={selectedUtmMedium}
+            utmCampaign={selectedUtmCampaign}
+            utmTerm={selectedUtmTerm}
+            utmContent={selectedUtmContent}
+          />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 my-12">
+            <ReferrersAndUtm {...sharedProps} />
+            <Pages {...sharedProps} />
+            <DeviceTypes {...sharedProps} />
+            <OSes {...sharedProps} />
+            <Browsers {...sharedProps} />
+            <Languages {...sharedProps} />
+            <Countries {...sharedProps} />
+            <Regions {...sharedProps} />
+            <Cities {...sharedProps} />
           </div>
-
-          <RefetchProvider>
-            <TopStats
-              domain={domain}
-              period={selectedPeriod}
-              interval={selectedInterval} // here i also need to pass the interval (hour,day,month)
-              page={selectedPage}
-              referrer={selectedReferrer}
-              device={selectedDevice}
-              os={selectedOs}
-              browser={selectedBrowser}
-              language={selectedLanguage}
-              country={selectedCountry}
-              region={selectedRegion}
-              city={selectedCity}
-              utmSource={selectedUtmSource}
-              utmMedium={selectedUtmMedium}
-              utmCampaign={selectedUtmCampaign}
-              utmTerm={selectedUtmTerm}
-              utmContent={selectedUtmContent}
-            />
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 my-12">
-              <ReferrersAndUtm {...sharedProps} />
-              <Pages {...sharedProps} />
-              <DeviceTypes {...sharedProps} />
-              <OSes {...sharedProps} />
-              <Browsers {...sharedProps} />
-              <Languages {...sharedProps} />
-              <Countries {...sharedProps} />
-              <Regions {...sharedProps} />
-              <Cities {...sharedProps} />
-            </div>
-          </RefetchProvider>
-        </div>
-      )}
-
-      {/* events component */}
-      {currentView === "events" && (
-        <div>
           <Events domain={domain} startDate={startDate} endDate={endDate} />
-        </div>
-      )}
+        </RefetchProvider>
+      </div>
     </div>
   );
 }
