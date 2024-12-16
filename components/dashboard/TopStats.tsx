@@ -230,7 +230,7 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
             Total visits: <Spinner />
           </li>
           <li className="font-semibold text-gray-600 text-lg flex items-baseline gap-2">
-            Unique visitors: <Spinner />
+            Visitors: <Spinner />
           </li>
           <li className="font-semibold text-gray-600 text-lg flex items-baseline gap-2">
             Median visit duration: <Spinner />
@@ -251,7 +251,7 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
             Total visits:
           </li>
           <li className="font-semibold text-gray-600 text-lg flex items-baseline gap-2">
-            Unique visitors:
+            Visitors:
           </li>
           <li className="font-semibold text-gray-600 text-lg flex items-baseline gap-2">
             Median visit duration:
@@ -273,7 +273,7 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
             className={
               selectedMetric === "totalVisits"
                 ? "font-semibold text-lg cursor-pointer border-b-4 border-blue-500"
-                : "font-semibold text-lg cursor-pointer"
+                : "font-semibold text-lg cursor-pointer border-b-4 border-transparent hover:border-gray-400"
             }
           >
             Total visits: {topStats?.aggregates?.totalVisits}
@@ -283,17 +283,17 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
             className={
               selectedMetric === "uniqueVisitors"
                 ? "font-semibold text-lg cursor-pointer border-b-4 border-red-500"
-                : "font-semibold text-lg cursor-pointer"
+                : "font-semibold text-lg cursor-pointer border-b-4 border-transparent hover:border-gray-400"
             }
           >
-            Unique visitors: {topStats?.aggregates?.uniqueVisitors}
+            Visitors: {topStats?.aggregates?.uniqueVisitors}
           </li>
           <li
             onClick={() => handleMetricChange("medianVisitDuration")}
             className={
               selectedMetric === "medianVisitDuration"
                 ? "font-semibold text-lg cursor-pointer border-b-4 border-green-500"
-                : "font-semibold text-lg cursor-pointer"
+                : "font-semibold text-lg cursor-pointer border-b-4 border-transparent hover:border-gray-400"
             }
           >
             Median visit duration: {topStats?.aggregates?.medianVisitDuration}
