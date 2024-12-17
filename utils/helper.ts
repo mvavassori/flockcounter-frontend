@@ -204,3 +204,16 @@ export const getInterval = (period: string, interval: string) => {
     return 2;
   }
 };
+
+// Helper Functions for Password Rules
+export const hasSpecialChar = (s: string): boolean => {
+  return /[!@#$%^&*(),.?":{}|<>]/.test(s);
+};
+
+export const hasNumber = (s: string): boolean => {
+  return /[0-9]/.test(s);
+};
+
+export const hasUppercase = (s: string): boolean => {
+  return /[A-Z]/.test(s);
+};

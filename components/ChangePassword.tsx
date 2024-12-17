@@ -1,8 +1,8 @@
-// todo add client side validation
 "use client";
 
 import { useState } from "react";
 import { useSession } from "next-auth/react";
+import { hasSpecialChar, hasNumber, hasUppercase } from "@/utils/helper";
 
 export default function ChangePassword() {
   const { data: session } = useSession();
@@ -10,17 +10,56 @@ export default function ChangePassword() {
   const [newPassword, setNewPassword] = useState("");
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [validationError, setValidationError] = useState("");
+
+  const validatePassword = () => {
+    if (currentPassword === "") {
+      setValidationError("Current password is required");
+      return false;
+    }
+    if (newPassword === "") {
+      setValidationError("New password is required");
+      return false;
+    }
+    if (currentPassword === newPassword) {
+      setValidationError(
+        "New password must be different from current password"
+      );
+      return false;
+    }
+    if (newPassword.length < 8) {
+      setValidationError("New password must be at least 8 characters long");
+      return false;
+    }
+    if (
+      !hasSpecialChar(newPassword) ||
+      !hasNumber(newPassword) ||
+      !hasUppercase(newPassword)
+    ) {
+      setValidationError(
+        "New password must contain at least one uppercase letter, one number, and one special character"
+      );
+      return false;
+    }
+    return true;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setValidationError("");
+
+    if (!validatePassword()) {
+      return;
+    }
+
     setIsLoading(true);
     setMessage("");
 
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/user/change-password`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/user/change-password/${session?.user.id}`,
         {
-          method: "POST",
+          method: "PATCH",
           headers: {
             "Content-Type": "application/json",
             authorization: `Bearer ${session?.backendTokens.accessToken}`,
@@ -32,15 +71,16 @@ export default function ChangePassword() {
         }
       );
 
-      const data = await response.json();
-
       if (response.ok) {
         setMessage("Password successfully updated");
         setCurrentPassword("");
         setNewPassword("");
-      } else {
-        setMessage(data.message || "Failed to update password");
+        return;
       }
+
+      // Only try to parse JSON if the response is not OK
+      const data = await response.json();
+      setMessage(data.message || "Failed to update password");
     } catch (error) {
       setMessage("An error occurred while updating password");
     } finally {
@@ -49,7 +89,7 @@ export default function ChangePassword() {
   };
 
   return (
-    <div className="mt-6">
+    <div className="border-t border-gray-200 pt-6">
       <h3 className="text-lg font-medium mb-4">Change Password</h3>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
@@ -88,6 +128,9 @@ export default function ChangePassword() {
         >
           {isLoading ? "Updating..." : "Update Password"}
         </button>
+        {validationError && (
+          <p className="text-sm text-red-600">{validationError}</p>
+        )}
         {message && (
           <p
             className={`text-sm ${

@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import SignOutButton from "@/components/SignOutButton";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import ChangePassword from "@/components/ChangePassword";
 
 export default async function Profile() {
   const session = await getServerSession(authOptions);
@@ -41,7 +42,9 @@ export default async function Profile() {
               data.user.role.slice(1).toLowerCase()}
           </span>
         </div>
-        <div>
+        <ChangePassword />
+        <div className="border-t border-gray-200 pt-6">
+          <h3 className="text-lg font-medium mb-4">Subscription</h3>
           <span className="block text-sm font-medium">
             Subscription Status:
           </span>
@@ -66,7 +69,8 @@ export default async function Profile() {
         </div>
         <div>
           <span className="block text-sm font-medium">Subscription Plan:</span>
-          {data.user.subscription_plan === "" ? (
+          {!data.user.subscription_plan ||
+          data.user.subscription_plan === "" ? (
             <span className="block text-sm">No plan available</span>
           ) : (
             <span className="block text-sm">
