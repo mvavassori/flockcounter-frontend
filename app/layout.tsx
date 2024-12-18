@@ -19,6 +19,8 @@ declare global {
   }
 }
 
+const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -26,6 +28,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        {/* Inject the backend URL as a meta tag */}
+        <meta name="backend-url" content={backendUrl} />
+      </head>
       <Script crossOrigin="anonymous" src="/static/script.js"></Script>
       <Script
         crossOrigin="anonymous"
