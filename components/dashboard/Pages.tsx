@@ -127,6 +127,7 @@ const Pages: React.FC<CommonDashboardComponentProps> = (props) => {
     utmContent,
     pageNumber,
     shouldRefetch,
+    triggerRefetch,
   ]);
 
   const handlePageSelectedChange = (selectedPath: string) => {

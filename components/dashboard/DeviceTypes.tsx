@@ -116,6 +116,7 @@ const DeviceTypes: React.FC<CommonDashboardComponentProps> = (props) => {
     utmTerm,
     utmContent,
     shouldRefetch,
+    triggerRefetch,
   ]);
 
   const handleSelectedDeviceTypeChange = (deviceType: string) => {

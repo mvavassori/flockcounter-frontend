@@ -126,6 +126,7 @@ const Languages: React.FC<CommonDashboardComponentProps> = (props) => {
     utmContent,
     pageNumber,
     shouldRefetch,
+    triggerRefetch,
   ]);
 
   const handleSelectedLanguageChange = (language: string) => {

@@ -126,6 +126,7 @@ const Regions: React.FC<CommonDashboardComponentProps> = (props) => {
     utmContent,
     pageNumber,
     shouldRefetch,
+    triggerRefetch,
   ]);
 
   const handleSelectedRegionChange = (region: string) => {

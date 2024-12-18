@@ -85,7 +85,6 @@ const Browsers: React.FC<CommonDashboardComponentProps> = (props) => {
         setBrowsers(browsersData);
       } catch (err: Error | any) {
         if (err.message === "Unauthorized") {
-          // await update();
           triggerRefetch();
         } else {
           setError(err.message);
@@ -116,6 +115,7 @@ const Browsers: React.FC<CommonDashboardComponentProps> = (props) => {
     utmTerm,
     utmContent,
     shouldRefetch,
+    triggerRefetch,
   ]);
 
   const handleSelectedBrowserChange = (browser: string) => {

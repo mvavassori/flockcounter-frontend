@@ -126,6 +126,7 @@ const Countries: React.FC<CommonDashboardComponentProps> = (props) => {
     utmContent,
     pageNumber,
     shouldRefetch,
+    triggerRefetch,
   ]);
 
   const handleSelectedCountryChange = (country: string) => {

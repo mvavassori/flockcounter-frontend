@@ -116,6 +116,7 @@ const OSes: React.FC<CommonDashboardComponentProps> = (props) => {
     utmTerm,
     utmContent,
     shouldRefetch,
+    triggerRefetch,
   ]);
 
   const handleSelectedOsChange = (os: string) => {

@@ -58,7 +58,7 @@ export default function AddWebsiteForm() {
     <form onSubmit={handleSubmit}>
       <div className="space-y-2">
         <label htmlFor="url" className="block">
-          Enter the website's full URL:
+          Enter the website full URL:
         </label>
         <input
           type="text"

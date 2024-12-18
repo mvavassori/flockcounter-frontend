@@ -166,6 +166,8 @@ const ReferrersAndUtm: React.FC<CommonDashboardComponentProps> = (props) => {
     pageNumber,
     selectedOption,
     shouldRefetch,
+    triggerRefetch,
+    update,
   ]);
 
   const handleSelectedOptionChange = (

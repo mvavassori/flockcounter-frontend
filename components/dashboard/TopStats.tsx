@@ -158,6 +158,7 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
     utmTerm,
     utmContent,
     shouldRefetch,
+    triggerRefetch,
   ]);
 
   useEffect(() => {
@@ -187,7 +188,7 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
 
     // Cleanup the interval when the component unmounts
     return () => clearInterval(intervalId);
-  }, [domain, shouldRefetch, accessToken]); // Dependency array: re-run effect if domain changes
+  }, [domain, shouldRefetch, accessToken, triggerRefetch]); // Dependency array: re-run effect if domain changes
 
   const getChartData = () => {
     return (

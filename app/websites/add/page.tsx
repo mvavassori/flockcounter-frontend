@@ -60,7 +60,7 @@ export default async function AddWebsite() {
       <h1 className="text-2xl font-bold mb-4">Add a New Website</h1>
       {/* Display message if the user can't add more websites */}
       {limits?.canAddWebsite === false ? (
-        <p>You can't add more websites, upgrade or contact us for more.</p>
+        <p>You cannot add more websites, upgrade or contact us for more.</p>
       ) : (
         <AddWebsiteForm />
       )}

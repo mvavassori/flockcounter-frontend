@@ -126,6 +126,7 @@ const Cities: React.FC<CommonDashboardComponentProps> = (props) => {
     utmContent,
     pageNumber,
     shouldRefetch,
+    triggerRefetch,
   ]);
 
   const handleSelectedCityChange = (city: string) => {

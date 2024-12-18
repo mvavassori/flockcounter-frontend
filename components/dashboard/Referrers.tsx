@@ -127,6 +127,7 @@ const Referrers: React.FC<CommonDashboardComponentProps> = (props) => {
     utmContent,
     pageNumber,
     shouldRefetch,
+    triggerRefetch,
   ]);
 
   const handleSelectedReferrerChange = (referrer: string) => {
