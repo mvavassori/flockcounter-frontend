@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { getEvents } from "@/service/backendCalls";
+import { useRefetch } from "@/context/RefetchContext";
 
 interface EventsProps {
   domain: string;
@@ -17,7 +18,8 @@ interface EventsData {
 
 const Events: React.FC<EventsProps> = (props) => {
   const { domain, startDate, endDate } = props;
-  const { data: session, update } = useSession();
+  const { data: session } = useSession();
+  const { shouldRefetch, triggerRefetch } = useRefetch();
 
   const [events, setEvents] = useState<EventsData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -25,16 +27,9 @@ const Events: React.FC<EventsProps> = (props) => {
 
   const [accessToken, setAccessToken] = useState("");
 
-  const [shouldRefetch, setShouldRefetch] = useState(false);
-  const [triggerFetch, setTriggerFetch] = useState(false);
-
   useEffect(() => {
     if (session?.backendTokens.accessToken) {
       setAccessToken(session.backendTokens.accessToken);
-      if (shouldRefetch) {
-        setShouldRefetch(false);
-        setTriggerFetch(true); // Set triggerFetch to true to refetch data
-      }
     }
   }, [session?.backendTokens.accessToken, shouldRefetch]);
 
@@ -43,7 +38,6 @@ const Events: React.FC<EventsProps> = (props) => {
       return;
     }
     setLoading(true);
-    // const { startDateString, endDateString } = getDateRange(period);
     const fetchEvents = async () => {
       try {
         const eventsData = await getEvents(
@@ -55,8 +49,7 @@ const Events: React.FC<EventsProps> = (props) => {
         setEvents(eventsData);
       } catch (err: Error | any) {
         if (err.message === "Unauthorized") {
-          await update();
-          setShouldRefetch(true); // Set shouldRefetch to true to refetch after updating session
+          triggerRefetch();
         } else {
           setError(err.message);
         }
@@ -64,11 +57,10 @@ const Events: React.FC<EventsProps> = (props) => {
         setLoading(false);
       }
     };
-    if (accessToken || accessToken) {
-      setTriggerFetch(false);
+    if (accessToken || shouldRefetch) {
       fetchEvents();
     }
-  }, [domain, startDate, endDate, accessToken, triggerFetch, accessToken]);
+  }, [domain, startDate, endDate, accessToken, shouldRefetch, triggerRefetch]);
 
   if (loading) {
     return <div>Loading...</div>;
