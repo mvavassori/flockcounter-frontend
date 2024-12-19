@@ -1,7 +1,7 @@
 # syntax=docker.io/docker/dockerfile:1
 
 # Base image
-FROM node:lts-slim AS base
+FROM node:lts-bookworm AS base
 WORKDIR /app
 
 # Install dependencies only when needed
@@ -20,6 +20,14 @@ FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+
+# Pass build arguments for environment variables
+ARG NEXT_PUBLIC_BACKEND_URL
+ARG NEXT_PUBLIC_TEST_STRIPE_KEY
+
+# Set environment variables for build and runtime
+ENV NEXT_PUBLIC_BACKEND_URL=${NEXT_PUBLIC_BACKEND_URL}
+ENV NEXT_PUBLIC_TEST_STRIPE_KEY=${NEXT_PUBLIC_TEST_STRIPE_KEY}
 
 RUN \
   if [ -f yarn.lock ]; then yarn run build; \
