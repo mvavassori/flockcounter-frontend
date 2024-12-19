@@ -14,8 +14,7 @@ async function refreshToken(token: JWT): Promise<JWT> {
       }
     );
     const response = await res.json();
-    // let expiresAt = response.expiresAt * 1000;
-    // console.log("expiresAt", new Date(expiresAt).toLocaleString());
+
     if (!res.ok) {
       throw new Error(response.message);
     }
@@ -99,12 +98,6 @@ export const authOptions: NextAuthOptions = {
 
       const currentTimeInMilliseconds = Date.now();
       const expirationTimeInMilliseconds = token.backendTokens.expiresAt * 1000;
-
-      // console.log("curr", new Date(currentTimeInMilliseconds).toLocaleString());
-      // console.log(
-      //   "exp",
-      //   new Date(expirationTimeInMilliseconds).toLocaleString()
-      // );
 
       if (currentTimeInMilliseconds < expirationTimeInMilliseconds) {
         return token; // return previous token

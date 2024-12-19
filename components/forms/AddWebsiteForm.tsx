@@ -44,7 +44,6 @@ export default function AddWebsiteForm() {
       }
 
       // On success, use the returned domain
-      console.log("Website added successfully:", result);
       router.push(`/install?domain=${result.domain}`);
     } catch (err: Error | any) {
       console.error(err.message);

@@ -22,7 +22,6 @@ function formatGoal(goal) {
 function trackDownload(event) {
   const link = event.currentTarget;
   const formattedGoal = formatGoal(link.getAttribute("download") || link.href);
-  console.log(`Download initiated: ${formattedGoal}`);
 
   const eventData = {
     type: "download",
@@ -40,7 +39,6 @@ function trackDownload(event) {
 function trackOutboundLink(event) {
   const link = event.currentTarget;
   const formattedGoal = formatGoal(link.href);
-  console.log(`Outbound link clicked: ${formattedGoal}`);
 
   const eventData = {
     type: "outbound_link",
@@ -58,7 +56,6 @@ function trackOutboundLink(event) {
 function trackMailtoLink(event) {
   const link = event.currentTarget;
   const formattedGoal = formatGoal(link.href.replace("mailto:", ""));
-  console.log(`Mailto link clicked: ${formattedGoal}`);
 
   const eventData = {
     type: "mailto_link",
@@ -88,7 +85,6 @@ function trackCustomEvent(eventName) {
 }
 
 function sendEventData(eventData) {
-  console.log(eventData);
   fetch(url, {
     method: "POST",
     headers: {
