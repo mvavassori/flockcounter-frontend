@@ -19,6 +19,7 @@ declare global {
   }
 }
 
+// added it to pass the backend URL to the script.js file
 const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "";
 
 export default function RootLayout({

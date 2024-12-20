@@ -8,7 +8,7 @@ import ChangePassword from "@/components/ChangePassword";
 export default async function Profile() {
   const session = await getServerSession(authOptions);
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_BACKEND_URL}/user/${session?.user.id}`,
+    `${process.env.BACKEND_URL}/user/${session?.user.id}`,
     {
       method: "GET",
       headers: {

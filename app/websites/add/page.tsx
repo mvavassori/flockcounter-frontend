@@ -16,7 +16,7 @@ async function getUserWebsiteLimits(userId: number, token: string) {
 
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/user/limits/${userId}`,
+      `${process.env.BACKEND_URL}/user/limits/${userId}`,
       { headers }
     );
 

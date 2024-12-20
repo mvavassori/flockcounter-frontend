@@ -4,15 +4,12 @@ import { JWT } from "next-auth/jwt";
 
 async function refreshToken(token: JWT): Promise<JWT> {
   try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/user/refresh-token`,
-      {
-        method: "POST",
-        headers: {
-          authorization: `Refresh ${token.backendTokens.refreshToken}`,
-        },
-      }
-    );
+    const res = await fetch(`${process.env.BACKEND_URL}/user/refresh-token`, {
+      method: "POST",
+      headers: {
+        authorization: `Refresh ${token.backendTokens.refreshToken}`,
+      },
+    });
     const response = await res.json();
 
     if (!res.ok) {
@@ -62,14 +59,11 @@ export const authOptions: NextAuthOptions = {
         // (i.e., the request IP address)
 
         try {
-          const res = await fetch(
-            `${process.env.NEXT_PUBLIC_BACKEND_URL}/user/login`,
-            {
-              method: "POST",
-              body: JSON.stringify(credentials),
-              headers: { "Content-Type": "application/json" },
-            }
-          );
+          const res = await fetch(`${process.env.BACKEND_URL}/user/login`, {
+            method: "POST",
+            body: JSON.stringify(credentials),
+            headers: { "Content-Type": "application/json" },
+          });
           const user = await res.json();
 
           // If no error and we have user data, return it

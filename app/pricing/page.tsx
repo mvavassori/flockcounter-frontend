@@ -10,10 +10,10 @@ async function getCurrentUser(userId: number, token: string) {
   headers.append("Authorization", `Bearer ${token}`);
 
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/user/${userId}`,
-      { headers, cache: "no-store" }
-    );
+    const response = await fetch(`${process.env.BACKEND_URL}/user/${userId}`, {
+      headers,
+      cache: "no-store",
+    });
 
     if (!response.ok) {
       const text = await response.text();
@@ -44,14 +44,13 @@ export default async function Pricing() {
   const email = String(session?.user?.email);
   const accessToken = String(session?.backendTokens.accessToken);
 
-  // todo reactivate this after testing
-  // // If is the user is logged in fetch the user data and check for active subscription
-  // if (session?.user) {
-  //   const data = await getCurrentUser(userId, accessToken);
-  //   if (data.user.subscription_status === "active") {
-  //     redirect("/profile"); // Redirects the user to profile if subscription is active
-  //   }
-  // }
+  // If is the user is logged in fetch the user data and check for active subscription
+  if (process.env.NODE_ENV === "production" && !session?.user) {
+    const data = await getCurrentUser(userId, accessToken);
+    if (data.user.subscription_status === "active") {
+      redirect("/profile"); // Redirects the user to profile if subscription is active
+    }
+  }
 
   function getCurrencySymbol() {
     return "€";
