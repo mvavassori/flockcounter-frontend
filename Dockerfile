@@ -1,11 +1,11 @@
 # syntax=docker.io/docker/dockerfile:1
 
 # Base image - slim version for production
-FROM node:lts-bookworm AS base
+FROM node:lts-bookworm-slim AS base
 WORKDIR /app
 
 # Install dependencies only when needed
-FROM node:lts-bookworm AS deps
+FROM base AS deps
 WORKDIR /app
 
 # Copy dependency files and install dependencies
@@ -18,7 +18,7 @@ RUN \
     fi
 
 # Rebuild the source code only when needed
-FROM node:lts-bookworm AS builder
+FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
@@ -40,7 +40,7 @@ RUN \
     fi
 
 # Production image, copy all the files and run Next.js
-FROM node:lts-bookworm-slim AS runner
+FROM base AS runner
 WORKDIR /app
 
 ENV NODE_ENV production
