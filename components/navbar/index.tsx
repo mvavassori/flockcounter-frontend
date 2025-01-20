@@ -14,8 +14,8 @@ const Navbar = async () => {
       </div>
       <div className="flex w-full items-center justify-center md:justify-normal">
         <Link href="/" className="text-xl font-bold">
-          <span className="text-slate-500">bare</span>
-          <span>-analytics</span>
+          <span className="text-slate-500">flock</span>
+          <span>counter</span>
         </Link>
 
         <ul className="ml-12 hidden gap-6 text-sm md:flex md:items-center">
