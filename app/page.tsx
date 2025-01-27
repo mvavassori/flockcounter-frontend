@@ -41,8 +41,8 @@ export default function Home() {
           <div>
             <h3 className="font-semibold text-lg mb-2">Privacy-Friendly</h3>
             <p className="text-gray-600">
-              We don't store any personal information or tracking data. Your
-              visitors remain completely anonymous.
+              We don&apos;t store any personal information or tracking data.
+              Your visitors remain completely anonymous.
             </p>
           </div>
         </div>
