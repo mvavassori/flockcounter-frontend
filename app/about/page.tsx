@@ -1,18 +1,69 @@
 export default function About() {
   return (
     <div className="w-full px-4 pb-4 pt-12">
-      <h1 className="text-2xl font-bold mb-4">About</h1>
-      <p className="text-sm">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non
-        molestie nulla. Sed euismod, nisl eget commodo ultrices, ligula ligula
-        aliquet nisl, vitae aliquam nisi nisl eget nisi. Sed euismod, nisl eget
-        commodo ultrices, ligula ligula aliquet nisl, vitae aliquam nisi nisl
-        eget nisi. Sed euismod, nisl eget commodo ultrices, ligula ligula
-        aliquet nisl, vitae aliquam nisi nisl eget nisi. Sed euismod, nisl eget
-        commodo ultrices, ligula ligula aliquet nisl, vitae aliquam nisi nisl
-        eget nisi. Sed euismod, nisl eget commodo ultrices, ligula ligula
-        aliquet nisl, vitae aliquam nisi nisl.
-      </p>
+      <div className="max-w-3xl mx-auto">
+        <h1 className="text-3xl font-bold mb-4">About FlockCounter</h1>
+
+        {/* Mission Section */}
+        <section className="mb-12">
+          <h2 className="text-xl font-semibold mb-4">Our Mission</h2>
+          <p className="text-gray-600 mb-4">
+            FlockCounter was born from a simple belief: website analytics
+            shouldn't come at the cost of user privacy. In an era where data
+            collection has become increasingly invasive, we're taking a stand by
+            providing a simple, privacy-focused alternative to traditional
+            analytics tools.
+          </p>
+          <p className="text-gray-600 mb-4">
+            Built and hosted in Europe, we're committed to upholding the highest
+            standards of data privacy and protection. Our approach is simple:
+            collect only what's necessary, store nothing that could identify
+            individuals, and keep everything transparent.
+          </p>
+        </section>
+
+        {/* Technical Philosophy */}
+        <section className="mb-12">
+          <h2 className="text-xl font-semibold mb-4">Technical Philosophy</h2>
+          <p className="text-gray-600 mb-4">
+            We believe in building software that's both powerful and minimalist.
+            Written in Go for maximum performance and reliability, FlockCounter
+            is designed to be:
+          </p>
+          <ul className="list-disc pl-6 text-gray-600 space-y-2 mb-4">
+            <li>
+              Lightweight and fast - minimal impact on your website's
+              performance
+            </li>
+            <li>Simple to integrate - just one line of code</li>
+            <li>
+              Easy to understand - no complex metrics or confusing dashboards
+            </li>
+            <li>
+              Transparent - open source code that anyone can inspect or
+              contribute to
+            </li>
+          </ul>
+        </section>
+
+        {/* GDPR & Privacy */}
+        <section className="mb-12">
+          <h2 className="text-xl font-semibold mb-4">Privacy & Compliance</h2>
+          <p className="text-gray-600 mb-4">
+            Unlike traditional analytics tools, FlockCounter:
+          </p>
+          <ul className="list-disc pl-6 text-gray-600 space-y-2 mb-4">
+            <li>Doesn't use any cookies or local storage</li>
+            <li>Doesn't collect or store IP addresses</li>
+            <li>Doesn't track users across websites</li>
+            <li>Doesn't store any personally identifiable information</li>
+          </ul>
+          <p className="text-gray-600">
+            This approach means you can use FlockCounter without cookie consent
+            banners while remaining fully GDPR compliant.
+          </p>
+        </section>
+      </div>
     </div>
   );
 }
