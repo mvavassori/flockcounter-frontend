@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
+import Link from "next/link";
 
 import { RefetchProvider } from "@/context/RefetchContext";
 import { getDateRange } from "@/utils/helper";
@@ -273,7 +274,28 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
   return (
     <div className="w-full px-4 pb-4 pt-12">
       <div className="flex justify-between">
-        <h1 className="text-3xl font-semibold">{domain}</h1>
+        <div className="flex items-center gap-3">
+          <h1 className="text-3xl font-semibold">{domain}</h1>
+          <Link
+            href="/websites"
+            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+            title="Back to Websites"
+          >
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M10 19l-7-7m0 0l7-7m-7 7h18"
+              />
+            </svg>
+          </Link>
+        </div>
         <select
           value={selectedPeriod}
           onChange={handlePeriodChange}

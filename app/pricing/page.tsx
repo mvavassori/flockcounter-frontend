@@ -64,7 +64,7 @@ export default async function Pricing() {
         <div className="bg-white shadow-md rounded p-6 border-2 border-black hover:border-blue-500">
           <h2 className="text-lg font-bold mb-4">Basic</h2>
           <p className="text-sm mb-4">
-            Get started with flockcounter. Perfect for small websites.
+            Get started with FlockCounter. Perfect for small websites.
           </p>
           <div className="flex items-baseline mb-4">
             <span className="text-2xl font-bold">{getCurrencySymbol()}9</span>
