@@ -8,15 +8,22 @@ import { useSession } from "next-auth/react";
 export default function MobileMenu() {
   const [isOpen, setIsOpen] = useState(false);
   const toggleMobileMenu = () => setIsOpen(!isOpen);
-
-  // Close the mobile menu when the overlay is clicked
   const closeMobileMenu = () => setIsOpen(false);
-
   const { status } = useSession();
+
+  const commonLinks = [
+    { href: "/", label: "Home" },
+    { href: "/pricing", label: "Pricing" },
+    { href: "/about", label: "About" },
+  ];
+
+  const authenticatedLinks = [
+    { href: "/websites", label: "Websites" },
+    { href: "/profile", label: "Profile" },
+  ];
 
   return (
     <div>
-      {/* Overlay */}
       {isOpen && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 z-10"
@@ -29,58 +36,40 @@ export default function MobileMenu() {
             isOpen ? "translate-x-0" : "-translate-x-full"
           } transition-transform duration-300 ease-in-out`}
         >
-          {/* Menu Items */}
           <div className="mt-12 flex flex-col items-start p-4">
-            {status === "authenticated" ? (
+            {commonLinks.map((link) => (
               <Link
-                href="/profile"
+                key={link.href}
+                href={link.href}
                 className="text-lg block p-2 w-full"
                 onClick={toggleMobileMenu}
               >
-                Profile
+                {link.label}
               </Link>
+            ))}
+
+            {status === "authenticated" ? (
+              authenticatedLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="text-lg block p-2 w-full"
+                  onClick={toggleMobileMenu}
+                >
+                  {link.label}
+                </Link>
+              ))
             ) : (
               <Link
-                href="/signin"
+                href="/api/auth/signin"
                 className="text-lg block p-2 w-full"
                 onClick={toggleMobileMenu}
               >
                 Sign In
               </Link>
             )}
-
-            <Link
-              href="/"
-              className="text-lg block p-2 w-full"
-              onClick={toggleMobileMenu}
-            >
-              Home
-            </Link>
-            <Link
-              href="/websites"
-              className="text-lg block p-2 w-full"
-              onClick={toggleMobileMenu}
-            >
-              Websites
-            </Link>
-            <Link
-              href="/pricing"
-              className="text-lg block p-2 w-full"
-              onClick={toggleMobileMenu}
-            >
-              Pricing
-            </Link>
-            <Link
-              href="/about"
-              className="text-lg block p-2 w-full"
-              onClick={toggleMobileMenu}
-            >
-              About
-            </Link>
-            {/* Add other links similarly */}
           </div>
         </div>
-        {/* Toggle Button */}
         <button onClick={toggleMobileMenu} className="z-30">
           {isOpen ? <CloseIcon width={24} height={24} /> : <HamburgerIcon />}
         </button>
