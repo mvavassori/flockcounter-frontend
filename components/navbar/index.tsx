@@ -28,9 +28,11 @@ const Navbar = async () => {
             </Link>
           </li>
           <li>
+            {/* make the link open in new page */}
             <Link
               href="https://github.com/mvavassori/flockcounter"
               className="underline-offset-4 hover:underline"
+              target="_blank"
             >
               GitHub
             </Link>
@@ -79,6 +81,7 @@ const Navbar = async () => {
           <Link
             href="https://github.com/mvavassori/flockcounter"
             className="underline-offset-4 hover:underline"
+            target="_blank"
           >
             GitHub
           </Link>

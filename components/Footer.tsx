@@ -90,6 +90,7 @@ export default function Footer() {
                 <a
                   href="https://github.com/mvavassori/flockcounter"
                   className="text-gray-600 hover:text-gray-900 flex items-center gap-2"
+                  target="_blank"
                 >
                   <GitHubIcon />
                   GitHub
