@@ -89,11 +89,17 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
   const [accessToken, setAccessToken] = useState("");
   const [livePageviews, setLivePageviews] = useState(0);
 
+  // Check if we are in demo mode based on the domain
+  const isDemo = domain === process.env.NEXT_PUBLIC_DEMO_DOMAIN;
+
   useEffect(() => {
-    if (session?.backendTokens.accessToken) {
+    if (isDemo) {
+      // Use a dummy token for the demo (could be any string)
+      setAccessToken("demo");
+    } else if (session?.backendTokens?.accessToken) {
       setAccessToken(session.backendTokens.accessToken);
     }
-  }, [session?.backendTokens.accessToken, shouldRefetch]);
+  }, [isDemo, session?.backendTokens?.accessToken, shouldRefetch]);
 
   useEffect(() => {
     const fetchTopStats = async () => {

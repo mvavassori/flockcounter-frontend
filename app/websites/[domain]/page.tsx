@@ -26,7 +26,13 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
 
-  const { data: session } = useSession({ required: true });
+  // Detect if we're rendering the demo dashboard.
+  const isDemo = domain === process.env.NEXT_PUBLIC_DEMO_DOMAIN;
+
+  // const { data: session } = useSession({ required: true });
+
+  // Only require session if not on the demo domain.
+  const { data: session } = useSession({ required: !isDemo });
 
   let period = searchParams.get("period");
   let page = searchParams.get("page");

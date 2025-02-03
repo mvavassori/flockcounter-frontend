@@ -27,11 +27,17 @@ const Events: React.FC<EventsProps> = (props) => {
 
   const [accessToken, setAccessToken] = useState("");
 
+  // Check if we are in demo mode based on the domain
+  const isDemo = domain === process.env.NEXT_PUBLIC_DEMO_DOMAIN;
+
   useEffect(() => {
-    if (session?.backendTokens.accessToken) {
+    if (isDemo) {
+      // Use a dummy token for the demo (could be any string)
+      setAccessToken("demo");
+    } else if (session?.backendTokens?.accessToken) {
       setAccessToken(session.backendTokens.accessToken);
     }
-  }, [session?.backendTokens.accessToken, shouldRefetch]);
+  }, [isDemo, session?.backendTokens?.accessToken, shouldRefetch]);
 
   useEffect(() => {
     if (!accessToken) {
