@@ -6,7 +6,6 @@ import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { getBrowsers } from "@/service/backendCalls";
 import { CommonDashboardComponentProps } from "@/types/commonTypes";
 import Spinner from "@/components/Spinner";
-import { useRefetch } from "@/context/RefetchContext";
 import { getDateRange } from "@/utils/helper";
 
 interface BrowsersData {
@@ -36,8 +35,6 @@ const Browsers: React.FC<CommonDashboardComponentProps> = (props) => {
 
   const { data: session } = useSession();
 
-  const { shouldRefetch, triggerRefetch } = useRefetch();
-
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -58,7 +55,7 @@ const Browsers: React.FC<CommonDashboardComponentProps> = (props) => {
     } else if (session?.backendTokens?.accessToken) {
       setAccessToken(session.backendTokens.accessToken);
     }
-  }, [isDemo, session?.backendTokens?.accessToken, shouldRefetch]);
+  }, [isDemo, session?.backendTokens?.accessToken]);
 
   useEffect(() => {
     if (!accessToken) {
@@ -91,15 +88,13 @@ const Browsers: React.FC<CommonDashboardComponentProps> = (props) => {
         setBrowsers(browsersData);
       } catch (err: Error | any) {
         if (err.message === "Unauthorized") {
-          triggerRefetch();
-        } else {
           setError(err.message);
         }
       } finally {
         setLoading(false);
       }
     };
-    if (accessToken || shouldRefetch) {
+    if (accessToken) {
       fetchBrowsers();
     }
   }, [
@@ -120,8 +115,6 @@ const Browsers: React.FC<CommonDashboardComponentProps> = (props) => {
     utmCampaign,
     utmTerm,
     utmContent,
-    shouldRefetch,
-    triggerRefetch,
   ]);
 
   const handleSelectedBrowserChange = (browser: string) => {

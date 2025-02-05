@@ -98,7 +98,7 @@ export default function CheckoutButton({
           }
         } catch (err) {
           console.error("Error retrying checkout:", err);
-          router.push("/login");
+          router.push("/profile");
         } finally {
           setIsLoading(false);
           setShouldRefetch(false);

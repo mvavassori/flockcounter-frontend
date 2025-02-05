@@ -6,7 +6,6 @@ import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { getDeviceTypes } from "@/service/backendCalls";
 import { CommonDashboardComponentProps } from "@/types/commonTypes";
 import Spinner from "@/components/Spinner";
-import { useRefetch } from "@/context/RefetchContext";
 import { getDateRange } from "@/utils/helper";
 
 interface DeviceTypesData {
@@ -36,8 +35,6 @@ const DeviceTypes: React.FC<CommonDashboardComponentProps> = (props) => {
 
   const { data: session } = useSession();
 
-  const { shouldRefetch, triggerRefetch } = useRefetch();
-
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -58,7 +55,7 @@ const DeviceTypes: React.FC<CommonDashboardComponentProps> = (props) => {
     } else if (session?.backendTokens?.accessToken) {
       setAccessToken(session.backendTokens.accessToken);
     }
-  }, [isDemo, session?.backendTokens?.accessToken, shouldRefetch]);
+  }, [isDemo, session?.backendTokens?.accessToken]);
 
   useEffect(() => {
     if (!accessToken) {
@@ -91,16 +88,13 @@ const DeviceTypes: React.FC<CommonDashboardComponentProps> = (props) => {
         setDeviceTypes(deviceTypesData);
       } catch (err: Error | any) {
         if (err.message === "Unauthorized") {
-          // await update();
-          triggerRefetch();
-        } else {
           setError(err.message);
         }
       } finally {
         setLoading(false);
       }
     };
-    if (accessToken || shouldRefetch) {
+    if (accessToken) {
       fetchDeviceTypes();
     }
   }, [
@@ -121,8 +115,6 @@ const DeviceTypes: React.FC<CommonDashboardComponentProps> = (props) => {
     utmCampaign,
     utmTerm,
     utmContent,
-    shouldRefetch,
-    triggerRefetch,
   ]);
 
   const handleSelectedDeviceTypeChange = (deviceType: string) => {

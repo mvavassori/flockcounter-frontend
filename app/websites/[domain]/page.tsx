@@ -5,7 +5,6 @@ import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 
-import { RefetchProvider } from "@/context/RefetchContext";
 import { getDateRange } from "@/utils/helper";
 import TopStats from "@/components/dashboard/TopStats";
 import Pages from "@/components/dashboard/Pages";
@@ -32,7 +31,7 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
   // const { data: session } = useSession({ required: true });
 
   // Only require session if not on the demo domain.
-  const { data: session } = useSession({ required: !isDemo });
+  const { data: session, update } = useSession({ required: !isDemo });
 
   let period = searchParams.get("period");
   let page = searchParams.get("page");
@@ -80,6 +79,17 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
       signOut();
     }
   }, [session, router]); // check if router is required
+
+  // refresh the session every 15 minutes to avoid access token expiration errors in client side components
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (session) {
+        update();
+      }
+    }, 15 * 60 * 1000);
+
+    return () => clearInterval(interval);
+  }, [session]);
 
   // Set the selected filters from the URL params
   useEffect(() => {
@@ -344,39 +354,39 @@ export default function Dashboard({ params }: { params: { domain: string } }) {
           )}
         </div>
 
-        <RefetchProvider>
-          <TopStats
-            domain={domain}
-            period={selectedPeriod}
-            interval={selectedInterval} // here i also need to pass the interval (hour,day,month)
-            page={selectedPage}
-            referrer={selectedReferrer}
-            device={selectedDevice}
-            os={selectedOs}
-            browser={selectedBrowser}
-            language={selectedLanguage}
-            country={selectedCountry}
-            region={selectedRegion}
-            city={selectedCity}
-            utmSource={selectedUtmSource}
-            utmMedium={selectedUtmMedium}
-            utmCampaign={selectedUtmCampaign}
-            utmTerm={selectedUtmTerm}
-            utmContent={selectedUtmContent}
-          />
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 my-12">
-            <ReferrersAndUtm {...sharedProps} />
-            <Pages {...sharedProps} />
-            <DeviceTypes {...sharedProps} />
-            <OSes {...sharedProps} />
-            <Browsers {...sharedProps} />
-            <Languages {...sharedProps} />
-            <Countries {...sharedProps} />
-            <Regions {...sharedProps} />
-            <Cities {...sharedProps} />
-          </div>
-          <Events domain={domain} startDate={startDate} endDate={endDate} />
-        </RefetchProvider>
+        {/* <RefetchProvider> */}
+        <TopStats
+          domain={domain}
+          period={selectedPeriod}
+          interval={selectedInterval} // here i also need to pass the interval (hour,day,month)
+          page={selectedPage}
+          referrer={selectedReferrer}
+          device={selectedDevice}
+          os={selectedOs}
+          browser={selectedBrowser}
+          language={selectedLanguage}
+          country={selectedCountry}
+          region={selectedRegion}
+          city={selectedCity}
+          utmSource={selectedUtmSource}
+          utmMedium={selectedUtmMedium}
+          utmCampaign={selectedUtmCampaign}
+          utmTerm={selectedUtmTerm}
+          utmContent={selectedUtmContent}
+        />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 my-12">
+          <ReferrersAndUtm {...sharedProps} />
+          <Pages {...sharedProps} />
+          <DeviceTypes {...sharedProps} />
+          <OSes {...sharedProps} />
+          <Browsers {...sharedProps} />
+          <Languages {...sharedProps} />
+          <Countries {...sharedProps} />
+          <Regions {...sharedProps} />
+          <Cities {...sharedProps} />
+        </div>
+        <Events domain={domain} startDate={startDate} endDate={endDate} />
+        {/* </RefetchProvider> */}
       </div>
     </div>
   );

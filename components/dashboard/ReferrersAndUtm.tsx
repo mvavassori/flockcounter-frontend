@@ -6,7 +6,6 @@ import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { getReferrers, getUtmParameters } from "@/service/backendCalls";
 import { CommonDashboardComponentProps } from "@/types/commonTypes";
 import Spinner from "@/components/Spinner";
-import { useRefetch } from "@/context/RefetchContext";
 import LeftArrow from "@/components/icons/LeftArrow";
 import RightArrow from "@/components/icons/RightArrow";
 import { getDateRange } from "@/utils/helper";
@@ -45,9 +44,7 @@ const ReferrersAndUtm: React.FC<CommonDashboardComponentProps> = (props) => {
     utmContent,
   } = props;
 
-  const { data: session, update } = useSession();
-
-  const { shouldRefetch, triggerRefetch } = useRefetch();
+  const { data: session } = useSession();
 
   const router = useRouter();
   const pathname = usePathname();
@@ -71,7 +68,7 @@ const ReferrersAndUtm: React.FC<CommonDashboardComponentProps> = (props) => {
     } else if (session?.backendTokens?.accessToken) {
       setAccessToken(session.backendTokens.accessToken);
     }
-  }, [isDemo, session?.backendTokens?.accessToken, shouldRefetch]);
+  }, [isDemo, session?.backendTokens?.accessToken]);
 
   useEffect(() => {
     if (!accessToken) {
@@ -139,16 +136,13 @@ const ReferrersAndUtm: React.FC<CommonDashboardComponentProps> = (props) => {
         setTotalPages(Math.ceil(responseData.totalCount / limit));
       } catch (err: any) {
         if (err.message === "Unauthorized") {
-          await update();
-          triggerRefetch();
-        } else {
           setError(err.message);
         }
       } finally {
         setLoading(false);
       }
     };
-    if (accessToken || shouldRefetch) {
+    if (accessToken) {
       fetchData();
     }
   }, [
@@ -171,9 +165,6 @@ const ReferrersAndUtm: React.FC<CommonDashboardComponentProps> = (props) => {
     utmContent,
     pageNumber,
     selectedOption,
-    shouldRefetch,
-    triggerRefetch,
-    update,
   ]);
 
   const handleSelectedOptionChange = (

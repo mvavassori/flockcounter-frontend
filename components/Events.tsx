@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { getEvents } from "@/service/backendCalls";
-import { useRefetch } from "@/context/RefetchContext";
 
 interface EventsProps {
   domain: string;
@@ -19,7 +18,6 @@ interface EventsData {
 const Events: React.FC<EventsProps> = (props) => {
   const { domain, startDate, endDate } = props;
   const { data: session } = useSession();
-  const { shouldRefetch, triggerRefetch } = useRefetch();
 
   const [events, setEvents] = useState<EventsData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -37,7 +35,7 @@ const Events: React.FC<EventsProps> = (props) => {
     } else if (session?.backendTokens?.accessToken) {
       setAccessToken(session.backendTokens.accessToken);
     }
-  }, [isDemo, session?.backendTokens?.accessToken, shouldRefetch]);
+  }, [isDemo, session?.backendTokens?.accessToken]);
 
   useEffect(() => {
     if (!accessToken) {
@@ -55,18 +53,16 @@ const Events: React.FC<EventsProps> = (props) => {
         setEvents(eventsData);
       } catch (err: Error | any) {
         if (err.message === "Unauthorized") {
-          triggerRefetch();
-        } else {
           setError(err.message);
         }
       } finally {
         setLoading(false);
       }
     };
-    if (accessToken || shouldRefetch) {
+    if (accessToken) {
       fetchEvents();
     }
-  }, [domain, startDate, endDate, accessToken, shouldRefetch, triggerRefetch]);
+  }, [domain, startDate, endDate, accessToken]);
 
   if (loading) {
     return <div>Loading...</div>;

@@ -6,7 +6,6 @@ import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { getLanguages } from "@/service/backendCalls";
 import { CommonDashboardComponentProps } from "@/types/commonTypes";
 import Spinner from "@/components/Spinner";
-import { useRefetch } from "@/context/RefetchContext";
 import LeftArrow from "@/components/icons/LeftArrow";
 import RightArrow from "@/components/icons/RightArrow";
 import { getDateRange } from "@/utils/helper";
@@ -39,8 +38,6 @@ const Languages: React.FC<CommonDashboardComponentProps> = (props) => {
 
   const { data: session } = useSession();
 
-  const { shouldRefetch, triggerRefetch } = useRefetch();
-
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -62,7 +59,7 @@ const Languages: React.FC<CommonDashboardComponentProps> = (props) => {
     } else if (session?.backendTokens?.accessToken) {
       setAccessToken(session.backendTokens.accessToken);
     }
-  }, [isDemo, session?.backendTokens?.accessToken, shouldRefetch]);
+  }, [isDemo, session?.backendTokens?.accessToken]);
 
   useEffect(() => {
     if (!accessToken) {
@@ -100,16 +97,13 @@ const Languages: React.FC<CommonDashboardComponentProps> = (props) => {
         setTotalPages(Math.ceil(languagesData.totalCount / limit));
       } catch (err: Error | any) {
         if (err.message === "Unauthorized") {
-          // await update();
-          triggerRefetch();
-        } else {
           setError(err.message);
         }
       } finally {
         setLoading(false);
       }
     };
-    if (accessToken || shouldRefetch) {
+    if (accessToken) {
       fetchLanguages();
     }
   }, [
@@ -131,8 +125,6 @@ const Languages: React.FC<CommonDashboardComponentProps> = (props) => {
     utmTerm,
     utmContent,
     pageNumber,
-    shouldRefetch,
-    triggerRefetch,
   ]);
 
   const handleSelectedLanguageChange = (language: string) => {

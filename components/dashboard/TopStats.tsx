@@ -13,7 +13,6 @@ import {
 import { useSession } from "next-auth/react";
 import { getTopStats, getLivePageViews } from "@/service/backendCalls";
 import Spinner from "@/components/Spinner";
-import { useRefetch } from "@/context/RefetchContext";
 import {
   getDateRange,
   formatXAxisDate,
@@ -80,8 +79,7 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
   const [selectedMetric, setSelectedMetric] = useState<
     "totalVisits" | "uniqueVisitors" | "medianVisitDuration"
   >("totalVisits");
-  const { data: session, update } = useSession();
-  const { shouldRefetch, triggerRefetch } = useRefetch();
+  const { data: session } = useSession();
 
   const [topStats, setTopStats] = useState<TopStatsData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -99,7 +97,7 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
     } else if (session?.backendTokens?.accessToken) {
       setAccessToken(session.backendTokens.accessToken);
     }
-  }, [isDemo, session?.backendTokens?.accessToken, shouldRefetch]);
+  }, [isDemo, session?.backendTokens?.accessToken]);
 
   useEffect(() => {
     const fetchTopStats = async () => {
@@ -131,9 +129,6 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
         setTopStats(topStatsData);
       } catch (err: any) {
         if (err.message === "Unauthorized") {
-          // await update();
-          triggerRefetch();
-        } else {
           setError(err.message);
         }
       } finally {
@@ -141,7 +136,7 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
       }
     };
 
-    if (accessToken || shouldRefetch) {
+    if (accessToken) {
       fetchTopStats();
     }
   }, [
@@ -163,8 +158,6 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
     utmCampaign,
     utmTerm,
     utmContent,
-    shouldRefetch,
-    triggerRefetch,
   ]);
 
   useEffect(() => {
@@ -178,14 +171,14 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
         setLivePageviews(livePageviewsData); // Update state with the live pageviews count
       } catch (err: any) {
         if (err.message === "Unauthorized") {
-          triggerRefetch();
+          console.error("Unauthorized request. Please check your credentials.");
         }
         console.error("Error fetching live pageviews:", err);
       }
     };
 
     // Call the function immediately on component mount
-    if (accessToken || shouldRefetch) {
+    if (accessToken) {
       fetchLivePageviews();
     }
 
@@ -194,7 +187,7 @@ const TopStats: React.FC<TopStatsProps> = (props) => {
 
     // Cleanup the interval when the component unmounts
     return () => clearInterval(intervalId);
-  }, [domain, shouldRefetch, accessToken, triggerRefetch]); // Dependency array: re-run effect if domain changes
+  }, [domain, accessToken]); // Dependency array: re-run effect if domain changes
 
   const getChartData = () => {
     return (

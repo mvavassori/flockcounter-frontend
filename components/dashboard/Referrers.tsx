@@ -4,10 +4,9 @@
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
-import { getReferrers, getUtmParameters } from "@/service/backendCalls";
+import { getReferrers } from "@/service/backendCalls";
 import { CommonDashboardComponentProps } from "@/types/commonTypes";
 import Spinner from "@/components/Spinner";
-import { useRefetch } from "@/context/RefetchContext";
 import LeftArrow from "@/components/icons/LeftArrow";
 import RightArrow from "@/components/icons/RightArrow";
 import { getDateRange } from "@/utils/helper";
@@ -40,8 +39,6 @@ const Referrers: React.FC<CommonDashboardComponentProps> = (props) => {
 
   const { data: session } = useSession();
 
-  const { shouldRefetch, triggerRefetch } = useRefetch();
-
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -63,7 +60,7 @@ const Referrers: React.FC<CommonDashboardComponentProps> = (props) => {
     } else if (session?.backendTokens?.accessToken) {
       setAccessToken(session.backendTokens.accessToken);
     }
-  }, [isDemo, session?.backendTokens?.accessToken, shouldRefetch]);
+  }, [isDemo, session?.backendTokens?.accessToken]);
 
   useEffect(() => {
     if (!accessToken) {
@@ -101,16 +98,13 @@ const Referrers: React.FC<CommonDashboardComponentProps> = (props) => {
         setTotalPages(Math.ceil(referrersData.totalCount / limit));
       } catch (err: Error | any) {
         if (err.message === "Unauthorized") {
-          // await update();
-          triggerRefetch();
-        } else {
           setError(err.message);
         }
       } finally {
         setLoading(false);
       }
     };
-    if (accessToken || shouldRefetch) {
+    if (accessToken) {
       fetchReferrers();
     }
   }, [
@@ -132,8 +126,6 @@ const Referrers: React.FC<CommonDashboardComponentProps> = (props) => {
     utmTerm,
     utmContent,
     pageNumber,
-    shouldRefetch,
-    triggerRefetch,
   ]);
 
   const handleSelectedReferrerChange = (referrer: string) => {
