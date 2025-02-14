@@ -19,8 +19,10 @@ export default function SignInForm() {
     if (!password) {
       return "Password is required.";
     }
-    if (password.length < 6) {
-      // todo change this to 8
+    if (process.env.NEXT_PUBLIC_ENV === "development" && password.length < 6) {
+      return "Password must be at least 6 characters long.";
+    }
+    if (process.env.NEXT_PUBLIC_ENV === "production" && password.length < 8) {
       return "Password must be at least 8 characters long.";
     }
     return null; // No errors

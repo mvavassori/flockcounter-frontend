@@ -26,10 +26,12 @@ COPY . .
 # Pass build arguments for environment variables needed at build time
 ARG NEXT_PUBLIC_BACKEND_URL
 ARG NEXT_PUBLIC_DEMO_DOMAIN
+ARG NEXT_PUBLIC_ENV
 
 # Set environment variables for build time
 ENV NEXT_PUBLIC_BACKEND_URL=${NEXT_PUBLIC_BACKEND_URL}
 ENV NEXT_PUBLIC_DEMO_DOMAIN=${NEXT_PUBLIC_DEMO_DOMAIN}
+ENV NEXT_PUBLIC_ENV=${NEXT_PUBLIC_ENV}
 ENV NEXT_TELEMETRY_DISABLED 1
 
 RUN \
@@ -43,7 +45,7 @@ RUN \
 FROM base AS runner
 WORKDIR /app
 
-ENV NODE_ENV production
+ENV NODE_ENV=${NEXT_PUBLIC_ENV}
 ENV NEXT_TELEMETRY_DISABLED 1
 
 # Create a non-root user and set permissions
