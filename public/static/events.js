@@ -1,6 +1,10 @@
 // todo check if the referrer works properly on SPAs
 // todo check if the links get triggered on SPAs
-const url = "http://localhost:8080/api/event"; // todo: change to production url
+// Prepare payload data
+const metaTag = document.querySelector('meta[name="backend-url"]');
+const backendUrl = metaTag
+  ? metaTag.content + "/event"
+  : "http://localhost:8080/api/event";
 
 // Helper function to format goal names
 function formatGoal(goal) {
