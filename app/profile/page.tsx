@@ -80,13 +80,21 @@ export default async function Profile() {
           )}
         </div>
         <div className="flex justify-between">
-          <Link
-            className="px-4 py-2 bg-blue-500 text-white rounded"
-            // todo change to prod link
-            href={`https://billing.stripe.com/p/login/test_eVa17b0wXb3Y0BW3cc?prefilled_email=${session?.user.email}`} // todo change to prod link
-          >
-            Manage Subscription
-          </Link>
+          {process.env.NEXT_PUBLIC_ENV === "development" ? (
+            <Link
+              className="px-4 py-2 bg-blue-500 text-white rounded"
+              href={`https://billing.stripe.com/p/login/test_8wMeWSbro7RtfSMaEE?prefilled_email=${session?.user.email}`}
+            >
+              Manage Subscription
+            </Link>
+          ) : (
+            <Link
+              className="px-4 py-2 bg-blue-500 text-white rounded"
+              href={`https://billing.stripe.com/p/login/3cs8A5726aeH7C07ss?prefilled_email=${session?.user.email}`}
+            >
+              Manage Subscription
+            </Link>
+          )}
           <SignOutButton />
         </div>
       </div>
