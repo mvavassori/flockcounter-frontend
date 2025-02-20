@@ -1,9 +1,9 @@
 // todo check if the referrer works properly on SPAs
 // todo check if the links get triggered on SPAs
 // Prepare payload data
-const metaTag = document.querySelector('meta[name="backend-url"]');
-const backendUrl = metaTag
-  ? metaTag.content + "/event"
+const metaTagEvent = document.querySelector('meta[name="backend-url"]');
+const backendUrlEvent = metaTagEvent
+  ? metaTagEvent.content + "/event"
   : "http://localhost:8080/api/event";
 
 // Helper function to format goal names
@@ -89,7 +89,7 @@ function trackCustomEvent(eventName) {
 }
 
 function sendEventData(eventData) {
-  fetch(url, {
+  fetch(backendUrlEvent, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -116,7 +116,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Attach event listeners to outbound links
-  const outboundLinks = document.querySelectorAll('a[href^="http"]');
+  const outboundLinks = document.querySelectorAll('a[href^="https"]');
   outboundLinks.forEach((link) => {
     // Ensure the link is outbound by checking the domain
     const url = new URL(link.href);
