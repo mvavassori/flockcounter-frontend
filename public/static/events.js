@@ -1,5 +1,3 @@
-// todo check if the referrer works properly on SPAs
-// todo check if the links get triggered on SPAs
 // Prepare payload data
 const metaTagEvent = document.querySelector('meta[name="backend-url"]');
 const backendUrlEvent = metaTagEvent

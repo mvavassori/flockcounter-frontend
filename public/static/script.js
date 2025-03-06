@@ -1,4 +1,3 @@
-// todo test referrer in SPAs
 // Prepare payload data
 const metaTag = document.querySelector('meta[name="backend-url"]');
 const backendUrl = metaTag
