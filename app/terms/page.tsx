@@ -8,9 +8,10 @@ export default function TermsPage() {
       <p className="mb-4">Last Updated: March 06, 2025</p>
 
       <p className="mb-4">
-        Please read these Terms of Service ("Terms") carefully before using the
-        FlockCounter web analytics platform (the "Service") operated by
-        FlockCounter ("us", "we", or "our").
+        Please read these Terms of Service (&quot;Terms&quot;) carefully before
+        using the FlockCounter web analytics platform (the &quot;Service&quot;)
+        operated by FlockCounter (&quot;us&quot;, &quot;we&quot;, or
+        &quot;our&quot;).
       </p>
 
       <h2 className="text-2xl font-bold mb-2">1. Acceptance of Terms</h2>
@@ -62,10 +63,11 @@ export default function TermsPage() {
 
       <p className="mb-4">
         Your use of the Service is at your sole risk. The Service is provided on
-        an "AS IS" and "AS AVAILABLE" basis. The Service is provided without
-        warranties of any kind, whether express or implied, including, but not
-        limited to, implied warranties of merchantability, fitness for a
-        particular purpose, non-infringement, or course of performance.
+        an &quot;AS IS&quot; and &quot;AS AVAILABLE&quot; basis. The Service is
+        provided without warranties of any kind, whether express or implied,
+        including, but not limited to, implied warranties of merchantability,
+        fitness for a particular purpose, non-infringement, or course of
+        performance.
       </p>
 
       <h2 className="text-2xl font-bold mb-2">7. Limitation of Liability</h2>
