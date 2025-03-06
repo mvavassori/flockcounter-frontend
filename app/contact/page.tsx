@@ -17,7 +17,7 @@ export default function Contact() {
           href="mailto:enterprise@example.com"
           className="text-blue-500 hover:underline"
         >
-          enterprise@example.com
+          contact@flockcounter.com
         </a>
       </p>
     </div>

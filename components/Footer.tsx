@@ -71,14 +71,6 @@ export default function Footer() {
                   Terms of Service
                 </Link>
               </li>
-              <li>
-                <Link
-                  href="/data"
-                  className="text-gray-600 hover:text-gray-900"
-                >
-                  Data Policy
-                </Link>
-              </li>
             </ul>
           </div>
 
