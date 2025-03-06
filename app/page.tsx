@@ -96,7 +96,7 @@ export default function Home() {
         </h2>
         <div className="bg-gray-800 text-gray-100 p-6 rounded-lg">
           <code className="text-sm">
-            {`<script defer src="https://flockcounter.com/tracker.js"></script>`}
+            {`<script defer src="https://flockcounter.com/static/script.js"></script>`}
           </code>
         </div>
       </div>
