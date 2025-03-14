@@ -2,7 +2,7 @@
 
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useState, useCallback, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 interface CheckoutButtonProps {
   plan: string;
@@ -25,20 +25,37 @@ export default function CheckoutButton({
 }: CheckoutButtonProps) {
   const { data: session, update } = useSession();
   const router = useRouter();
-
   const [isLoading, setIsLoading] = useState(false);
-  const [shouldRefetch, setShouldRefetch] = useState(false);
 
-  // This needs useCallback as it is passed to handleCheckout and useEffect
-  const fetchCheckoutSession = useCallback(
-    async (token: string): Promise<CheckoutSessionResponse> => {
+  // Refresh the session every 15 minutes to avoid access token expiration errors
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (session) {
+        update();
+      }
+    }, 15 * 60 * 1000); // 15 minutes
+
+    return () => clearInterval(interval);
+  }, [session, update]);
+
+  const handleCheckout = async () => {
+    if (!session?.user) {
+      router.push("/signup");
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      // Always use the latest token from the session
+      const currentToken = session?.backendTokens?.accessToken || initialToken;
+
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/payment/checkout`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${currentToken}`,
           },
           body: JSON.stringify({
             email,
@@ -51,63 +68,28 @@ export default function CheckoutButton({
 
       if (!response.ok) {
         if (response.status === 401) {
-          throw new Error("Unauthorized");
+          // If unauthorized, refresh the session and try again
+          await update();
+          throw new Error("Session refreshed, please try again");
         }
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      return response.json();
-    },
-    [email, userId, plan, interval]
-  );
-
-  const handleCheckout = async () => {
-    if (!session?.user) {
-      router.push("/signup");
-      return;
-    }
-
-    setIsLoading(true);
-    try {
-      const body = await fetchCheckoutSession(initialToken);
+      const body: CheckoutSessionResponse = await response.json();
       window.location.href = body.url;
     } catch (err) {
-      if (err instanceof Error && err.message === "Unauthorized") {
-        await update();
-        setShouldRefetch(true);
-      } else {
-        console.error("Error creating checkout session:", err);
-        // Handle other errors (e.g., show error message to user)
+      console.error("Error creating checkout session:", err);
+      // Only show error to user, don't redirect to profile page
+      if (
+        err instanceof Error &&
+        err.message !== "Session refreshed, please try again"
+      ) {
+        alert("There was an error processing your checkout. Please try again.");
       }
     } finally {
       setIsLoading(false);
     }
   };
-
-  useEffect(() => {
-    const retryCheckout = async () => {
-      if (shouldRefetch) {
-        setIsLoading(true);
-        try {
-          const newToken = session?.backendTokens?.accessToken;
-          if (newToken && newToken !== initialToken) {
-            const body = await fetchCheckoutSession(newToken);
-            window.location.href = body.url;
-          } else {
-            throw new Error("Failed to refresh token");
-          }
-        } catch (err) {
-          console.error("Error retrying checkout:", err);
-          router.push("/profile");
-        } finally {
-          setIsLoading(false);
-          setShouldRefetch(false);
-        }
-      }
-    };
-
-    retryCheckout();
-  }, [shouldRefetch, session, initialToken, fetchCheckoutSession, router]);
 
   return (
     <button
