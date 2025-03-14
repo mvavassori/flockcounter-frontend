@@ -7,21 +7,75 @@ import ChangePassword from "@/components/ChangePassword";
 
 export default async function Profile() {
   const session = await getServerSession(authOptions);
-  const response = await fetch(
-    `${process.env.BACKEND_URL}/user/${session?.user.id}`,
-    {
-      method: "GET",
-      headers: {
-        authorization: `Bearer ${session?.backendTokens.accessToken}`,
-        "Content-Type": "application/json",
-      },
-    }
-  );
 
+  // Check if there is a session first
+  if (!session) {
+    redirect("/auth/signin");
+  }
+
+  // Check for RefreshAccessTokenError before making the API call
   if (session?.error === "RefreshAccessTokenError") {
     redirect("/auth/signout");
   }
-  const data = await response.json();
+
+  // Make API request with error handling
+  let userData = null;
+  let error = null;
+
+  try {
+    const response = await fetch(
+      `${process.env.BACKEND_URL}/user/${session.user.id}`,
+      {
+        method: "GET",
+        headers: {
+          authorization: `Bearer ${session.backendTokens.accessToken}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    // Check if response is ok before parsing JSON
+    if (!response.ok) {
+      // Handle specific status codes
+      if (response.status === 401) {
+        // Unauthorized - token is invalid
+        redirect("/auth/signout"); // Force sign-out on invalid token
+      }
+
+      // For other errors, get the error message
+      const errorText = await response.text();
+      throw new Error(`API Error (${response.status}): ${errorText}`);
+    }
+
+    // Only parse JSON if the response is ok
+    userData = await response.json();
+  } catch (err: Error | any) {
+    console.error("Profile fetch error:", err);
+    error = err.message || "Failed to load profile data";
+
+    // If the error contains "Invalid token" anywhere, sign out
+    if (err.message && err.message.includes("Invalid")) {
+      redirect("/auth/signout");
+    }
+  }
+
+  // Show error state if something went wrong
+  if (error || !userData) {
+    return (
+      <div className="px-4 pb-4 pt-12 w-full">
+        <h2 className="text-2xl font-bold mb-6">Profile</h2>
+        <div className="bg-red-50 border border-red-200 text-red-800 p-4 rounded mb-6">
+          <p>Unable to load profile: {error || "Unknown error"}</p>
+          <p className="mt-2">Please try signing in again.</p>
+        </div>
+        <div className="flex justify-end">
+          <SignOutButton />
+        </div>
+      </div>
+    );
+  }
+
+  const data = userData;
 
   return (
     <div className="px-4 pb-4 pt-12 w-full">
