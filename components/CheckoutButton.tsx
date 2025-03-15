@@ -2,7 +2,7 @@
 
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 interface CheckoutButtonProps {
   plan: string;
@@ -23,20 +23,9 @@ export default function CheckoutButton({
   token: initialToken,
   interval = "monthly",
 }: CheckoutButtonProps) {
-  const { data: session, update } = useSession();
+  const { data: session } = useSession();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-
-  // Refresh the session every 15 minutes to avoid access token expiration errors
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (session) {
-        update();
-      }
-    }, 15 * 60 * 1000); // 15 minutes
-
-    return () => clearInterval(interval);
-  }, [session, update]);
 
   const handleCheckout = async () => {
     if (!session?.user) {
@@ -68,9 +57,9 @@ export default function CheckoutButton({
 
       if (!response.ok) {
         if (response.status === 401) {
-          // If unauthorized, refresh the session and try again
-          await update();
-          throw new Error("Session refreshed, please try again");
+          // Instead of refreshing the session here, just inform the user to try again
+          // since the parent component is already handling session updates
+          throw new Error("Authentication error, please try again");
         }
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -79,13 +68,7 @@ export default function CheckoutButton({
       window.location.href = body.url;
     } catch (err) {
       console.error("Error creating checkout session:", err);
-      // Only show error to user, don't redirect to profile page
-      if (
-        err instanceof Error &&
-        err.message !== "Session refreshed, please try again"
-      ) {
-        alert("There was an error processing your checkout. Please try again.");
-      }
+      alert("There was an error processing your checkout. Please try again.");
     } finally {
       setIsLoading(false);
     }
