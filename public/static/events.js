@@ -1,8 +1,6 @@
 // Prepare payload data
-const metaTagEvent = document.querySelector('meta[name="backend-url"]');
-const backendUrlEvent = metaTagEvent
-  ? metaTagEvent.content + "/event"
-  : "http://localhost:8080/api/event";
+// const metaTagEvent = document.querySelector('meta[name="backend-url"]');
+const backendUrlEvent = "https://flockcounter.com/backend-api/event";
 
 // Helper function to format goal names
 function formatGoal(goal) {
