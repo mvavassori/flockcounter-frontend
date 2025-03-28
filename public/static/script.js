@@ -1,8 +1,6 @@
 // Prepare payload data
-const metaTag = document.querySelector('meta[name="backend-url"]');
-const backendUrl = metaTag
-  ? metaTag.content + "/visit"
-  : "http://localhost:8080/api/visit";
+// const metaTag = document.querySelector('meta[name="backend-url"]');
+const backendUrl = "https://flockcounter.com/backend-api/visit";
 
 // Get the current time in milliseconds when the page loads
 let startTime = performance.now();
