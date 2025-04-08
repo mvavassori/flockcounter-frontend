@@ -1,6 +1,8 @@
 import { TooltipProps } from "recharts";
 import { formatTooltipDate, formatDuration } from "@/utils/helper";
 
+import type { JSX } from "react";
+
 export default function CustomTooltip({
   active,
   payload,

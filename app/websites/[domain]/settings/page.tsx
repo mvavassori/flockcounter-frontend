@@ -1,10 +1,11 @@
 import DeleteWebsiteButton from "@/components/DeleteWebsiteButton";
 
-export default function WebsiteSettings({
-  params,
-}: {
-  params: { domain: string };
-}) {
+export default async function WebsiteSettings(
+  props: {
+    params: Promise<{ domain: string }>;
+  }
+) {
+  const params = await props.params;
   const { domain } = params;
   return (
     <div className="w-full px-4 pb-4 pt-12">

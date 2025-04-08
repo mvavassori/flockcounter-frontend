@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, use } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
@@ -19,7 +19,8 @@ import ReferrersAndUtm from "@/components/dashboard/ReferrersAndUtm";
 import Events from "@/components/Events";
 import CloseIcon from "@/components/icons/CloseIcon";
 
-export default function Dashboard({ params }: { params: { domain: string } }) {
+export default function Dashboard(props: { params: Promise<{ domain: string }> }) {
+  const params = use(props.params);
   const { domain } = params;
   const router = useRouter();
   const searchParams = useSearchParams();
