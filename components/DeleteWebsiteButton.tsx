@@ -59,7 +59,7 @@ export default function DeleteWebsiteButton({
       <button
         onClick={deleteWebsite}
         disabled={isLoading}
-        className="px-4 py-2 bg-red-500 text-white rounded"
+        className="px-4 py-2 bg-red-500 text-white rounded-sm"
       >
         {isLoading ? "Deleting..." : `Delete ${domain} (everything)`}
       </button>

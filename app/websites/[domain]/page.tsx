@@ -316,7 +316,7 @@ export default function Dashboard(props: { params: Promise<{ domain: string }> }
         <select
           value={selectedPeriod}
           onChange={handlePeriodChange}
-          className="p-2 border rounded flex-grow-0"
+          className="p-2 border rounded-sm grow-0"
         >
           <option value="today">Today</option>
           <option value="yesterday">Yesterday</option>
@@ -338,7 +338,7 @@ export default function Dashboard(props: { params: Promise<{ domain: string }> }
               filter.value && (
                 <div
                   key={filter.key}
-                  className="text-sm bg-slate-100 p-2 rounded flex items-center"
+                  className="text-sm bg-slate-100 p-2 rounded-sm flex items-center"
                 >
                   <span>
                     {filter.label}: {filter.value}

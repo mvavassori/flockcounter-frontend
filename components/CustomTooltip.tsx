@@ -35,7 +35,7 @@ export default function CustomTooltip({
     }
 
     return (
-      <div className="custom-tooltip bg-white border p-2 rounded shadow">
+      <div className="custom-tooltip bg-white border p-2 rounded-sm shadow-sm">
         <p>{formattedDate}</p>
         <p>{labelValue}</p>
       </div>

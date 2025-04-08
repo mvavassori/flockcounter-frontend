@@ -100,7 +100,7 @@ export default function Pricing() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {/* Basic Plan */}
-        <div className="bg-white shadow-md rounded p-6 border-2 border-black hover:border-blue-500">
+        <div className="bg-white shadow-md rounded-sm p-6 border-2 border-black hover:border-blue-500">
           <h2 className="text-lg font-bold mb-4">Basic</h2>
           <p className="text-sm mb-4">
             Get started with FlockCounter. Perfect for small websites.
@@ -134,7 +134,7 @@ export default function Pricing() {
         </div>
 
         {/* Business Plan */}
-        <div className="bg-white shadow-md rounded p-6 border-2 border-black hover:border-blue-500">
+        <div className="bg-white shadow-md rounded-sm p-6 border-2 border-black hover:border-blue-500">
           <h2 className="text-lg font-bold mb-4">Business</h2>
           <p className="text-sm mb-4">
             Advanced features for growing businesses.
@@ -169,7 +169,7 @@ export default function Pricing() {
         </div>
 
         {/* Enterprise Plan */}
-        <div className="bg-white shadow-md rounded p-6 border-2 border-black hover:border-blue-500">
+        <div className="bg-white shadow-md rounded-sm p-6 border-2 border-black hover:border-blue-500">
           <h2 className="text-lg font-bold mb-4">Enterprise</h2>
           <p className="text-sm mb-4">
             Custom solutions for large-scale operations.
@@ -189,7 +189,7 @@ export default function Pricing() {
           </div>
           <Link href="/contact">
             <div className="flex justify-center">
-              <button className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
+              <button className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-sm">
                 Contact Us
               </button>
             </div>

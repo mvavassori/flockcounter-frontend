@@ -13,9 +13,9 @@ export default function InstallScript() {
         id="technology"
         onChange={(e) => setTechnology(e.target.value)}
         value={technology}
-        className="rounded p-2"
+        className="rounded-sm p-2"
       >
-        <option className="rounded" value="html">
+        <option className="rounded-sm" value="html">
           HTML
         </option>
         <option value="nextjs">NextJS</option>
@@ -28,7 +28,7 @@ export default function InstallScript() {
               Add the following code just before the end of the{" "}
               <code>&lt;/body&gt;</code> tag:
             </p>
-            <pre className="bg-gray-100 p-4 rounded">
+            <pre className="bg-gray-100 p-4 rounded-sm">
               <code>
                 {/*todo change to prod hosted script location*/}
                 {`<script defer src="script.js" crossorigin></script>`}
@@ -42,7 +42,7 @@ export default function InstallScript() {
               <code>next/script</code> and add the following code to your{" "}
               <code>layout.tsx</code> or <code>layout.jsx</code> page component:
             </p>
-            <pre className="bg-gray-100 p-4 rounded">
+            <pre className="bg-gray-100 p-4 rounded-sm">
               <code>
                 {/*todo change to prod hosted script location*/}
                 {`<Script crossOrigin="anonymous" src="/static/script.js"></Script>`}

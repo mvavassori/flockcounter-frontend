@@ -65,12 +65,12 @@ export default function AddWebsiteForm() {
           placeholder="https://example.com"
           value={domain}
           onChange={(e) => setDomain(e.target.value)} // Update state
-          className="rounded px-2 py-2 bg-slate-200"
+          className="rounded-sm px-2 py-2 bg-slate-200"
           required
         />
         <button
           type="submit"
-          className="ml-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded font-semibold"
+          className="ml-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-sm font-semibold"
           disabled={isLoading} // Disable button during loading
         >
           {isLoading ? "Adding..." : "Add Website"}

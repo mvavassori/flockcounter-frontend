@@ -64,7 +64,7 @@ export default async function Profile() {
     return (
       <div className="px-4 pb-4 pt-12 w-full">
         <h2 className="text-2xl font-bold mb-6">Profile</h2>
-        <div className="bg-red-50 border border-red-200 text-red-800 p-4 rounded mb-6">
+        <div className="bg-red-50 border border-red-200 text-red-800 p-4 rounded-sm mb-6">
           <p>Unable to load profile: {error || "Unknown error"}</p>
           <p className="mt-2">Please try signing in again.</p>
         </div>
@@ -136,14 +136,14 @@ export default async function Profile() {
         <div className="flex justify-between">
           {process.env.NEXT_PUBLIC_ENV === "development" ? (
             <Link
-              className="px-4 py-2 bg-blue-500 text-white rounded"
+              className="px-4 py-2 bg-blue-500 text-white rounded-sm"
               href={`https://billing.stripe.com/p/login/test_8wMeWSbro7RtfSMaEE?prefilled_email=${session?.user.email}`}
             >
               Manage Subscription
             </Link>
           ) : (
             <Link
-              className="px-4 py-2 bg-blue-500 text-white rounded"
+              className="px-4 py-2 bg-blue-500 text-white rounded-sm"
               href={`https://billing.stripe.com/p/login/3cs8A5726aeH7C07ss?prefilled_email=${session?.user.email}`}
             >
               Manage Subscription

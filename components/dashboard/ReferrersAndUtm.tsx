@@ -212,7 +212,7 @@ const ReferrersAndUtm: React.FC<CommonDashboardComponentProps> = (props) => {
 
   if (loading) {
     return (
-      <div className="flex-grow w-min-100 bg-slate-200 rounded-lg p-4 max-w-sm">
+      <div className="grow w-min-100 bg-slate-200 rounded-lg p-4 max-w-sm">
         <h2 className="font-semibold mb-2 text-lg">Referrers</h2>
         <div className="flex justify-center items-center pb-4">
           <Spinner />
@@ -223,7 +223,7 @@ const ReferrersAndUtm: React.FC<CommonDashboardComponentProps> = (props) => {
 
   if (error) {
     return (
-      <div className="flex-grow w-min-100 bg-slate-200 rounded-lg p-4 max-w-sm">
+      <div className="grow w-min-100 bg-slate-200 rounded-lg p-4 max-w-sm">
         <h2 className="font-semibold mb-2 text-lg">Referrers</h2>
         <div className="flex justify-center items-center pb-4 h-[200px]">
           Error: {error}
@@ -233,11 +233,11 @@ const ReferrersAndUtm: React.FC<CommonDashboardComponentProps> = (props) => {
   }
 
   return (
-    <div className="flex-grow w-min-200 bg-slate-200 rounded-lg p-4 w-full">
+    <div className="grow w-min-200 bg-slate-200 rounded-lg p-4 w-full">
       <select
         value={selectedOption}
         onChange={handleSelectedOptionChange}
-        className="font-semibold text-lg mb-2 rounded-md flex-grow-0 bg-slate-200 border-2 outline-none cursor-pointer border-slate-200"
+        className="font-semibold text-lg mb-2 rounded-md grow-0 bg-slate-200 border-2 outline-hidden cursor-pointer border-slate-200"
         style={{
           marginLeft: "-0.5rem", // adjust the overall left margin of the standard browser select
         }}

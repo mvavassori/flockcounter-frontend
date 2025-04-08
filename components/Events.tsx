@@ -73,7 +73,7 @@ const Events: React.FC<EventsProps> = (props) => {
   }
 
   return (
-    <div className="flex-grow w-min-200 bg-slate-200 rounded-lg p-4">
+    <div className="grow w-min-200 bg-slate-200 rounded-lg p-4">
       <h2 className="font-semibold text-lg mb-2">Events</h2>
       {events && events.eventNames && events.eventNames.length > 0 ? (
         <ul>

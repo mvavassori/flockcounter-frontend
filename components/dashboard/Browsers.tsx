@@ -128,7 +128,7 @@ const Browsers: React.FC<CommonDashboardComponentProps> = (props) => {
 
   if (loading) {
     return (
-      <div className="flex-grow w-min-100 bg-slate-200 rounded-lg p-4 max-w-sm">
+      <div className="grow w-min-100 bg-slate-200 rounded-lg p-4 max-w-sm">
         <h2 className="font-semibold mb-2 text-lg">Browsers</h2>
         <div className="flex justify-center items-center pb-4 h-[200px]">
           <Spinner />
@@ -139,7 +139,7 @@ const Browsers: React.FC<CommonDashboardComponentProps> = (props) => {
 
   if (error) {
     return (
-      <div className="flex-grow w-min-100 bg-slate-200 rounded-lg p-4 max-w-sm">
+      <div className="grow w-min-100 bg-slate-200 rounded-lg p-4 max-w-sm">
         <h2 className="font-semibold mb-2 text-lg">Browsers</h2>
         <div className="flex justify-center items-center pb-4 h-[200px]">
           Error: {error}
@@ -149,7 +149,7 @@ const Browsers: React.FC<CommonDashboardComponentProps> = (props) => {
   }
 
   return (
-    <div className="flex-grow w-min-200 bg-slate-200 rounded-lg p-4">
+    <div className="grow w-min-200 bg-slate-200 rounded-lg p-4">
       <h2 className="font-semibold text-lg mb-2">Browsers</h2>
       {browsers && browsers.browsers && (
         <ul>

@@ -34,7 +34,7 @@ export default function Playground() {
       <form
         action="https://example.com/submit"
         method="post"
-        className="bg-white p-4 rounded shadow-md mb-4"
+        className="bg-white p-4 rounded-sm shadow-md mb-4"
         onSubmit={(e) => {
           e.preventDefault();
           window.trackCustomEvent("form_submit");
@@ -44,18 +44,18 @@ export default function Playground() {
           type="text"
           name="q"
           placeholder="Search"
-          className="border p-2 rounded w-full mb-2"
+          className="border p-2 rounded-sm w-full mb-2"
         />
         <button
           type="submit"
-          className="bg-blue-500 text-white p-2 rounded w-full hover:bg-blue-600"
+          className="bg-blue-500 text-white p-2 rounded-sm w-full hover:bg-blue-600"
         >
           Search
         </button>
       </form>
       {/* button */}
       <button
-        className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+        className="bg-blue-500 text-white p-2 rounded-sm hover:bg-blue-600"
         onClick={() => window.trackCustomEvent("button_click")}
       >
         Button

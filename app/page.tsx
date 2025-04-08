@@ -35,7 +35,7 @@ export default function Home() {
       {/* Features Grid */}
       <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-8 mb-16">
         <div className="flex items-start gap-4">
-          <div className="flex-shrink-0 pt-1">
+          <div className="shrink-0 pt-1">
             <ShieldIcon />
           </div>
           <div>
@@ -48,7 +48,7 @@ export default function Home() {
         </div>
 
         <div className="flex items-start gap-4">
-          <div className="flex-shrink-0 pt-1">
+          <div className="shrink-0 pt-1">
             <CookieIcon />
           </div>
           <div>
@@ -61,7 +61,7 @@ export default function Home() {
         </div>
 
         <div className="flex items-start gap-4">
-          <div className="flex-shrink-0 pt-1">
+          <div className="shrink-0 pt-1">
             <GlobeIcon />
           </div>
           <div>
@@ -76,7 +76,7 @@ export default function Home() {
         </div>
 
         <div className="flex items-start gap-4">
-          <div className="flex-shrink-0 pt-1">
+          <div className="shrink-0 pt-1">
             <CodeIcon />
           </div>
           <div>
